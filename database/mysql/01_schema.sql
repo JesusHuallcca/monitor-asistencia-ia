@@ -30,3 +30,17 @@ CREATE TABLE IF NOT EXISTS asistencias (
     INDEX idx_asistencias_fecha (fecha),
     INDEX idx_asistencias_estado (estado)
 );
+CREATE TABLE IF NOT EXISTS sesiones_clase (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    curso_id BIGINT NULL,
+    fecha DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fin TIME NOT NULL,
+    tolerancia_minutos INT NOT NULL DEFAULT 10,
+    estado VARCHAR(30) NOT NULL DEFAULT 'ACTIVA',
+    fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_sesiones_fecha (fecha),
+    INDEX idx_sesiones_estado (estado),
+    INDEX idx_sesiones_curso (curso_id)
+);

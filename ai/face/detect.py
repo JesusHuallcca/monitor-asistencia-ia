@@ -1,35 +1,41 @@
 import cv2
-from pathlib import Path
+from insightface.app import FaceAnalysis
 
 
 class FaceDetector:
     def __init__(self):
-        model_path = (
-            Path(__file__).resolve().parent
-            / "models"
-            / "haarcascade_frontalface_default.xml"
+        self.app = FaceAnalysis(
+            name="buffalo_l",
+            providers=["CPUExecutionProvider"]
         )
 
-        self.detector = cv2.CascadeClassifier(str(model_path))
-
-        if self.detector.empty():
-            raise RuntimeError(
-                f"No se pudo cargar el clasificador facial: {model_path}"
-            )
+        self.app.prepare(
+            ctx_id=0,
+            det_size=(640, 640)
+        )
 
     def detect(self, frame):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        faces = self.app.get(frame)
 
-        faces = self.detector.detectMultiScale(
-            gray,
-            scaleFactor=1.1,
-            minNeighbors=5,
-            minSize=(60, 60)
-        )
+        results = []
 
-        return faces
+        for face in faces:
+            x1, y1, x2, y2 = face.bbox.astype(int)
+
+            results.append(
+                (
+                    int(x1),
+                    int(y1),
+                    int(x2 - x1),
+                    int(y2 - y1)
+                )
+            )
+
+        return results
+
+
+_detector = FaceDetector()
 
 
 def detect_faces(frame):
-    detector = FaceDetector()
-    return detector.detect(frame)
+    return _detector.detect(frame)
