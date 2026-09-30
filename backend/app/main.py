@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
+from app.api import auth, users
 from app.db.database import engine
 
-app = FastAPI(title="Monitor Inteligente de Asistencia con IA", version="0.1.0")
+app = FastAPI(title="Monitor Inteligente de Asistencia con IA", version="0.2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -13,6 +14,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(auth.router)
+app.include_router(users.router)
 
 
 @app.get("/api/health")
