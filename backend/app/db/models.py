@@ -91,3 +91,22 @@ class Auditoria(Base):
     ip = Column(String(45), nullable=True)
     exito = Column(Boolean, nullable=False, default=True)
     fecha = Column(DateTime, server_default=func.now())
+
+class AsignacionProfesor(Base):
+    __tablename__ = "asignaciones_profesor"
+
+    id = Column(Integer, primary_key=True)
+    curso_id = Column(Integer, ForeignKey("cursos.id"), nullable=False)
+    profesor_id = Column(Integer, ForeignKey("profesores.id"), nullable=False)
+    asignado_por = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
+    asignado_en = Column(DateTime, server_default=func.now())
+
+
+class Matricula(Base):
+    __tablename__ = "matriculas"
+
+    id = Column(Integer, primary_key=True)
+    curso_id = Column(Integer, ForeignKey("cursos.id"), nullable=False)
+    estudiante_id = Column(Integer, ForeignKey("estudiantes.id"), nullable=False)
+    matriculado_por = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
+    matriculado_en = Column(DateTime, server_default=func.now())
