@@ -3,36 +3,33 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Senati | Iniciar sesión</title>
-    <link rel="stylesheet" href="css/login.css" />
+    <title>Senati | Acceso administrador</title>
+    <link rel="stylesheet" href="../css/login.css" />
   </head>
   <body class="login-page">
     <main class="panel-login">
       <!-- Panel izquierdo -->
       <section class="panel-info">
-        <span class="etiqueta">Plataforma académica</span>
-        <h2>Tu aprendizaje, en un solo lugar</h2>
-        <p>
-          Ingresa para continuar con tus cursos, tus calificaciones y tu
-          asistencia.
-        </p>
+        <span class="etiqueta">Administración</span>
+        <h2>Panel de control académico</h2>
+        <p>Acceso exclusivo para el personal autorizado de la institución.</p>
         <ul>
-          <li>Consulta tus cursos y calificaciones</li>
-          <li>Asistencia con reconocimiento facial</li>
-          <li>Accede desde cualquier dispositivo</li>
+          <li>Gestiona usuarios, profesores y alumnos</li>
+          <li>Crea cursos y asigna profesores</li>
+          <li>Revisa el registro de accesos y auditoría</li>
         </ul>
       </section>
 
       <!-- Panel derecho -->
       <section class="panel-form">
-        <img class="logo" src="assets/img/senati.png" alt="Senati" />
-        <h1>Bienvenido</h1>
-        <p class="subtitulo">Inicia sesión para acceder a tus cursos</p>
+        <img class="logo" src="../assets/img/senati.png" alt="Senati" />
+        <h1>Acceso de administración</h1>
+        <p class="subtitulo">Solo personal autorizado</p>
 
         <form
           id="form-login"
-          data-endpoint="/api/auth/login"
-          data-destino="bienvenida.html"
+          data-endpoint="/api/auth/admin/login"
+          data-destino="../bienvenida.html"
           novalidate
         >
           <p
@@ -47,7 +44,7 @@
             <input
               type="text"
               id="identificador"
-              placeholder="Ej: alumno1 o nombre@correo.com"
+              placeholder="Tu usuario de administrador"
               autocomplete="username"
               required
             />
@@ -101,53 +98,23 @@
             </div>
           </div>
 
-          <label class="recordarme">
-            <input type="checkbox" id="recordarme" /> Recordarme en este
-            dispositivo
-          </label>
-          <div class="acciones">
-            <button type="submit" id="btn-entrar" class="btn-principal">
-              Iniciar sesión
-            </button>
+          <!-- Sin "Recordarme": la sesión de admin es siempre corta -->
+          <input type="checkbox" id="recordarme" hidden />
 
-            <button
-              type="button"
-              id="btn-rostro"
-              class="btn-secundario"
-              disabled
-              title="Disponible cuando se conecte el reconocimiento facial"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path
-                  d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
-                />
-                <circle cx="12" cy="13" r="4" />
-              </svg>
-              Con rostro <span class="etiqueta-pronto">Pronto</span>
-            </button>
-          </div>
+          <button type="submit" id="btn-entrar" class="btn-principal">
+            Iniciar sesión
+          </button>
         </form>
 
         <p class="enlaces">
-          ¿Eres profesor y no tienes cuenta?
-          <a href="register.html">Regístrate</a><br />
-          <a href="admin/login.html">Acceso administrador</a>
+          <a href="../login.html">← Volver al acceso de profesores y alumnos</a>
         </p>
-
         <p class="lema">Comprometidos con tu formación</p>
       </section>
     </main>
 
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/login-form.js"></script>
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/login-form.js"></script>
   </body>
 </html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Bienvenida</title>
+    <link rel="stylesheet" href="css/login.css" />
+  </head>
+  <body class="login-page">
+    <main class="tarjeta">
+      <h1 id="saludo">Cargando...</h1>
+      <p id="detalle"></p>
+      <button id="btn-salir" class="btn-principal">Cerrar sesión</button>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+      (async () => {
+        if (!Auth.token()) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        const r = await Auth.fetchAutenticado("/api/users/me");
+        if (!r.ok) {
+          Auth.limpiar();
+          window.location.href = "login.html";
+          return;
+        }
+
+        const u = await r.json();
+        document.getElementById("saludo").textContent =
+          "Hola, " + u.nombres + " " + u.apellidos;
+        document.getElementById("detalle").textContent =
+          "Rol: " + u.rol + " · Usuario: " + u.username;
+      })();
+
+      document.getElementById("btn-salir").addEventListener("click", () => {
+        Auth.limpiar();
+        window.location.href = "login.html";
+      });
+    </script>
+  </body>
+</html>
