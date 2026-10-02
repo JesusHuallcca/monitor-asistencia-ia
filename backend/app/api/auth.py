@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, Request
 from sqlalchemy.orm import Session
+from app.schemas.face_auth import FaceLogin
+from app.services import face_auth_service
+
 
 from app.db.database import get_db
 from app.schemas.auth import LoginRequest, TokenResponse
@@ -31,3 +34,8 @@ def registrar_profesor(datos: RegistroProfesor, request: Request, db: Session = 
     """Registro abierto solo para profesores. Queda 'pendiente' hasta que un admin lo active."""
     usuario_service.crear_usuario(db, datos, "profesor", "pendiente", None, _ip(request))
     return {"mensaje": "Registro recibido. Un administrador debe aprobar tu cuenta."}
+
+@router.post("/face-login", response_model=TokenResponse)
+def login_facial(datos: FaceLogin, request: Request, db: Session = Depends(get_db)):
+    """Login con rostro (1 a 1): usuario + captura de cámara."""
+    return face_auth_service.login_facial(db, datos.identificador, datos.imagen, _ip(request))
