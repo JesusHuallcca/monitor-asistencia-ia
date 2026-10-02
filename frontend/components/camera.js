@@ -1,3 +1,16 @@
+﻿// Envía el token JWT del login (guardado por js/auth.js)
+function fetchConToken(url, opciones = {}) {
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    if (!token) {
+        window.location.href = "../login.html";
+        throw new Error("Sin sesión iniciada");
+    }
+    return fetch(url, {
+        ...opciones,
+        headers: { ...(opciones.headers || {}), Authorization: "Bearer " + token }
+    });
+}
+
 const API_URL = "http://127.0.0.1:8000/api/attendance/camera/check-in";
 const RESET_URL = "http://127.0.0.1:8000/api/attendance/camera/reset";
 
@@ -71,7 +84,7 @@ class AttendanceCamera {
 
         try {
 
-            await fetch(RESET_URL, {
+            await fetchConToken(RESET_URL, {
                 method: "POST"
             });
 
@@ -144,7 +157,7 @@ class AttendanceCamera {
                     .split(",")[1];
 
             const response =
-                await fetch(
+                await fetchConToken(
                     API_URL,
                     {
                         method: "POST",
