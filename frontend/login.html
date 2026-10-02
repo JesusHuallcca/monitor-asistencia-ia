@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Senati | Iniciar sesión</title>
     <link rel="stylesheet" href="css/login.css" />
+    <link rel="stylesheet" href="css/rostro.css" />
   </head>
   <body class="login-page">
     <main class="panel-login">
@@ -105,18 +106,13 @@
             <input type="checkbox" id="recordarme" /> Recordarme en este
             dispositivo
           </label>
+
           <div class="acciones">
             <button type="submit" id="btn-entrar" class="btn-principal">
               Iniciar sesión
             </button>
 
-            <button
-              type="button"
-              id="btn-rostro"
-              class="btn-secundario"
-              disabled
-              title="Disponible cuando se conecte el reconocimiento facial"
-            >
+            <button type="button" id="btn-rostro" class="btn-secundario">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -131,7 +127,7 @@
                 />
                 <circle cx="12" cy="13" r="4" />
               </svg>
-              Con rostro <span class="etiqueta-pronto">Pronto</span>
+              Con rostro
             </button>
           </div>
         </form>
@@ -146,8 +142,41 @@
       </section>
     </main>
 
+    <!-- Ventana de la cámara -->
+    <dialog id="modal-rostro" class="modal" aria-labelledby="titulo-rostro">
+      <div class="modal-contenido">
+        <h2 id="titulo-rostro">Entrar con rostro</h2>
+        <p class="subtitulo">Verificaremos que eres tú con tu cámara.</p>
+
+        <div id="caja-video" class="caja-video">
+          <span class="vacio">Cámara apagada</span>
+          <video id="video-rostro" autoplay playsinline muted></video>
+          <div class="marcador"><span></span></div>
+        </div>
+
+        <p
+          id="estado-rostro"
+          class="estado-camara"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <div class="modal-acciones">
+          <button type="button" id="btn-cerrar-rostro" class="btn-secundario">
+            Cancelar
+          </button>
+          <button type="button" id="btn-accion-rostro" class="btn-principal">
+            Activar cámara
+          </button>
+        </div>
+      </div>
+    </dialog>
+
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/auth-facial.js"></script>
+    <script src="js/camera.js"></script>
     <script src="js/login-form.js"></script>
+    <script src="js/login-facial.js"></script>
   </body>
 </html>

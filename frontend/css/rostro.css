@@ -1,0 +1,140 @@
+.modal {
+  width: min(440px, 94vw);
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(8, 20, 55, 0.45);
+}
+
+.modal::backdrop {
+  background: rgba(8, 20, 55, 0.6);
+}
+
+.modal-contenido {
+  padding: 24px;
+  text-align: center;
+}
+.modal h2 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+  color: var(--azul-oscuro);
+}
+
+.caja-video {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  margin: 14px 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--azul-oscuro);
+}
+
+.caja-video .vacio {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+}
+.caja-video.activa .vacio {
+  display: none;
+}
+
+.caja-video video {
+  display: none;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(
+    -1
+  ); /* espejo solo para verse; la captura no va invertida */
+}
+
+.caja-video.activa video {
+  display: block;
+}
+
+.caja-video .marcador {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  pointer-events: none;
+}
+
+.caja-video.activa .marcador {
+  display: grid;
+}
+
+.marcador span {
+  width: 46%;
+  aspect-ratio: 3 / 4;
+  border: 3px dashed rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+}
+
+.cuenta-atras {
+  position: absolute;
+  color: #fff;
+  font-size: 4rem;
+  font-weight: 700;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+.estado-camara {
+  min-height: 44px;
+  margin: 0 0 14px;
+  color: var(--gris);
+  font-size: 0.92rem;
+}
+.estado-camara.error {
+  color: var(--error);
+}
+.estado-camara.ok {
+  color: #067647;
+}
+
+.modal-acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.consentimiento {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 14px;
+  text-align: left;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--texto);
+}
+
+.consentimiento input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--azul);
+}
+
+.estado-login-facial {
+  display: inline-block;
+  margin: 0 0 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--azul-claro);
+  color: var(--azul);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.btn-peligro {
+  border-color: #fecdca;
+  color: var(--error);
+}
+.btn-peligro:hover:not(:disabled) {
+  border-color: var(--error);
+  color: var(--error);
+}
