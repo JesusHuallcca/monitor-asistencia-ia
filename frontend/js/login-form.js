@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     mensaje.textContent = "";
+    mensaje.classList.remove("info");
 
     const identificador = document.getElementById("identificador").value.trim();
     if (!identificador || !inputPass.value) {
@@ -42,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = form.dataset.destino;
     } catch (err) {
       mensaje.textContent = err.message;
+      mensaje.classList.toggle("info", err.status === 403); // cuenta en revisión: aviso, no error
       boton.disabled = false;
       boton.classList.remove("cargando");
       boton.textContent = textoOriginal;

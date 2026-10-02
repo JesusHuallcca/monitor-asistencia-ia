@@ -29,6 +29,19 @@ class UsuarioCrear(UsuarioBase):
 
 class RegistroProfesor(UsuarioBase):
     especialidad: str | None = Field(default=None, max_length=120)
+    consentimiento: bool = False
+    imagenes: list[str] | None = None
+
+    @field_validator("imagenes")
+    @classmethod
+    def validar_imagenes(cls, v):
+        if v is None:
+            return v
+        if not 3 <= len(v) <= 5:
+            raise ValueError("Se requieren entre 3 y 5 capturas del rostro")
+        if any(len(i) < 100 or len(i) > 2_000_000 for i in v):
+            raise ValueError("Imagen inválida")
+        return v
 
 
 class CambiarEstado(BaseModel):

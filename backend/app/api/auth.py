@@ -32,8 +32,22 @@ def login_admin(datos: LoginRequest, request: Request, db: Session = Depends(get
 @router.post("/register-profesor", status_code=201)
 def registrar_profesor(datos: RegistroProfesor, request: Request, db: Session = Depends(get_db)):
     """Registro abierto solo para profesores. Queda 'pendiente' hasta que un admin lo active."""
-    usuario_service.crear_usuario(db, datos, "profesor", "pendiente", None, _ip(request))
-    return {"mensaje": "Registro recibido. Un administrador debe aprobar tu cuenta."}
+    ip = _ip(request)
+
+    # El rostro se valida primero: si falla, la cuenta no se crea
+    cifrado = None
+    if datos.imagenes:
+        cifrado = face_auth_service.preparar_rostro_registro(db, datos.imagenes, datos.consentimiento)
+
+    user = usuario_service.crear_usuario(db, datos, "profesor", "pendiente", None, ip)
+
+    if cifrado is not None:
+        face_auth_service.guardar_rostro(db, user.id, cifrado, ip)
+
+    return {
+        "mensaje": "Registro recibido. Un administrador debe aprobar tu cuenta.",
+        "rostro_registrado": cifrado is not None,
+    }
 
 @router.post("/face-login", response_model=TokenResponse)
 def login_facial(datos: FaceLogin, request: Request, db: Session = Depends(get_db)):

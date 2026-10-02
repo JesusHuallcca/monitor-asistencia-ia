@@ -12,11 +12,13 @@ Auth.loginFacial = async function (identificador, imagen) {
   }
   const datos = await respuesta.json().catch(() => ({}));
   if (!respuesta.ok) {
-    throw new Error(
+    const error = new Error(
       typeof datos.detail === "string"
         ? datos.detail
         : "No se pudo verificar tu identidad.",
     );
+    error.status = respuesta.status;
+    throw error;
   }
   return datos;
 };

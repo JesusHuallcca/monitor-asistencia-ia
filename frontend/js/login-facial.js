@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
     } catch (err) {
-      mostrar(err.message, "error");
+      mostrar(err.message, err.status === 403 ? "info" : "error");
     } finally {
       ocupado = false;
       btnAccion.disabled = false;

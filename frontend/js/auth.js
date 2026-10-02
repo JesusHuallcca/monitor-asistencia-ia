@@ -41,7 +41,9 @@ const Auth = {
       if (typeof datos.detail === "string") mensaje = datos.detail;
       else if (Array.isArray(datos.detail))
         mensaje = "Revisa los datos ingresados.";
-      throw new Error(mensaje);
+      const error = new Error(mensaje);
+      error.status = respuesta.status;
+      throw error;
     }
     return datos;
   },

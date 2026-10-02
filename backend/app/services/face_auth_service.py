@@ -175,7 +175,7 @@ def login_facial(db: Session, identificador: str, imagen: str, ip: str | None) -
         raise rechazo
 
     if user.estado == "pendiente":
-        raise HTTPException(status_code=403, detail="Tu cuenta está pendiente de aprobación por un administrador.")
+                raise HTTPException(status_code=403, detail="Tu cuenta está pendiente de aprobación por un administrador.")
     if user.estado != "activo":
         raise HTTPException(status_code=403, detail="Tu cuenta está desactivada.")
 
@@ -191,3 +191,41 @@ def login_facial(db: Session, identificador: str, imagen: str, ip: str | None) -
         "rol": user.rol,
         "nombre": f"{user.nombres} {user.apellidos}",
     }
+
+def preparar_rostro_registro(db: Session, imagenes: list[str], consentimiento: bool) -> bytes:
+    """Valida las capturas ANTES de crear la cuenta. Devuelve el rostro ya cifrado."""
+    if not consentimiento:
+        raise HTTPException(status_code=400, detail="Debes aceptar el uso de tu rostro para registrarlo")
+    if not verificar_vida(imagenes):
+        raise HTTPException(status_code=422, detail="No se pudo comprobar que eres una persona real")
+
+    motor = _motor()
+    vectores = [_embedding(motor, img) for img in imagenes]
+
+    for v in vectores[1:]:
+        if motor.similarity(vectores[0], v) < settings.FACE_THRESHOLD:
+            raise HTTPException(status_code=422, detail="Las capturas no parecen ser de la misma persona. Intenta de nuevo.")
+
+    promedio = np.mean(vectores, axis=0)
+    promedio = promedio / np.linalg.norm(promedio)
+
+    if _rostro_duplicado(db, motor, promedio, 0):  # 0: todavía no existe usuario
+        raise HTTPException(status_code=409, detail="Este rostro ya está asociado a otra cuenta.")
+
+    try:
+        return encrypt_embedding(promedio)
+    except CryptoError:
+        raise HTTPException(status_code=503, detail="El reconocimiento facial no está configurado")
+
+
+def guardar_rostro(db: Session, usuario_id: int, cifrado: bytes, ip: str | None):
+    db.add(Rostro(
+        usuario_id=usuario_id,
+        embedding=cifrado,
+        consentimiento=True,
+        fecha_consentimiento=_ahora(),
+        login_facial_activo=True,
+        retener_hasta=date.today() + timedelta(days=RETENCION_DIAS),
+    ))
+    db.commit()
+    registrar_auditoria(db, usuario_id, "rostro_enrolado", "rostro registrado al crear la cuenta", ip, True)

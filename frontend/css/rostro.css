@@ -138,3 +138,6 @@
   border-color: var(--error);
   color: var(--error);
 }
+.estado-camara.info {
+  color: #b54708;
+}

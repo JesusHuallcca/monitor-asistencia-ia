@@ -65,7 +65,7 @@ def autenticar(db: Session, identificador: str, password: str, portal: str,
 
     if user.estado == "pendiente":
         registrar_auditoria(db, user.id, "login_pendiente", "cuenta sin aprobar", ip, False)
-        raise HTTPException(status_code=403, detail="Tu cuenta está pendiente de aprobación por un administrador.")
+        raise HTTPException(status_code=403, detail="Tu cuenta está en revisión. Podrás ingresar cuando un administrador la apruebe.")
     if user.estado != "activo":
         registrar_auditoria(db, user.id, "login_inactivo", "cuenta desactivada", ip, False)
         raise HTTPException(status_code=403, detail="Tu cuenta está desactivada.")

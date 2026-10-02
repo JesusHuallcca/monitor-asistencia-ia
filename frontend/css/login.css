@@ -636,3 +636,8 @@ body.login-page {
     display: inline;
   }
 }
+.mensaje-error.info {
+  border-color: #fedf89;
+  background: #fffaeb;
+  color: #b54708;
+}
