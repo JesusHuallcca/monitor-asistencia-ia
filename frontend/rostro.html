@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Login facial</title>
+    <link rel="stylesheet" href="css/login.css" />
+    <link rel="stylesheet" href="css/rostro.css" />
+  </head>
+  <body class="login-page">
+    <main class="tarjeta">
+      <h1>Login facial</h1>
+      <span id="estado-login-facial" class="estado-login-facial"
+        >Cargando…</span
+      >
+      <p class="subtitulo">Entra con tu rostro además de tu contraseña.</p>
+
+      <div id="caja-video" class="caja-video">
+        <span class="vacio">Cámara apagada</span>
+        <video id="video-rostro" autoplay playsinline muted></video>
+        <div class="marcador"><span></span></div>
+        <span id="cuenta-atras" class="cuenta-atras"></span>
+      </div>
+
+      <label class="consentimiento">
+        <input type="checkbox" id="consentimiento" />
+        <span
+          >Autorizo a Senati a guardar una representación numérica de mi rostro
+          (no la foto) para iniciar sesión. Puedo eliminarla cuando
+          quiera.</span
+        >
+      </label>
+
+      <p
+        id="estado-rostro"
+        class="estado-camara"
+        role="status"
+        aria-live="polite"
+      ></p>
+
+      <button type="button" id="btn-accion-rostro" class="btn-principal">
+        Activar cámara
+      </button>
+      <button
+        type="button"
+        id="btn-desactivar"
+        class="btn-secundario btn-peligro"
+        hidden
+        style="margin-top: 10px"
+      >
+        Desactivar login facial
+      </button>
+
+      <p class="enlaces"><a href="bienvenida.html">← Volver</a></p>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/rostro.js"></script>
+  </body>
+</html>
