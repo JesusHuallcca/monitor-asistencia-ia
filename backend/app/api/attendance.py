@@ -6,7 +6,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user, require_roles
 from app.db.database import get_db
+from app.db.models import Usuario
 from app.services.attendance_face_service import attendance_face_service
 from app.services.attendance_service import attendance_service
 from app.services.liveness_service import liveness_service
@@ -61,7 +63,8 @@ def attendance_health():
 
 @router.get("/")
 def get_attendances(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user: Usuario = Depends(require_roles("admin", "superadmin", "profesor"))
 ):
     attendances = attendance_service.get_all(db)
 
@@ -74,7 +77,8 @@ def get_attendances(
 @router.post("/check-in")
 def check_in(
     request: AttendanceRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user: Usuario = Depends(get_current_user)
 ):
     frame = decode_image(request.image)
 
@@ -94,6 +98,13 @@ def check_in(
             "success": False,
             "status": "UNKNOWN_FACE",
             "message": "Rostro no reconocido"
+        }
+
+    if reconocimiento["usuario_id"] != user.id:
+        return {
+            "success": False,
+            "status": "IDENTITY_MISMATCH",
+            "message": "El rostro no coincide con el usuario autenticado"
         }
 
     liveness = liveness_service.check(frame)
@@ -131,7 +142,7 @@ def clear_attendances():
 
 
 @router.post("/camera/reset")
-def reset_attendance_camera():
+def reset_attendance_camera(user: Usuario = Depends(get_current_user)):
     from app.services.attendance_camera_service import attendance_camera_service
 
     attendance_camera_service.reset()
@@ -145,7 +156,8 @@ def reset_attendance_camera():
 @router.post("/camera/check-in")
 def camera_check_in(
     request: AttendanceRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user: Usuario = Depends(get_current_user)
 ):
     frame = decode_image(request.image)
 
@@ -165,6 +177,13 @@ def camera_check_in(
             "success": False,
             "status": "UNKNOWN_FACE",
             "message": "Rostro no reconocido"
+        }
+
+    if reconocimiento["usuario_id"] != user.id:
+        return {
+            "success": False,
+            "status": "IDENTITY_MISMATCH",
+            "message": "El rostro no coincide con el usuario autenticado"
         }
 
     liveness = liveness_service.check(frame)
@@ -191,3 +210,5 @@ def camera_check_in(
         "recognition": reconocimiento,
         "liveness": liveness
     }
+
+
