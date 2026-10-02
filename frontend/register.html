@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Registro de profesores</title>
+    <link rel="stylesheet" href="css/login.css" />
+    <link rel="stylesheet" href="css/rostro.css" />
+    <link rel="stylesheet" href="css/register.css" />
+  </head>
+  <body class="login-page">
+    <main class="panel-login panel-registro">
+      <!-- Panel izquierdo -->
+      <section class="panel-info">
+        <span class="etiqueta">Docentes</span>
+        <h2>Únete como profesor</h2>
+        <p>Crea tu cuenta para gestionar tus cursos y a tus alumnos.</p>
+        <ul>
+          <li>Un administrador revisa y aprueba tu cuenta</li>
+          <li>Puedes registrar tu rostro para entrar más rápido</li>
+          <li>Tu rostro se guarda cifrado, nunca como foto</li>
+        </ul>
+      </section>
+
+      <!-- Panel derecho -->
+      <section class="panel-form">
+        <div id="vista-form">
+          <img class="logo" src="assets/img/senati.png" alt="Senati" />
+          <h1>Crear cuenta de profesor</h1>
+          <p class="subtitulo">Completa tus datos para registrarte</p>
+
+          <form id="form-registro" novalidate>
+            <p
+              id="mensaje"
+              class="mensaje-error"
+              role="alert"
+              aria-live="polite"
+            ></p>
+
+            <div class="fila">
+              <div class="campo">
+                <label for="nombres">Nombres</label>
+                <input
+                  type="text"
+                  id="nombres"
+                  autocomplete="given-name"
+                  maxlength="100"
+                  required
+                />
+              </div>
+              <div class="campo">
+                <label for="apellidos">Apellidos</label>
+                <input
+                  type="text"
+                  id="apellidos"
+                  autocomplete="family-name"
+                  maxlength="100"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="fila">
+              <div class="campo">
+                <label for="username">Usuario</label>
+                <input
+                  type="text"
+                  id="username"
+                  autocomplete="username"
+                  maxlength="50"
+                  required
+                />
+              </div>
+              <div class="campo">
+                <label for="email">Correo electrónico</label>
+                <input
+                  type="text"
+                  id="email"
+                  inputmode="email"
+                  autocomplete="email"
+                  maxlength="120"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="campo">
+              <label for="especialidad"
+                >Especialidad <span class="opcional">Opcional</span></label
+              >
+              <input
+                type="text"
+                id="especialidad"
+                maxlength="120"
+                placeholder="Ej: Desarrollo web, Bases de datos"
+              />
+            </div>
+
+            <div class="fila">
+              <div class="campo">
+                <label for="password">Contraseña</label>
+                <div class="con-ojo">
+                  <input
+                    type="password"
+                    id="password"
+                    autocomplete="new-password"
+                    maxlength="128"
+                    required
+                  />
+                  <button
+                    type="button"
+                    id="btn-ojo"
+                    class="btn-ojo"
+                    aria-label="Mostrar contraseñas"
+                  >
+                    <svg
+                      class="ojo-abierto"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <svg
+                      class="ojo-cerrado"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+                      />
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              <div class="campo">
+                <label for="password2">Repite la contraseña</label>
+                <input
+                  type="password"
+                  id="password2"
+                  autocomplete="new-password"
+                  maxlength="128"
+                  required
+                />
+              </div>
+            </div>
+            <p class="ayuda">Mínimo 8 caracteres, con letras y números.</p>
+
+            <div id="bloque-rostro" class="bloque-rostro">
+              <div>
+                <strong
+                  >Entrar con rostro
+                  <span class="opcional">Opcional</span></strong
+                >
+                <p id="texto-rostro">
+                  Registra tu rostro ahora para iniciar sesión más rápido.
+                </p>
+              </div>
+              <button
+                type="button"
+                id="btn-rostro-registro"
+                class="btn-secundario"
+              >
+                Registrar rostro
+              </button>
+            </div>
+
+            <button type="submit" id="btn-entrar" class="btn-principal">
+              Crear cuenta
+            </button>
+          </form>
+
+          <p class="enlaces">
+            ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+          </p>
+        </div>
+
+        <div id="vista-exito" class="exito" hidden>
+          <div class="icono-exito">✓</div>
+          <h1>¡Registro recibido!</h1>
+          <p id="texto-exito"></p>
+          <a class="btn-principal enlace-boton" href="login.html"
+            >Ir a iniciar sesión</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <!-- Ventana de la cámara -->
+    <dialog id="modal-rostro" class="modal" aria-labelledby="titulo-rostro">
+      <div class="modal-contenido">
+        <h2 id="titulo-rostro">Registrar mi rostro</h2>
+        <p class="subtitulo">Tomaremos 3 capturas con tu cámara.</p>
+
+        <div id="caja-video" class="caja-video">
+          <span class="vacio">Cámara apagada</span>
+          <video id="video-rostro" autoplay playsinline muted></video>
+          <div class="marcador"><span></span></div>
+          <span id="cuenta-atras" class="cuenta-atras"></span>
+        </div>
+
+        <label class="consentimiento">
+          <input type="checkbox" id="consentimiento" />
+          <span
+            >Autorizo a Senati a guardar una representación numérica de mi
+            rostro (no la foto) para iniciar sesión. Puedo eliminarla cuando
+            quiera.</span
+          >
+        </label>
+
+        <p
+          id="estado-rostro"
+          class="estado-camara"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <div class="modal-acciones">
+          <button type="button" id="btn-cerrar-rostro" class="btn-secundario">
+            Cancelar
+          </button>
+          <button type="button" id="btn-accion-rostro" class="btn-principal">
+            Activar cámara
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="js/config.js"></script>
+    <script src="js/camera.js"></script>
+    <script src="js/register.js"></script>
+  </body>
+</html>

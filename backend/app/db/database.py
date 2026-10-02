@@ -1,26 +1,23 @@
-import mysql.connector
-from mysql.connector import Error
+from urllib.parse import quote_plus
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+from app.core.config import settings
+
+DATABASE_URL = (
+    f"mysql+pymysql://{settings.DB_USER}:{quote_plus(settings.DB_PASSWORD)}"
+    f"@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}?charset=utf8mb4"
+)
+
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+Base = declarative_base()
 
 
-DB_CONFIG = {
-    "host": "localhost",
-    "port": 3306,
-    "user": "root",
-    "password": "",
-    "database": "monitor_asistencia"
-}
-
-
-def get_connection():
+def get_db():
+    db = SessionLocal()
     try:
-        connection = mysql.connector.connect(**DB_CONFIG)
-
-        if connection.is_connected():
-            return connection
-
-        return None
-
-    except Error as error:
-        raise RuntimeError(
-            f"No se pudo conectar con MariaDB: {error}"
-        )
+        yield db
+    finally:
+        db.close()

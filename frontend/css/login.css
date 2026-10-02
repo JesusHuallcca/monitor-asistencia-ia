@@ -1,0 +1,643 @@
+:root {
+  --fondo: url("../assets/img/Fondo_login.png");
+
+  --azul: #1d5ee6;
+  --azul-hover: #174cc0;
+  --azul-claro: #eaf1ff;
+  --azul-oscuro: #0b1f4d;
+  --texto: #14213d;
+  --gris: #5b6b8c;
+  --borde: #d5e0f5;
+  --error: #b42318;
+  --error-fondo: #fef3f2;
+  --error-borde: #fecdca;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.login-page {
+  margin: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  font-family: "Open Sans", "Segoe UI", Arial, sans-serif;
+  color: var(--texto);
+  /* Capa oscura + tu imagen + degradado de respaldo si la imagen no carga */
+  background:
+    linear-gradient(rgba(11, 31, 77, 0.45), rgba(11, 31, 77, 0.45)),
+    var(--fondo) center / cover no-repeat,
+    linear-gradient(135deg, #1d5ee6, #0b1f4d);
+}
+
+/* =====================================================
+   PANEL HORIZONTAL (login general y login de admin)
+   ===================================================== */
+.panel-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  max-width: 960px;
+  min-height: 560px;
+  overflow: hidden;
+  border-radius: 28px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(8, 20, 55, 0.4);
+  animation: entrada 0.45s ease-out both;
+}
+
+/* ---------- Panel izquierdo (informativo) ---------- */
+.panel-info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 44px;
+  overflow: hidden;
+  color: #fff;
+  background: linear-gradient(160deg, #1d5ee6 0%, #0b1f4d 100%);
+}
+
+/* Círculos decorativos */
+.panel-info::before,
+.panel-info::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+.panel-info::before {
+  width: 320px;
+  height: 320px;
+  top: -110px;
+  right: -120px;
+}
+.panel-info::after {
+  width: 220px;
+  height: 220px;
+  bottom: -80px;
+  left: -70px;
+}
+
+.panel-info > * {
+  position: relative;
+  z-index: 1;
+}
+
+.panel-info .etiqueta {
+  align-self: flex-start;
+  margin-bottom: 18px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.panel-info h2 {
+  margin: 0 0 14px;
+  font-size: 1.9rem;
+  line-height: 1.2;
+}
+
+.panel-info > p {
+  margin: 0 0 28px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+.panel-info ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.panel-info li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 0.97rem;
+  line-height: 1.45;
+}
+
+.panel-info li::before {
+  content: "✓";
+  flex: 0 0 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* ---------- Panel derecho (formulario) ---------- */
+.panel-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 48px 28px;
+}
+
+.panel-form .logo {
+  margin: 0 0 22px;
+  object-position: left center;
+}
+
+.panel-form h1 {
+  margin: 0 0 6px;
+  font-size: 1.6rem;
+  color: var(--azul-oscuro);
+}
+
+.panel-form .subtitulo {
+  margin: 0 0 24px;
+}
+
+/* =====================================================
+   TARJETA ANGOSTA (solo la usa bienvenida.html)
+   ===================================================== */
+.tarjeta {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 36px 28px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 24px 60px rgba(8, 20, 55, 0.35);
+  text-align: center;
+  animation: entrada 0.45s ease-out both;
+}
+
+.tarjeta h1 {
+  margin: 0 0 6px;
+  font-size: 1.6rem;
+  color: var(--azul-oscuro);
+}
+
+/* ---------- Elementos compartidos ---------- */
+.logo {
+  display: block;
+  margin: 0 auto 18px;
+  height: 56px;
+  max-width: 200px;
+  object-fit: contain;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--azul-oscuro);
+}
+
+.subtitulo {
+  margin: 0 0 26px;
+  color: var(--gris);
+  font-size: 0.97rem;
+}
+
+/* ---------- Formulario ---------- */
+.campo {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--azul-oscuro);
+}
+
+.campo input[type="text"],
+.campo input[type="password"] {
+  width: 100%;
+  padding: 13px 16px;
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  background: var(--azul-claro);
+  color: var(--texto);
+  font-size: 1rem;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+
+.campo input::placeholder {
+  color: #8a99b8;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: var(--azul);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(29, 94, 230, 0.18);
+}
+
+.con-ojo {
+  position: relative;
+}
+.con-ojo input {
+  padding-right: 52px !important;
+}
+
+.btn-ojo {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--gris);
+  cursor: pointer;
+}
+
+.btn-ojo:hover {
+  background: rgba(29, 94, 230, 0.1);
+  color: var(--azul);
+}
+.btn-ojo:focus-visible {
+  outline: 3px solid rgba(29, 94, 230, 0.4);
+}
+.btn-ojo svg {
+  width: 20px;
+  height: 20px;
+}
+.btn-ojo .ojo-cerrado {
+  display: none;
+}
+.btn-ojo.activo .ojo-abierto {
+  display: none;
+}
+.btn-ojo.activo .ojo-cerrado {
+  display: block;
+}
+
+.recordarme {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 20px;
+  font-size: 0.95rem;
+  color: var(--texto);
+  cursor: pointer;
+  user-select: none;
+}
+
+.recordarme input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--azul);
+  cursor: pointer;
+}
+
+/* ---------- Botones ---------- */
+.btn-principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--azul);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(29, 94, 230, 0.3);
+  transition:
+    background 0.15s,
+    transform 0.1s;
+}
+
+.btn-principal:hover:not(:disabled) {
+  background: var(--azul-hover);
+}
+.btn-principal:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn-principal:focus-visible {
+  outline: 3px solid rgba(29, 94, 230, 0.45);
+  outline-offset: 2px;
+}
+.btn-principal:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
+.btn-principal.cargando::after {
+  content: "";
+  width: 16px;
+  height: 16px;
+  margin-left: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: giro 0.7s linear infinite;
+}
+
+.separador {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  color: var(--gris);
+  font-size: 0.85rem;
+}
+
+.separador::before,
+.separador::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--borde);
+}
+
+.btn-secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--borde);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--azul-oscuro);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secundario svg {
+  width: 20px;
+  height: 20px;
+}
+.btn-secundario:hover:not(:disabled) {
+  border-color: var(--azul);
+  color: var(--azul);
+}
+.btn-secundario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.etiqueta-pronto {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--azul-claro);
+  color: var(--azul);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* ---------- Mensajes ---------- */
+.mensaje-error {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid var(--error-borde);
+  border-radius: 12px;
+  background: var(--error-fondo);
+  color: var(--error);
+  font-size: 0.92rem;
+  text-align: left;
+}
+
+.mensaje-error:empty {
+  display: none;
+}
+
+/* ---------- Pie ---------- */
+.enlaces {
+  margin: 20px 0 0;
+  font-size: 0.93rem;
+  color: var(--gris);
+  line-height: 1.9;
+  text-align: center;
+}
+.enlaces a {
+  color: var(--azul);
+  font-weight: 600;
+  text-decoration: none;
+}
+.enlaces a:hover {
+  text-decoration: underline;
+}
+.enlaces a:focus-visible {
+  outline: 3px solid rgba(29, 94, 230, 0.4);
+  border-radius: 4px;
+}
+
+.lema {
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--borde);
+  color: var(--gris);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ---------- Animaciones ---------- */
+@keyframes entrada {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes giro {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel-login,
+  .tarjeta,
+  .btn-principal.cargando::after {
+    animation: none;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* ---------- Pantallas medianas y celular ---------- */
+@media (max-width: 820px) {
+  .panel-login {
+    grid-template-columns: 1fr;
+    max-width: 460px;
+    min-height: 0;
+  }
+  .panel-info {
+    display: none;
+  }
+  .panel-form {
+    padding: 32px 26px 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  body.login-page {
+    padding: 12px;
+  }
+  .panel-login,
+  .tarjeta {
+    border-radius: 24px;
+  }
+  .tarjeta {
+    padding: 32px 22px 22px;
+  }
+}
+/* =====================================================
+   VERSIÓN COMPACTA (sin scroll)
+   ===================================================== */
+body.login-page {
+  padding: 16px;
+}
+
+.panel-login {
+  max-width: 900px;
+  min-height: 0;
+}
+
+.panel-info {
+  padding: 32px 36px;
+}
+.panel-info h2 {
+  margin-bottom: 10px;
+  font-size: 1.6rem;
+}
+.panel-info > p {
+  margin-bottom: 18px;
+  font-size: 0.95rem;
+}
+.panel-info li {
+  margin-bottom: 10px;
+  font-size: 0.92rem;
+}
+
+.panel-form {
+  padding: 24px 40px 18px;
+}
+.panel-form .logo {
+  height: 40px;
+  margin-bottom: 12px;
+}
+.panel-form h1 {
+  margin-bottom: 2px;
+  font-size: 1.4rem;
+}
+.panel-form .subtitulo {
+  margin-bottom: 14px;
+  font-size: 0.92rem;
+}
+.panel-form .lema {
+  display: none;
+}
+
+.campo {
+  margin-bottom: 12px;
+}
+.campo label {
+  margin-bottom: 4px;
+  font-size: 0.84rem;
+}
+
+.campo input[type="text"],
+.campo input[type="password"] {
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.97rem;
+}
+
+.btn-ojo {
+  width: 34px;
+  height: 34px;
+}
+
+.recordarme {
+  margin: 0 0 14px;
+  font-size: 0.9rem;
+}
+
+.btn-principal {
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 1rem;
+}
+
+.separador {
+  display: none;
+}
+
+.acciones {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.acciones .btn-secundario {
+  padding: 12px 8px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+.acciones .etiqueta-pronto {
+  display: none;
+}
+
+.mensaje-error {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+}
+
+.enlaces {
+  margin-top: 12px;
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+/* Pantallas bajas (laptops pequeñas): aún más compacto */
+@media (max-height: 640px) {
+  .panel-info ul {
+    display: none;
+  }
+  .panel-form .subtitulo {
+    display: none;
+  }
+  .panel-form {
+    padding-top: 18px;
+  }
+}
+
+/* En celular los botones vuelven a apilarse */
+@media (max-width: 480px) {
+  .acciones {
+    grid-template-columns: 1fr;
+  }
+  .acciones .etiqueta-pronto {
+    display: inline;
+  }
+}
+.mensaje-error.info {
+  border-color: #fedf89;
+  background: #fffaeb;
+  color: #b54708;
+}
