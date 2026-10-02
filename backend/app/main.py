@@ -1,9 +1,8 @@
-from fastapi import FastAPI
+﻿from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.api import admin_users, auth, cursos, face_auth, users
-from app.api.face import router as face_router
 from app.api.attendance import router as attendance_router
 from app.db.database import engine
 
@@ -29,10 +28,9 @@ app.add_middleware(
 
 
 # Asistencia facial
-app.include_router(face_router)
 app.include_router(attendance_router)
 
-# Autenticación y usuarios
+# AutenticaciÃ³n y usuarios
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(admin_users.router)

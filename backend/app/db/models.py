@@ -1,6 +1,17 @@
-from sqlalchemy import (
-    BigInteger, Boolean, Column, Date, DateTime, ForeignKey, Integer,
-    LargeBinary, String, Text, func,
+﻿from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    LargeBinary,
+    String,
+    Text,
+    Time,
+    Numeric,
+    func,
 )
 from sqlalchemy.orm import relationship
 
@@ -16,8 +27,8 @@ class Usuario(Base):
     password_hash = Column(String(255), nullable=False)
     nombres = Column(String(100), nullable=False)
     apellidos = Column(String(100), nullable=False)
-    rol = Column(String(20), nullable=False)      # superadmin | admin | profesor | estudiante
-    estado = Column(String(20), nullable=False, default="activo")  # pendiente | activo | inactivo
+    rol = Column(String(20), nullable=False)
+    estado = Column(String(20), nullable=False, default="activo")
     intentos_fallidos = Column(Integer, nullable=False, default=0)
     bloqueado_hasta = Column(DateTime, nullable=True)
     ultimo_login = Column(DateTime, nullable=True)
@@ -28,6 +39,8 @@ class Usuario(Base):
     profesor = relationship("Profesor", back_populates="usuario", uselist=False)
     estudiante = relationship("Estudiante", back_populates="usuario", uselist=False)
     rostro = relationship("Rostro", back_populates="usuario", uselist=False)
+
+    asistencias = relationship("Asistencia", back_populates="usuario")
 
 
 class Profesor(Base):
@@ -81,6 +94,39 @@ class Rostro(Base):
     usuario = relationship("Usuario", back_populates="rostro")
 
 
+class SesionClase(Base):
+    __tablename__ = "sesiones_clase"
+
+    id = Column(Integer, primary_key=True)
+    curso_id = Column(Integer, ForeignKey("cursos.id"), nullable=False)
+    fecha = Column(Date, nullable=False)
+    hora_inicio = Column(Time, nullable=False)
+    hora_fin = Column(Time, nullable=False)
+    tolerancia_minutos = Column(Integer, nullable=False, default=10)
+    estado = Column(String(20), nullable=False, default="ACTIVA")
+    fecha_registro = Column(DateTime, server_default=func.now())
+
+    curso = relationship("Curso")
+    asistencias = relationship("Asistencia", back_populates="sesion")
+
+
+class Asistencia(Base):
+    __tablename__ = "asistencias"
+
+    id = Column(BigInteger, primary_key=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    sesion_id = Column(Integer, ForeignKey("sesiones_clase.id"), nullable=False)
+    fecha = Column(Date, nullable=False)
+    hora = Column(Time, nullable=False)
+    confianza = Column(Numeric(10, 6), nullable=False)
+    liveness_score = Column(Numeric(10, 6), nullable=False)
+    estado = Column(String(30), nullable=False, default="PRESENTE")
+    fecha_registro = Column(DateTime, server_default=func.now())
+
+    usuario = relationship("Usuario", back_populates="asistencias")
+    sesion = relationship("SesionClase", back_populates="asistencias")
+
+
 class Auditoria(Base):
     __tablename__ = "auditoria"
 
@@ -91,6 +137,7 @@ class Auditoria(Base):
     ip = Column(String(45), nullable=True)
     exito = Column(Boolean, nullable=False, default=True)
     fecha = Column(DateTime, server_default=func.now())
+
 
 class AsignacionProfesor(Base):
     __tablename__ = "asignaciones_profesor"

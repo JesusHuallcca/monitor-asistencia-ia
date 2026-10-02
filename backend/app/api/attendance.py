@@ -1,11 +1,15 @@
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+﻿import base64
 
-from backend.app.services.attendance_service import attendance_service
-from backend.app.services.face_service import face_service
-from backend.app.services.liveness_service import liveness_service
-from backend.app.services.attendance_camera_service import attendance_camera_service
-from backend.app.api.face import decode_image
+import cv2
+import numpy as np
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from app.db.database import get_db
+from app.services.attendance_face_service import attendance_face_service
+from app.services.attendance_service import attendance_service
+from app.services.liveness_service import liveness_service
 
 
 router = APIRouter(
@@ -18,6 +22,35 @@ class AttendanceRequest(BaseModel):
     image: str
 
 
+def decode_image(image_data: str):
+    try:
+        if "," in image_data:
+            image_data = image_data.split(",", 1)[1]
+
+        image_bytes = base64.b64decode(image_data)
+
+        array = np.frombuffer(
+            image_bytes,
+            dtype=np.uint8
+        )
+
+        frame = cv2.imdecode(
+            array,
+            cv2.IMREAD_COLOR
+        )
+
+        if frame is None:
+            raise ValueError("Imagen inválida")
+
+        return frame
+
+    except Exception:
+        raise HTTPException(
+            status_code=400,
+            detail="No se pudo decodificar la imagen"
+        )
+
+
 @router.get("/health")
 def attendance_health():
     return {
@@ -27,47 +60,36 @@ def attendance_health():
 
 
 @router.get("/")
-def get_attendances():
+def get_attendances(
+    db: Session = Depends(get_db)
+):
+    attendances = attendance_service.get_all(db)
+
     return {
-        "count": len(attendance_service.get_all()),
-        "attendances": attendance_service.get_all()
+        "count": len(attendances),
+        "attendances": attendances
     }
 
 
 @router.post("/check-in")
-def check_in(request: AttendanceRequest):
+def check_in(
+    request: AttendanceRequest,
+    db: Session = Depends(get_db)
+):
     frame = decode_image(request.image)
 
-    faces = face_service.detect(frame)
-
-    if len(faces) == 0:
+    try:
+        reconocimiento = attendance_face_service.recognize(
+            db=db,
+            image_data=request.image
+        )
+    except Exception as error:
         raise HTTPException(
-            status_code=400,
-            detail="No se detectó ningún rostro"
+            status_code=500,
+            detail=str(error)
         )
 
-    if len(faces) > 1:
-        raise HTTPException(
-            status_code=400,
-            detail="Debe haber un solo rostro para registrar asistencia"
-        )
-
-    detected_face = faces[0]
-
-    face_image = face_service.extract_face(
-        frame,
-        detected_face
-    )
-
-    if face_image.size == 0:
-        raise HTTPException(
-            status_code=400,
-            detail="No se pudo extraer el rostro"
-        )
-
-    recognition = face_service.recognize(face_image)
-
-    if recognition is None:
+    if reconocimiento is None:
         return {
             "success": False,
             "status": "UNKNOWN_FACE",
@@ -81,36 +103,37 @@ def check_in(request: AttendanceRequest):
             "success": False,
             "status": "LIVENESS_FAILED",
             "message": "No se pudo validar que el rostro corresponda a una persona presente",
-            "person_id": recognition["person_id"],
-            "confidence": recognition["confidence"],
+            "usuario_id": reconocimiento["usuario_id"],
+            "confidence": reconocimiento["confidence"],
             "liveness": liveness
         }
 
     result = attendance_service.register(
-        person_id=recognition["person_id"],
-        confidence=recognition["confidence"],
+        db=db,
+        usuario_id=reconocimiento["usuario_id"],
+        confidence=reconocimiento["confidence"],
         liveness_score=liveness["score"]
     )
 
     return {
         **result,
-        "recognition": recognition,
+        "recognition": reconocimiento,
         "liveness": liveness
     }
 
 
 @router.delete("/")
 def clear_attendances():
-    attendance_service.clear()
-
     return {
-        "success": True,
-        "message": "Asistencias temporales eliminadas"
+        "success": False,
+        "message": "Las asistencias ahora se almacenan en MySQL y no se eliminan desde este endpoint"
     }
 
 
 @router.post("/camera/reset")
 def reset_attendance_camera():
+    from app.services.attendance_camera_service import attendance_camera_service
+
     attendance_camera_service.reset()
 
     return {
@@ -120,14 +143,51 @@ def reset_attendance_camera():
 
 
 @router.post("/camera/check-in")
-def camera_check_in(request: AttendanceRequest):
+def camera_check_in(
+    request: AttendanceRequest,
+    db: Session = Depends(get_db)
+):
     frame = decode_image(request.image)
 
     try:
-        return attendance_camera_service.process_frame(frame)
-
+        reconocimiento = attendance_face_service.recognize(
+            db=db,
+            image_data=request.image
+        )
     except Exception as error:
         raise HTTPException(
             status_code=500,
             detail=str(error)
         )
+
+    if reconocimiento is None:
+        return {
+            "success": False,
+            "status": "UNKNOWN_FACE",
+            "message": "Rostro no reconocido"
+        }
+
+    liveness = liveness_service.check(frame)
+
+    if not liveness["is_live"]:
+        return {
+            "success": False,
+            "status": "LIVENESS_FAILED",
+            "message": "No se pudo validar que el rostro corresponda a una persona presente",
+            "usuario_id": reconocimiento["usuario_id"],
+            "confidence": reconocimiento["confidence"],
+            "liveness": liveness
+        }
+
+    result = attendance_service.register(
+        db=db,
+        usuario_id=reconocimiento["usuario_id"],
+        confidence=reconocimiento["confidence"],
+        liveness_score=liveness["score"]
+    )
+
+    return {
+        **result,
+        "recognition": reconocimiento,
+        "liveness": liveness
+    }

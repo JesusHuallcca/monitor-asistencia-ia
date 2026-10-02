@@ -1,115 +1,87 @@
-from datetime import date
+﻿from datetime import date
 
-from backend.app.db.database import get_connection
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from app.db.models import Asistencia, SesionClase
 
 
 class AttendanceRepository:
 
     def save(
         self,
-        person_id,
-        attendance_date,
+        db: Session,
+        usuario_id: int,
+        sesion_id: int,
+        attendance_date: date,
         attendance_time,
-        confidence,
-        liveness_score,
-        status
+        confidence: float,
+        liveness_score: float,
+        status: str
     ):
-        connection = get_connection()
+        asistencia = Asistencia(
+            usuario_id=usuario_id,
+            sesion_id=sesion_id,
+            fecha=attendance_date,
+            hora=attendance_time,
+            confianza=confidence,
+            liveness_score=liveness_score,
+            estado=status
+        )
 
-        try:
-            cursor = connection.cursor()
+        db.add(asistencia)
+        db.commit()
+        db.refresh(asistencia)
 
-            query = """
-                INSERT INTO asistencias (
-                    person_id,
-                    fecha,
-                    hora,
-                    confianza,
-                    liveness_score,
-                    estado
-                )
-                VALUES (%s, %s, %s, %s, %s, %s)
-            """
+        return asistencia
 
-            cursor.execute(
-                query,
-                (
-                    str(person_id),
-                    attendance_date,
-                    attendance_time,
-                    float(confidence),
-                    float(liveness_score),
-                    status
-                )
+    def exists_in_session(
+        self,
+        db: Session,
+        usuario_id: int,
+        sesion_id: int
+    ) -> bool:
+        statement = (
+            select(Asistencia.id)
+            .where(
+                Asistencia.usuario_id == usuario_id,
+                Asistencia.sesion_id == sesion_id
             )
+            .limit(1)
+        )
 
-            connection.commit()
+        return db.execute(statement).scalar_one_or_none() is not None
 
-            return cursor.lastrowid
-
-        finally:
-            cursor.close()
-            connection.close()
-
-    def exists_today(self, person_id, current_date=None):
-        if current_date is None:
-            current_date = date.today()
-
-        connection = get_connection()
-
-        try:
-            cursor = connection.cursor()
-
-            query = """
-                SELECT COUNT(*)
-                FROM asistencias
-                WHERE person_id = %s
-                  AND fecha = %s
-            """
-
-            cursor.execute(
-                query,
-                (
-                    str(person_id),
-                    current_date
-                )
+    def find_all(self, db: Session):
+        statement = (
+            select(Asistencia)
+            .order_by(
+                Asistencia.fecha.desc(),
+                Asistencia.hora.desc()
             )
+        )
 
-            count = cursor.fetchone()[0]
+        return db.execute(statement).scalars().all()
 
-            return count > 0
+    def find_active_session(
+        self,
+        db: Session,
+        current_date: date,
+        current_time
+    ):
+        statement = (
+            select(SesionClase)
+            .where(
+                SesionClase.fecha == current_date,
+                SesionClase.estado == "ACTIVA",
+                SesionClase.hora_inicio <= current_time,
+                SesionClase.hora_fin >= current_time
+            )
+            .order_by(SesionClase.hora_inicio)
+            .limit(1)
+        )
 
-        finally:
-            cursor.close()
-            connection.close()
-
-    def find_all(self):
-        connection = get_connection()
-
-        try:
-            cursor = connection.cursor(dictionary=True)
-
-            query = """
-                SELECT
-                    id,
-                    person_id,
-                    fecha,
-                    hora,
-                    confianza,
-                    liveness_score,
-                    estado,
-                    fecha_registro
-                FROM asistencias
-                ORDER BY fecha DESC, hora DESC
-            """
-
-            cursor.execute(query)
-
-            return cursor.fetchall()
-
-        finally:
-            cursor.close()
-            connection.close()
+        return db.execute(statement).scalar_one_or_none()
 
 
 attendance_repository = AttendanceRepository()
