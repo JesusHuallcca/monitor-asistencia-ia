@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Auditoría</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/rostro.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page">
+    <div class="admin-layout">
+      <aside class="admin-menu">
+        <div class="admin-marca">
+          <img src="../assets/img/senati.png" alt="Senati" />
+        </div>
+        <nav aria-label="Administración"></nav>
+        <div class="admin-pie">
+          <div class="quien-menu">
+            <strong id="nombre-admin"></strong><span id="rol-admin"></span>
+          </div>
+          <button type="button" id="btn-salir" class="btn-salir">
+            Cerrar sesión
+          </button>
+        </div>
+      </aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1>Auditoría</h1>
+            <p class="subtitulo-pagina">Quién entró, qué hizo y cuándo.</p>
+          </div>
+          <button type="button" id="btn-csv" class="btn-principal btn-nuevo">
+            Exportar CSV
+          </button>
+        </header>
+
+        <main class="admin-cuerpo">
+          <section
+            class="stats"
+            aria-label="Resumen de hoy (haz clic para filtrar)"
+          >
+            <button type="button" class="stat" data-filtro="total">
+              <span class="ico"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg
+              ></span>
+              <span
+                ><span class="num" id="st-total">–</span
+                ><span class="rot">Eventos hoy</span></span
+              >
+            </button>
+            <button type="button" class="stat teal" data-filtro="ingresos">
+              <span class="ico"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                  <polyline points="22 4 12 14.01 9 11.01" /></svg
+              ></span>
+              <span
+                ><span class="num" id="st-ingresos">–</span
+                ><span class="rot">Ingresos correctos</span></span
+              >
+            </button>
+            <button type="button" class="stat rojo" data-filtro="fallidos">
+              <span class="ico"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                  />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" /></svg
+              ></span>
+              <span
+                ><span class="num" id="st-fallidos">–</span
+                ><span class="rot">Eventos fallidos</span></span
+              >
+            </button>
+            <button type="button" class="stat ambar" data-filtro="bloqueos">
+              <span class="ico"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="3" y="11" width="18" height="11" rx="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg
+              ></span>
+              <span
+                ><span class="num" id="st-bloqueos">–</span
+                ><span class="rot">Cuentas bloqueadas</span></span
+              >
+            </button>
+          </section>
+
+          <div class="filtros">
+            <input
+              type="text"
+              id="filtro-q"
+              placeholder="Busque por usuario, detalle o IP"
+              maxlength="50"
+            />
+            <select id="filtro-accion" aria-label="Filtrar por acción">
+              <option value="">Todas las acciones</option>
+            </select>
+            <select id="filtro-resultado" aria-label="Filtrar por resultado">
+              <option value="">Todos los resultados</option>
+              <option value="true">Correctos</option>
+              <option value="false">Fallidos</option>
+            </select>
+            <input type="date" id="filtro-desde" aria-label="Desde" />
+            <input type="date" id="filtro-hasta" aria-label="Hasta" />
+            <button type="button" id="btn-limpiar" class="btn-mini">
+              Limpiar
+            </button>
+          </div>
+
+          <p id="conteo" class="conteo"></p>
+
+          <div class="tabla-caja">
+            <table class="tabla">
+              <thead>
+                <tr>
+                  <th>Fecha</th>
+                  <th>Usuario</th>
+                  <th>Acción</th>
+                  <th>Detalle</th>
+                  <th>IP</th>
+                  <th>Resultado</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-cuerpo">
+                <tr>
+                  <td class="vacio" colspan="6">Cargando…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mas">
+            <button type="button" id="btn-mas" class="btn-secundario" hidden>
+              Cargar más
+            </button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/admin-auditoria.js"></script>
+  </body>
+</html>
