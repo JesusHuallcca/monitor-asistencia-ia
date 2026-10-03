@@ -126,6 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
     estado.className = "estado-camara " + tipo;
   }
 
+  const alEstado = (e) => mostrar(e.texto, e.tipo);
+
   function pasoInicial() {
     paso = "activar";
     caja.classList.remove("activa");
@@ -140,25 +142,22 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   btnCerrar.addEventListener("click", () => modal.close());
-  modal.addEventListener("close", () => Camara.detener(video));
+  modal.addEventListener("close", () => RostroVivo.detener(video));
 
   async function capturarTres() {
     if (!consentimiento.checked) {
       mostrar("Debes aceptar el consentimiento para continuar.", "error");
       return false;
     }
-    const imagenes = [];
-    for (let i = 1; i <= 3; i++) {
-      mostrar(`Captura ${i} de 3: mira al frente.`);
-      for (const n of [2, 1]) {
-        cuenta.textContent = n;
-        await esperar(700);
-      }
-      cuenta.textContent = "";
-      imagenes.push(Camara.capturar(video));
-      await esperar(300);
-    }
-    imagenesRostro = imagenes;
+    const resultados = await RostroVivo.ejecutar(
+      [
+        { accion: "frente" },
+        { accion: "parpadeo" },
+        { accion: "giro", dir: "izq" },
+      ],
+      alEstado,
+    );
+    imagenesRostro = resultados.map((r) => r.frente);
     return true;
   }
 
@@ -168,13 +167,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btnAccion.disabled = true;
     try {
       if (paso === "activar") {
+        await RostroVivo.cargar((t) => mostrar(t));
         mostrar("Solicitando permiso de cámara…");
-        await Camara.iniciar(video);
+        await RostroVivo.iniciar(video);
         caja.classList.add("activa");
         mostrar(
-          "Centra tu rostro en el óvalo, con buena luz, y acepta el consentimiento.",
+          "Acepta el consentimiento y pulsa el botón. Los puntos se ponen verdes cuando estás bien ubicado.",
         );
-        btnAccion.textContent = "Tomar 3 capturas";
+        btnAccion.textContent = "Iniciar registro de rostro";
         paso = "capturar";
       } else if (await capturarTres()) {
         modal.close();
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnRostro.textContent = "Volver a capturar";
       }
     } catch (err) {
-      mostrar(err.message, "error");
+      if (err.message !== "cancelado") mostrar(err.message, "error");
     } finally {
       ocupado = false;
       btnAccion.disabled = false;

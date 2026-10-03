@@ -11,16 +11,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnAccion = document.getElementById("btn-accion-rostro");
   const btnDesactivar = document.getElementById("btn-desactivar");
   const consentimiento = document.getElementById("consentimiento");
-  const cuenta = document.getElementById("cuenta-atras");
   let paso = "activar";
   let ocupado = false;
-
-  const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
   function mostrar(texto, tipo = "") {
     estado.textContent = texto;
     estado.className = "estado-camara " + tipo;
   }
+
+  const alEstado = (e) => mostrar(e.texto, e.tipo);
 
   async function detalle(respuesta, porDefecto) {
     const d = await respuesta.json().catch(() => ({}));
@@ -55,17 +54,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       mostrar("Debes aceptar el consentimiento para continuar.", "error");
       return;
     }
-    const imagenes = [];
-    for (let i = 1; i <= 3; i++) {
-      mostrar(`Captura ${i} de 3: mira al frente.`);
-      for (const n of [2, 1]) {
-        cuenta.textContent = n;
-        await esperar(700);
-      }
-      cuenta.textContent = "";
-      imagenes.push(Camara.capturar(video));
-      await esperar(300);
-    }
+
+    const resultados = await RostroVivo.ejecutar(
+      [
+        { accion: "frente" },
+        { accion: "parpadeo" },
+        { accion: "giro", dir: "izq" },
+      ],
+      alEstado,
+    );
+    const imagenes = resultados.map((r) => r.frente);
 
     mostrar("Guardando tu rostro…");
     const r = await Auth.fetchAutenticado("/api/face-auth/enroll", {
@@ -76,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!r.ok)
       throw new Error(await detalle(r, "No se pudo registrar tu rostro."));
 
-    Camara.detener(video);
+    RostroVivo.detener(video);
     caja.classList.remove("activa");
     paso = "activar";
     mostrar("¡Listo! Ya puedes entrar con tu rostro.", "ok");
@@ -89,11 +87,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnAccion.disabled = true;
     try {
       if (paso === "activar") {
+        await RostroVivo.cargar((t) => mostrar(t));
         mostrar("Solicitando permiso de cámara…");
-        await Camara.iniciar(video);
+        await RostroVivo.iniciar(video);
         caja.classList.add("activa");
         mostrar(
-          "Centra tu rostro en el óvalo, con buena luz, y acepta el consentimiento.",
+          "Acepta el consentimiento y pulsa Registrar. Los puntos se ponen verdes cuando estás bien ubicado.",
         );
         btnAccion.textContent = "Registrar mi rostro";
         paso = "registrar";
@@ -101,7 +100,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         await registrar();
       }
     } catch (err) {
-      mostrar(err.message, "error");
+      if (err.message !== "cancelado") mostrar(err.message, "error");
     } finally {
       ocupado = false;
       btnAccion.disabled = false;
@@ -122,6 +121,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  window.addEventListener("pagehide", () => Camara.detener(video));
+  window.addEventListener("pagehide", () => RostroVivo.detener(video));
   await cargarEstado();
 });
