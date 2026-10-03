@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         RostroVivo.detener(video);
         mostrar("¡Listo! Entrando…", "ok");
-        window.location.href = "bienvenida.html";
+        window.location.href = Auth.rutaInicio(datos.rol);
         return;
       }
     } catch (err) {

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Mi perfil</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page" data-rol="estudiante">
+    <div class="admin-layout">
+      <aside class="admin-menu"></aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1>Mi perfil</h1>
+            <p class="subtitulo-pagina">
+              Tus datos, tu contraseña y tu acceso con rostro.
+            </p>
+          </div>
+        </header>
+
+        <main class="admin-cuerpo">
+          <div class="perfil-grid">
+            <section class="panel-card perfil-resumen" aria-label="Resumen">
+              <div id="perfil-avatar"></div>
+              <h2 id="p-nombre"></h2>
+              <span class="badge" id="p-rol"></span>
+              <dl class="datos" id="p-datos"></dl>
+            </section>
+
+            <div>
+              <section class="panel-card">
+                <h3>Datos personales</h3>
+                <form id="form-datos" novalidate>
+                  <p id="msg-datos" class="mensaje-error" role="alert"></p>
+                  <div class="fila">
+                    <div class="campo">
+                      <label for="d-nombres">Nombres</label
+                      ><input type="text" id="d-nombres" maxlength="100" />
+                    </div>
+                    <div class="campo">
+                      <label for="d-apellidos">Apellidos</label
+                      ><input type="text" id="d-apellidos" maxlength="100" />
+                    </div>
+                  </div>
+                  <div class="fila">
+                    <div class="campo">
+                      <label for="d-email">Correo electrónico</label
+                      ><input
+                        type="text"
+                        id="d-email"
+                        inputmode="email"
+                        maxlength="120"
+                      />
+                    </div>
+                    <div class="campo">
+                      <label for="d-telefono">Teléfono</label
+                      ><input
+                        type="text"
+                        id="d-telefono"
+                        inputmode="tel"
+                        maxlength="20"
+                      />
+                    </div>
+                  </div>
+                  <div class="campo" id="campo-especialidad" hidden>
+                    <label for="d-especialidad">Especialidad</label
+                    ><input type="text" id="d-especialidad" maxlength="120" />
+                  </div>
+                  <p id="aviso-nombres" class="fuerza-texto" hidden>
+                    Tu nombre y apellidos solo los puede cambiar la
+                    administración.
+                  </p>
+                  <button
+                    type="submit"
+                    id="btn-datos"
+                    class="btn-principal btn-nuevo"
+                  >
+                    Guardar cambios
+                  </button>
+                </form>
+              </section>
+
+              <section class="panel-card">
+                <h3>Acceso con rostro</h3>
+                <p>
+                  Estado:
+                  <span id="estado-facial" class="estado inactivo">—</span>
+                </p>
+                <a
+                  class="btn-principal btn-nuevo enlace-boton"
+                  href="../rostro.html"
+                  >Configurar login facial</a
+                >
+              </section>
+
+              <section class="panel-card">
+                <h3>Cambiar contraseña</h3>
+                <form id="form-clave" novalidate>
+                  <p id="msg-clave" class="mensaje-error" role="alert"></p>
+                  <div class="campo">
+                    <label for="c-actual">Contraseña actual</label
+                    ><input
+                      type="password"
+                      id="c-actual"
+                      autocomplete="current-password"
+                      maxlength="128"
+                    />
+                  </div>
+                  <div class="fila">
+                    <div class="campo">
+                      <label for="c-nueva">Nueva contraseña</label>
+                      <input
+                        type="password"
+                        id="c-nueva"
+                        autocomplete="new-password"
+                        maxlength="128"
+                      />
+                      <div class="fuerza"><span id="fuerza-barra"></span></div>
+                      <p class="fuerza-texto" id="fuerza-texto">
+                        Mínimo 8 caracteres, con letras y números.
+                      </p>
+                    </div>
+                    <div class="campo">
+                      <label for="c-repetir">Repite la nueva</label
+                      ><input
+                        type="password"
+                        id="c-repetir"
+                        autocomplete="new-password"
+                        maxlength="128"
+                      />
+                    </div>
+                  </div>
+                  <label class="mostrar-claves"
+                    ><input type="checkbox" id="c-mostrar" /> Mostrar
+                    contraseñas</label
+                  >
+                  <button
+                    type="submit"
+                    id="btn-clave"
+                    class="btn-principal btn-nuevo"
+                  >
+                    Actualizar contraseña
+                  </button>
+                </form>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/panel-perfil.js"></script>
+  </body>
+</html>

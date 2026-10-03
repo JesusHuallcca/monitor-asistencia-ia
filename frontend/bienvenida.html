@@ -35,6 +35,7 @@
         }
 
         const u = await r.json();
+        window.location.replace(Auth.rutaInicio(u.rol));
         document.getElementById("saludo").textContent =
           "Hola, " + u.nombres + " " + u.apellidos;
         document.getElementById("detalle").textContent =

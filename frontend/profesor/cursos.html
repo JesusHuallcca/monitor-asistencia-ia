@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Mis cursos</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page" data-rol="profesor">
+    <div class="admin-layout">
+      <aside class="admin-menu"></aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1>Cursos</h1>
+            <p class="subtitulo-pagina">Tus cursos de este periodo.</p>
+          </div>
+        </header>
+
+        <main class="admin-cuerpo">
+          <div class="filtros">
+            <input
+              type="text"
+              id="filtro-q"
+              placeholder="Busque su curso"
+              maxlength="50"
+            />
+          </div>
+          <div id="cursos-grid" class="cursos-grid"></div>
+        </main>
+      </div>
+    </div>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/panel-cursos.js"></script>
+  </body>
+</html>

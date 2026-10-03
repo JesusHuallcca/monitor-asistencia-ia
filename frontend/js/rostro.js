@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.href = "login.html";
     return;
   }
+  document.querySelector(".enlaces a").href = Auth.rutaInicio(Auth.leer("rol"));
 
   const video = document.getElementById("video-rostro");
   const caja = document.getElementById("caja-video");
