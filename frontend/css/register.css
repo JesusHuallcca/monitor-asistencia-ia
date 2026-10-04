@@ -1,13 +1,29 @@
+/* =====================================================
+   REGISTRO (usa las variables y estilos de login.css)
+   ===================================================== */
 .panel-registro {
-  max-width: 1000px;
+  grid-template-columns: 1fr 520px;
+  gap: 56px;
+  max-width: 1040px;
 }
 
 .panel-registro .panel-form {
-  padding: 22px 36px 16px;
+  padding: 26px 34px 18px;
   max-height: 94vh;
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #c3cbd8 transparent;
 }
 
+.panel-registro .panel-form::-webkit-scrollbar {
+  width: 8px;
+}
+.panel-registro .panel-form::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: #c3cbd8;
+}
+
+/* ---------- Filas de dos campos ---------- */
 .fila {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -15,45 +31,56 @@
 }
 
 .ayuda {
-  margin: -4px 0 12px;
+  margin: -6px 0 14px;
   color: var(--gris);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
 
+/* ---------- Bloque de registro facial ---------- */
 .bloque-rostro {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin: 2px 0 14px;
+  gap: 14px;
+  margin: 2px 0 16px;
   padding: 12px 14px;
-  border: 2px dashed var(--borde);
-  border-radius: 14px;
+  border: 1.5px dashed #b4c3e0;
+  border-radius: var(--radio-campo);
   background: var(--azul-claro);
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .bloque-rostro strong {
-  font-size: 0.93rem;
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
   color: var(--azul-oscuro);
 }
+
 .bloque-rostro p {
   margin: 2px 0 0;
   color: var(--gris);
-  font-size: 0.82rem;
-  line-height: 1.35;
+  font-size: 0.8rem;
+  line-height: 1.4;
 }
+
 .bloque-rostro .btn-secundario {
   width: auto;
-  padding: 10px 14px;
+  padding: 9px 14px;
   white-space: nowrap;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
 }
 
 .bloque-rostro.listo {
   border-style: solid;
   border-color: #abefc6;
+  border-left: 4px solid #17b26a;
   background: #ecfdf3;
 }
+
 .bloque-rostro.listo p {
   color: #067647;
 }
@@ -61,16 +88,22 @@
 .opcional {
   margin-left: 6px;
   padding: 2px 8px;
+  border: 1px solid var(--borde);
   border-radius: 999px;
   background: #fff;
   color: var(--gris);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: middle;
 }
 
+/* ---------- Pantalla de éxito ---------- */
 .exito {
-  padding: 24px 0;
+  padding: 28px 0 20px;
   text-align: center;
+  animation: entrada 0.4s ease-out both;
 }
 
 .icono-exito {
@@ -78,11 +111,14 @@
   place-items: center;
   width: 64px;
   height: 64px;
-  margin: 0 auto 16px;
+  margin: 0 auto 18px;
   border-radius: 50%;
   background: #ecfdf3;
+  box-shadow:
+    0 0 0 8px rgba(23, 178, 106, 0.1),
+    0 0 0 1px #abefc6;
   color: #067647;
-  font-size: 2rem;
+  font-size: 1.9rem;
   font-weight: 700;
 }
 
@@ -90,26 +126,55 @@
   margin: 0 0 8px;
   color: var(--azul-oscuro);
   font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
+
 .exito p {
-  margin: 0 0 22px;
+  margin: 0 auto 24px;
+  max-width: 340px;
   color: var(--gris);
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.55;
 }
 
 .enlace-boton {
   text-decoration: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .exito {
+    animation: none;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE (al final, desktop-first)
+   Se repiten los puntos de corte de login.css porque
+   este archivo carga después y los pisaría.
+   ===================================================== */
+@media (max-width: 1000px) {
+  .panel-registro {
+    grid-template-columns: 1fr 480px;
+    gap: 36px;
+  }
+}
+
 @media (max-width: 820px) {
+  .panel-registro {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+  }
   .panel-registro .panel-form {
     max-height: none;
+    padding: 28px 26px 20px;
   }
 }
 
 @media (max-width: 480px) {
   .fila {
     grid-template-columns: 1fr;
+    gap: 0;
   }
   .bloque-rostro {
     flex-direction: column;

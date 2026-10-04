@@ -9,16 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
   const mensaje = document.getElementById("mensaje");
   const inputIdent = document.getElementById("identificador");
   let ocupado = false;
+  let paso = "activar";
 
   function mostrar(texto, tipo = "") {
     estado.textContent = texto;
     estado.className = "estado-camara " + tipo;
   }
 
+  const alEstado = (e) => mostrar(e.texto, e.tipo);
+
   function pasoInicial() {
+    paso = "activar";
     caja.classList.remove("activa");
     btnAccion.textContent = "Activar cámara";
-    btnAccion.dataset.paso = "activar";
     btnAccion.disabled = false;
     mostrar(
       "Necesitamos tu cámara para reconocer tu rostro. Tu navegador te pedirá permiso.",
@@ -38,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   btnCerrar.addEventListener("click", () => modal.close());
-  modal.addEventListener("close", () => Camara.detener(video)); // también al pulsar Esc
+  modal.addEventListener("close", () => RostroVivo.detener(video)); // también al pulsar Esc
 
   btnAccion.addEventListener("click", async () => {
     if (ocupado) return;
@@ -46,30 +49,40 @@ document.addEventListener("DOMContentLoaded", () => {
     btnAccion.disabled = true;
 
     try {
-      if (btnAccion.dataset.paso === "activar") {
+      if (paso === "activar") {
+        await RostroVivo.cargar((t) => mostrar(t));
         mostrar("Solicitando permiso de cámara…");
-        await Camara.iniciar(video);
+        await RostroVivo.iniciar(video);
         caja.classList.add("activa");
         mostrar(
-          "Centra tu rostro en el óvalo, con buena luz, y pulsa Verificar.",
+          "Ubica tu rostro frente a la cámara. Cuando los puntos estén verdes, pulsa Iniciar.",
         );
-        btnAccion.textContent = "Verificar rostro";
-        btnAccion.dataset.paso = "verificar";
+        btnAccion.textContent = "Iniciar verificación";
+        paso = "verificar";
       } else {
-        mostrar("Verificando…");
-        const imagen = Camara.capturar(video);
-        const datos = await Auth.loginFacial(inputIdent.value.trim(), imagen);
+        const [resultado] = await RostroVivo.ejecutar(
+          [RostroVivo.accionAleatoria()],
+          alEstado,
+        );
+        mostrar("Comparando tu rostro…");
+        const datos = await Auth.loginFacial(
+          inputIdent.value.trim(),
+          resultado.frente,
+        );
         Auth.guardarSesion(
           datos,
           document.getElementById("recordarme").checked,
         );
-        Camara.detener(video);
+        RostroVivo.detener(video);
         mostrar("¡Listo! Entrando…", "ok");
-        window.location.href = "bienvenida.html";
+        window.location.href = Auth.rutaInicio(datos.rol);
         return;
       }
     } catch (err) {
-      mostrar(err.message, err.status === 403 ? "info" : "error");
+      if (err.message !== "cancelado") {
+        mostrar(err.message, err.status === 403 ? "info" : "error");
+        if (paso === "verificar") btnAccion.textContent = "Intentar de nuevo";
+      }
     } finally {
       ocupado = false;
       btnAccion.disabled = false;

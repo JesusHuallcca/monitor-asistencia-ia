@@ -23,6 +23,17 @@ const Auth = {
     return this.leer("token");
   },
 
+  // Ruta de inicio según el rol (para páginas de la raíz de frontend/)
+  rutaInicio(rol) {
+    const destinos = {
+      estudiante: "estudiante/cursos.html",
+      profesor: "profesor/cursos.html",
+      admin: "admin/usuarios.html",
+      superadmin: "admin/usuarios.html",
+    };
+    return destinos[rol] || "login.html";
+  },
+
   async login(ruta, identificador, password, recordarme) {
     let respuesta;
     try {

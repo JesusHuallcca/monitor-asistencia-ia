@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Cursos</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/rostro.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page">
+    <div class="admin-layout">
+      <aside class="admin-menu">
+        <div class="admin-marca">
+          <img src="../assets/img/senati_blanco.png" alt="Senati" />
+        </div>
+        <nav aria-label="Administración">
+          <a href="usuarios.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+              <circle cx="10" cy="7" r="4" />
+              <path d="M21 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Usuarios
+            <span id="contador-pendientes" class="contador" hidden></span>
+          </a>
+          <a class="activo" href="cursos.html">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              />
+            </svg>
+            Cursos
+          </a>
+          <span class="pronto">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+            Auditoría
+          </span>
+        </nav>
+        <div class="admin-pie">
+          <div class="quien-menu">
+            <strong id="nombre-admin"></strong><span id="rol-admin"></span>
+          </div>
+          <button type="button" id="btn-salir" class="btn-salir">
+            Cerrar sesión
+          </button>
+        </div>
+      </aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1>Cursos</h1>
+            <p class="subtitulo-pagina">
+              Crea cursos, asigna profesores y matricula estudiantes.
+            </p>
+          </div>
+          <button
+            type="button"
+            id="btn-nuevo-curso"
+            class="btn-principal btn-nuevo"
+          >
+            + Nuevo curso
+          </button>
+        </header>
+
+        <main class="admin-cuerpo">
+          <div class="filtros">
+            <input
+              type="text"
+              id="filtro-q"
+              placeholder="Busque su curso"
+              maxlength="50"
+            />
+          </div>
+          <div id="cursos-grid" class="cursos-grid"></div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Ventana: nuevo curso -->
+    <dialog
+      id="modal-nuevo-curso"
+      class="modal modal-ancho"
+      aria-labelledby="titulo-nuevo-curso"
+    >
+      <div class="modal-contenido">
+        <h2 id="titulo-nuevo-curso">Nuevo curso</h2>
+        <form id="form-curso" novalidate>
+          <p id="mensaje-curso" class="mensaje-error" role="alert"></p>
+
+          <div class="fila">
+            <div class="campo">
+              <label for="c-codigo">Código</label
+              ><input
+                type="text"
+                id="c-codigo"
+                maxlength="20"
+                placeholder="Ej: PRG-102"
+              />
+            </div>
+            <div class="campo">
+              <label for="c-periodo">Periodo</label
+              ><input
+                type="text"
+                id="c-periodo"
+                maxlength="20"
+                value="2026-II"
+              />
+            </div>
+          </div>
+
+          <div class="campo">
+            <label for="c-nombre">Nombre del curso</label
+            ><input type="text" id="c-nombre" maxlength="150" />
+          </div>
+
+          <div class="campo">
+            <label for="c-descripcion"
+              >Descripción <span class="opcional">Opcional</span></label
+            >
+            <textarea id="c-descripcion" maxlength="2000"></textarea>
+          </div>
+
+          <div class="modal-acciones">
+            <button
+              type="button"
+              id="btn-cancelar-curso"
+              class="btn-secundario"
+            >
+              Cancelar
+            </button>
+            <button type="submit" id="btn-guardar-curso" class="btn-principal">
+              Crear curso
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <!-- Ventana: gestionar curso -->
+    <dialog
+      id="modal-curso"
+      class="modal modal-ancho"
+      aria-labelledby="curso-titulo"
+    >
+      <div class="modal-contenido">
+        <p class="curso-sub" id="curso-sub"></p>
+        <h2 id="curso-titulo"></h2>
+
+        <div class="tabs" role="tablist">
+          <button
+            type="button"
+            class="tab activo"
+            data-tab="profesores"
+            role="tab"
+          >
+            Profesores
+          </button>
+          <button type="button" class="tab" data-tab="estudiantes" role="tab">
+            Estudiantes
+          </button>
+        </div>
+
+        <ul id="lista-personas" class="lista-personas"></ul>
+
+        <div class="agregar">
+          <select id="sel-agregar" aria-label="Seleccionar persona"></select>
+          <button
+            type="button"
+            id="btn-agregar"
+            class="btn-principal btn-nuevo"
+          >
+            Agregar
+          </button>
+        </div>
+
+        <div class="modal-acciones modal-pie">
+          <button
+            type="button"
+            id="btn-toggle-activo"
+            class="btn-secundario"
+          ></button>
+          <button type="button" id="btn-cerrar-curso" class="btn-principal">
+            Listo
+          </button>
+        </div>
+      </div>
+    </dialog>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/admin-cursos.js"></script>
+  </body>
+</html>

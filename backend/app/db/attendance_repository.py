@@ -63,6 +63,30 @@ class AttendanceRepository:
 
         return db.execute(statement).scalars().all()
 
+    def find_by_user_and_course(
+        self,
+        db: Session,
+        usuario_id: int,
+        curso_id: int
+    ):
+        statement = (
+            select(Asistencia)
+            .join(
+                SesionClase,
+                Asistencia.sesion_id == SesionClase.id
+            )
+            .where(
+                Asistencia.usuario_id == usuario_id,
+                SesionClase.curso_id == curso_id
+            )
+            .order_by(
+                Asistencia.fecha.desc(),
+                Asistencia.hora.desc()
+            )
+        )
+
+        return db.execute(statement).scalars().all()
+
     def find_active_session(
         self,
         db: Session,

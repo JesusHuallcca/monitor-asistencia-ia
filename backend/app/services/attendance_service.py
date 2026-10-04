@@ -107,5 +107,58 @@ class AttendanceService:
 
         return attendances
 
+    def get_my_course_attendance(
+        self,
+        db: Session,
+        usuario_id: int,
+        curso_id: int
+    ):
+        records = attendance_repository.find_by_user_and_course(
+            db=db,
+            usuario_id=usuario_id,
+            curso_id=curso_id
+        )
+
+        valores = {
+            "PRESENTE": 100,
+            "TARDANZA": 50,
+            "AUSENTE": 0
+        }
+
+        registros = []
+
+        for record in records:
+            estado = record.estado.upper()
+
+            registros.append({
+                "id": record.id,
+                "sesion_id": record.sesion_id,
+                "fecha": str(record.fecha),
+                "hora": str(record.hora),
+                "estado": estado,
+                "calificacion": valores.get(estado, 0)
+            })
+
+        promedio = None
+
+        if registros:
+            promedio = sum(
+                registro["calificacion"]
+                for registro in registros
+            ) / len(registros)
+
+        presentes = sum(
+            1
+            for registro in registros
+            if registro["estado"] == "PRESENTE"
+        )
+
+        return {
+            "curso_id": curso_id,
+            "promedio": round(promedio, 2) if promedio is not None else None,
+            "presentes": presentes,
+            "registros": registros
+        }
+
 
 attendance_service = AttendanceService()

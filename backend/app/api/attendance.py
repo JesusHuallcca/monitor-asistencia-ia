@@ -1,4 +1,5 @@
 ﻿import base64
+from datetime import date, datetime
 
 import cv2
 import numpy as np
@@ -8,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_roles
 from app.db.database import get_db
-from app.db.models import Usuario
+from app.db.models import SesionClase, Usuario
 from app.services.attendance_face_service import attendance_face_service
 from app.services.attendance_service import attendance_service
 from app.services.liveness_service import liveness_service
@@ -30,16 +31,8 @@ def decode_image(image_data: str):
             image_data = image_data.split(",", 1)[1]
 
         image_bytes = base64.b64decode(image_data)
-
-        array = np.frombuffer(
-            image_bytes,
-            dtype=np.uint8
-        )
-
-        frame = cv2.imdecode(
-            array,
-            cv2.IMREAD_COLOR
-        )
+        array = np.frombuffer(image_bytes, dtype=np.uint8)
+        frame = cv2.imdecode(array, cv2.IMREAD_COLOR)
 
         if frame is None:
             raise ValueError("Imagen inválida")
@@ -64,13 +57,74 @@ def attendance_health():
 @router.get("/")
 def get_attendances(
     db: Session = Depends(get_db),
-    user: Usuario = Depends(require_roles("admin", "superadmin", "profesor"))
+    user: Usuario = Depends(
+        require_roles("admin", "superadmin", "profesor")
+    )
 ):
     attendances = attendance_service.get_all(db)
 
     return {
         "count": len(attendances),
         "attendances": attendances
+    }
+
+
+@router.get("/my-course/{curso_id}")
+def get_my_course_attendance(
+    curso_id: int,
+    db: Session = Depends(get_db),
+    user: Usuario = Depends(get_current_user)
+):
+    return attendance_service.get_my_course_attendance(
+        db=db,
+        usuario_id=user.id,
+        curso_id=curso_id
+    )
+
+
+@router.get("/session/{curso_id}")
+def get_course_session(
+    curso_id: int,
+    db: Session = Depends(get_db),
+    user: Usuario = Depends(get_current_user)
+):
+    ahora = datetime.now()
+    hoy = date.today()
+
+    sesion = (
+        db.query(SesionClase)
+        .filter(
+            SesionClase.curso_id == curso_id,
+            SesionClase.fecha == hoy,
+            SesionClase.estado == "ACTIVA"
+        )
+        .order_by(SesionClase.hora_inicio.asc())
+        .first()
+    )
+
+    if sesion is None:
+        return {
+            "activa": False,
+            "sesion": None
+        }
+
+    hora_actual = ahora.time()
+
+    dentro_horario = (
+        sesion.hora_inicio <= hora_actual < sesion.hora_fin
+    )
+
+    return {
+        "activa": dentro_horario,
+        "sesion": {
+            "id": sesion.id,
+            "curso_id": sesion.curso_id,
+            "fecha": sesion.fecha.isoformat(),
+            "hora_inicio": sesion.hora_inicio.strftime("%H:%M"),
+            "hora_fin": sesion.hora_fin.strftime("%H:%M"),
+            "tolerancia_minutos": sesion.tolerancia_minutos,
+            "estado": sesion.estado
+        }
     }
 
 
@@ -142,8 +196,12 @@ def clear_attendances():
 
 
 @router.post("/camera/reset")
-def reset_attendance_camera(user: Usuario = Depends(get_current_user)):
-    from app.services.attendance_camera_service import attendance_camera_service
+def reset_attendance_camera(
+    user: Usuario = Depends(get_current_user)
+):
+    from app.services.attendance_camera_service import (
+        attendance_camera_service
+    )
 
     attendance_camera_service.reset()
 
@@ -210,5 +268,3 @@ def camera_check_in(
         "recognition": reconocimiento,
         "liveness": liveness
     }
-
-
