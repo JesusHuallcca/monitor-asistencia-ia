@@ -12,6 +12,8 @@ from app.api import (
     notas,
     users,
 )
+from app.api.analytics import router as analytics_router
+from app.api.predictions import router as predictions_router
 from app.api.attendance import router as attendance_router
 from app.api.sesiones import router as sesiones_router
 from app.db.database import engine
@@ -84,8 +86,20 @@ app.include_router(notas.router)
 # =========================
 # Chatbot IA
 # =========================
-
+from app.api.analytics import router as analytics_router
+from app.api.predictions import router as predictions_router
 app.include_router(chatbot.router)
+# =========================
+# Analytics
+# =========================
+
+app.include_router(analytics_router)
+
+# =========================
+# Predicciones ML
+# =========================
+
+app.include_router(predictions_router)
 # =========================
 # Rutas generales
 # =========================
