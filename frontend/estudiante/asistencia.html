@@ -51,7 +51,6 @@
             flex: 1;
             margin: auto;
             padding: 35px 0 45px;
-
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -76,14 +75,11 @@
         .camera-container {
             width: min(760px, 100%);
             aspect-ratio: 16 / 9;
-
             position: relative;
             overflow: hidden;
-
             background: #eef5fb;
             border: 4px solid #0b5cab;
             border-radius: 20px;
-
             box-shadow:
                 0 12px 35px rgba(11, 92, 171, 0.12);
         }
@@ -92,26 +88,19 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-
             display: block;
-
             transform: scaleX(-1);
         }
 
         .camera-label {
             position: absolute;
-
             top: 18px;
             left: 18px;
-
             padding: 9px 16px;
-
             background: #ffffff;
             color: #0b5cab;
-
             border: 1px solid #d7e6f3;
             border-radius: 20px;
-
             font-size: 14px;
             font-weight: 700;
         }
@@ -131,7 +120,6 @@
 
         .status-detail {
             margin-top: 10px;
-
             color: #54718c;
             font-size: 17px;
         }
@@ -139,10 +127,8 @@
         .result-box {
             width: 100%;
             display: none;
-
             flex-direction: column;
             align-items: center;
-
             text-align: center;
             margin-top: 25px;
         }
@@ -155,7 +141,6 @@
 
         .student-name {
             margin-top: 10px;
-
             color: #123b63;
             font-size: 38px;
             font-weight: 800;
@@ -163,28 +148,21 @@
 
         .result-time {
             margin-top: 8px;
-
             color: #54718c;
             font-size: 18px;
         }
 
         .ok-button {
             margin-top: 25px;
-
             width: 180px;
             height: 55px;
-
             border: none;
             border-radius: 10px;
-
             background: #0b5cab;
             color: #ffffff;
-
-            font-size: 19px;
+            font-size: 17px;
             font-weight: 800;
-
             cursor: pointer;
-
             transition:
                 background 0.2s ease,
                 transform 0.2s ease;
@@ -199,14 +177,18 @@
             transform: translateY(0);
         }
 
+        .ok-button:disabled {
+            background: #8ca6bc;
+            cursor: default;
+            opacity: 1;
+            transform: none;
+        }
+
         .footer {
             width: 100%;
             padding: 14px;
-
             border-top: 1px solid #e5edf5;
-
             text-align: center;
-
             color: #6c8499;
             font-size: 13px;
         }
@@ -248,7 +230,6 @@
 
     <div class="page">
 
-
         <header class="header">
 
             <div class="header-title">
@@ -260,11 +241,9 @@
 
         <main class="main">
 
-
             <h1 class="title">
                 REGISTRA TU ASISTENCIA
             </h1>
-
 
             <p class="subtitle">
                 Acércate a la cámara. El registro es automático.
@@ -342,21 +321,17 @@
                     id="okButton"
                     class="ok-button"
                 >
-                    OK
+                    VOLVER
                 </button>
 
             </div>
-
 
         </main>
 
 
         <footer class="footer">
-
             Sistema inteligente de asistencia facial
-
         </footer>
-
 
     </div>
 
@@ -433,6 +408,22 @@
         }
 
 
+        function setReturnButton() {
+
+            okButton.textContent =
+                "VOLVER";
+
+            okButton.disabled =
+                false;
+
+            okButton.style.cursor =
+                "pointer";
+
+            okButton.style.opacity =
+                "1";
+        }
+
+
         function showRegistered(data) {
 
             statusContainer.style.display =
@@ -446,6 +437,7 @@
 
 
             const name =
+                data.recognition?.nombre ||
                 data.attendance?.student_name ||
                 data.student_name ||
                 data.person_id ||
@@ -456,12 +448,26 @@
                 name;
 
 
-            const now =
-                new Date();
+            const hora =
+                data.attendance?.hora;
 
 
-            resultTime.textContent =
-                `Hora: ${now.toLocaleTimeString("es-PE")}`;
+            if (hora) {
+
+                resultTime.textContent =
+                    `Hora: ${hora}`;
+
+            } else {
+
+                const now =
+                    new Date();
+
+                resultTime.textContent =
+                    `Hora: ${now.toLocaleTimeString("es-PE")}`;
+            }
+
+
+            setReturnButton();
         }
 
 
@@ -473,14 +479,13 @@
             resultBox.style.display =
                 "flex";
 
-
             resultTitle.textContent =
                 "ASISTENCIA YA REGISTRADA";
 
 
             const name =
-                data.attendance?.student_name ||
                 data.student_name ||
+                data.attendance?.student_name ||
                 data.person_id ||
                 "Estudiante";
 
@@ -489,12 +494,133 @@
                 name;
 
 
-            const now =
-                new Date();
+            const hora =
+                data.attendance?.hora;
 
 
-            resultTime.textContent =
-                `Hora: ${now.toLocaleTimeString("es-PE")}`;
+            if (hora) {
+
+                resultTime.textContent =
+                    `Hora: ${hora}`;
+
+            } else {
+
+                resultTime.textContent =
+                    "Tu asistencia ya fue registrada.";
+            }
+
+
+            setReturnButton();
+        }
+
+
+        async function checkCurrentAttendance() {
+
+            const token =
+                localStorage.getItem("token") ||
+                sessionStorage.getItem("token");
+
+
+            if (!token) {
+
+                window.location.href =
+                    "../login.html";
+
+                return false;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "http://127.0.0.1:8000/api/attendance/current-session-status",
+                        {
+                            method: "GET",
+                            headers: {
+                                Authorization:
+                                    "Bearer " + token
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.detail ||
+                        "No se pudo consultar la asistencia"
+                    );
+                }
+
+
+                if (
+                    data.sesion_activa &&
+                    data.ya_registrada
+                ) {
+
+                    showAlreadyRegistered({
+                        attendance:
+                            data.asistencia,
+
+                        student_name:
+                            data.estudiante
+                    });
+
+
+                    cameraStopIfExists();
+
+
+                    return false;
+                }
+
+
+                if (!data.sesion_activa) {
+
+                    showStatus(
+                        "SIN SESIÓN ACTIVA",
+                        "No hay una sesión de clase activa en este momento."
+                    );
+
+
+                    return false;
+                }
+
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    "Error consultando asistencia:",
+                    error
+                );
+
+
+                showStatus(
+                    "ERROR",
+                    "No se pudo consultar el estado de la asistencia."
+                );
+
+
+                return false;
+            }
+        }
+
+
+        function cameraStopIfExists() {
+
+            if (
+                typeof camera !== "undefined" &&
+                camera
+            ) {
+
+                camera.stop();
+            }
         }
 
 
@@ -514,7 +640,6 @@
                                 "ACÉRCATE A LA CÁMARA",
                                 data.message
                             );
-
                         }
 
 
@@ -527,7 +652,6 @@
                                 "VERIFICANDO...",
                                 data.message
                             );
-
                         }
 
 
@@ -540,13 +664,14 @@
                                 data.message,
                                 "Por favor, inténtalo nuevamente."
                             );
-
                         }
 
                     },
 
 
                     onSuccess: (data) => {
+
+                        cameraStopIfExists();
 
                         showRegistered(data);
 
@@ -556,10 +681,11 @@
                     onAlreadyRegistered:
                         (data) => {
 
+                            cameraStopIfExists();
+
                             showAlreadyRegistered(
                                 data
                             );
-
                         },
 
 
@@ -578,26 +704,27 @@
 
         okButton.addEventListener(
             "click",
-            async () => {
+            () => {
 
-                resultBox.style.display =
-                    "none";
-
-                statusContainer.style.display =
-                    "block";
-
-                showStatus(
-                    "ACÉRCATE A LA CÁMARA",
-                    "Esperando estudiante..."
-                );
-
-                await camera.restart();
+                window.history.back();
 
             }
         );
 
 
-        camera.start();
+        (async () => {
+
+            const puedeRegistrar =
+                await checkCurrentAttendance();
+
+
+            if (puedeRegistrar) {
+
+                await camera.start();
+
+            }
+
+        })();
 
     </script>
 
