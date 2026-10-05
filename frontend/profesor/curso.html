@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Curso</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/rostro.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page" data-rol="profesor">
+    <div class="admin-layout">
+      <aside class="admin-menu"></aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1 id="curso-nombre">Curso</h1>
+            <p class="subtitulo-pagina" id="curso-sub"></p>
+          </div>
+          <a class="btn-principal btn-nuevo enlace-boton" href="cursos.html"
+            >← Mis cursos</a
+          >
+        </header>
+
+        <main class="admin-cuerpo">
+          <div class="pestanas" role="tablist">
+            <button
+              type="button"
+              class="pestana activo"
+              data-tab="contenido"
+              role="tab"
+            >
+              Contenido
+            </button>
+            <button
+              type="button"
+              class="pestana"
+              data-tab="estudiantes"
+              role="tab"
+            >
+              Estudiantes
+            </button>
+            <button type="button" class="pestana" data-tab="notas" role="tab">
+              Libro de calificaciones
+            </button>
+          </div>
+
+          <section id="tab-contenido" class="panel-pestana">
+            <div id="contenido-curso"></div>
+          </section>
+
+          <section id="tab-estudiantes" class="panel-pestana panel-card" hidden>
+            <h3>Estudiantes matriculados</h3>
+            <div class="tabla-caja">
+              <table class="tabla">
+                <thead>
+                  <tr>
+                    <th>Estudiante</th>
+                    <th>Código</th>
+                    <th>Calificación actual</th>
+                  </tr>
+                </thead>
+                <tbody id="estudiantes-cuerpo"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="tab-notas" class="panel-pestana panel-card" hidden>
+            <div class="barra-libro">
+              <p class="suma-pesos" id="suma-pesos"></p>
+              <button
+                type="button"
+                id="btn-nueva-eval"
+                class="btn-principal btn-nuevo"
+              >
+                + Nueva evaluación
+              </button>
+            </div>
+            <div class="tabla-caja">
+              <table class="tabla libro-prof">
+                <thead>
+                  <tr id="libro-cabecera-fila"></tr>
+                </thead>
+                <tbody id="libro-cuerpo"></tbody>
+              </table>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- Ventana: registrar nota -->
+    <dialog
+      id="modal-nota"
+      class="modal modal-ancho"
+      aria-labelledby="nota-titulo"
+    >
+      <div class="modal-contenido">
+        <p class="curso-sub" id="nota-sub"></p>
+        <h2 id="nota-titulo"></h2>
+        <form id="form-nota" novalidate>
+          <p id="msg-nota" class="mensaje-error" role="alert"></p>
+          <div class="campo">
+            <label for="nota-estado">Estado</label>
+            <select id="nota-estado">
+              <option value="pendiente">Pendiente</option>
+              <option value="entregado">Entregado</option>
+              <option value="calificado">Calificado</option>
+            </select>
+          </div>
+          <div class="campo" id="campo-nota">
+            <label for="nota-valor">Nota (0 a 20)</label>
+            <input
+              type="text"
+              id="nota-valor"
+              inputmode="decimal"
+              maxlength="5"
+            />
+          </div>
+          <div class="modal-acciones">
+            <button type="button" id="btn-cancelar-nota" class="btn-secundario">
+              Cancelar
+            </button>
+            <button type="submit" id="btn-guardar-nota" class="btn-principal">
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <!-- Ventana: evaluación -->
+    <dialog
+      id="modal-eval"
+      class="modal modal-ancho"
+      aria-labelledby="eval-titulo"
+    >
+      <div class="modal-contenido">
+        <h2 id="eval-titulo">Nueva evaluación</h2>
+        <form id="form-eval" novalidate>
+          <p id="msg-eval" class="mensaje-error" role="alert"></p>
+          <div class="campo">
+            <label for="eval-nombre">Nombre</label
+            ><input
+              type="text"
+              id="eval-nombre"
+              maxlength="150"
+              placeholder="Ej: Práctica calificada 2"
+            />
+          </div>
+          <div class="fila">
+            <div class="campo">
+              <label for="eval-fecha">Fecha de vencimiento</label
+              ><input type="date" id="eval-fecha" />
+            </div>
+            <div class="campo">
+              <label for="eval-peso">Peso (%)</label
+              ><input
+                type="text"
+                id="eval-peso"
+                inputmode="decimal"
+                maxlength="6"
+              />
+            </div>
+          </div>
+          <div class="modal-acciones">
+            <button
+              type="button"
+              id="btn-eliminar-eval"
+              class="btn-secundario btn-peligro"
+              hidden
+            >
+              Eliminar
+            </button>
+            <button type="button" id="btn-cancelar-eval" class="btn-secundario">
+              Cancelar
+            </button>
+            <button type="submit" id="btn-guardar-eval" class="btn-principal">
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/contenido-curso.js"></script>
+    <script src="../js/profesor-curso.js"></script>
+  </body>
+</html>

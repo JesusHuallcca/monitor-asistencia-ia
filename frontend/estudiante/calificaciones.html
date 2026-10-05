@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Calificaciones</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page" data-rol="estudiante">
+    <div class="admin-layout">
+      <aside class="admin-menu"></aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1>Calificaciones</h1>
+            <p class="subtitulo-pagina">
+              Tu calificación actual en cada curso.
+            </p>
+          </div>
+        </header>
+
+        <main class="admin-cuerpo">
+          <section
+            class="stats"
+            style="grid-template-columns: repeat(2, 1fr)"
+            aria-label="Resumen"
+          >
+            <div class="stat">
+              <span class="ico"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path
+                    d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                  /></svg
+              ></span>
+              <span
+                ><span class="num" id="st-cursos">–</span
+                ><span class="rot">Cursos</span></span
+              >
+            </div>
+            <div class="stat teal">
+              <span class="ico"
+                ><svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg
+              ></span>
+              <span
+                ><span class="num" id="st-promedio">–</span
+                ><span class="rot">Promedio general</span></span
+              >
+            </div>
+          </section>
+
+          <div class="tabla-caja">
+            <table class="tabla">
+              <thead>
+                <tr>
+                  <th>Curso</th>
+                  <th>Evaluaciones calificadas</th>
+                  <th>Calificación actual</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="tabla-cuerpo">
+                <tr>
+                  <td class="vacio" colspan="4">Cargando…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/estudiante-calificaciones.js"></script>
+  </body>
+</html>

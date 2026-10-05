@@ -1,0 +1,8 @@
+'use strict';
+(async()=>{
+ if(!Auth.token()){location.replace('../login.html');return;}
+ document.querySelector('#logout').onclick=()=>{Auth.limpiar();location.href='../login.html';};
+ const ready=await window.monitorReady;if(!ready){document.querySelector('#dashboard-error').textContent='No se pudo cargar el asistente. Revisa la sesión, la conexión y la migración 05_chatbot.sql.';return;}
+ const {user,context}=ready;document.querySelector('#profile-name').textContent=user.nombre;document.querySelector('#avatar').textContent=user.nombre[0];document.querySelector('#welcome-name').textContent='Hola, '+user.nombre.split(' ')[0];document.querySelector('#role-label').textContent=user.rol;
+ const container=document.querySelector('#courses');context.courses.forEach((course,index)=>{const card=document.createElement('article');card.className='course';const art=document.createElement('div');art.className='course-art';art.textContent=['{ código }','∑ aprendizaje','⌘ campus'][index%3];const content=document.createElement('div');content.className='course-content';const h=document.createElement('h3');h.textContent=course.nombre;const info=document.createElement('p');info.textContent='Consulta tu historial y estadísticas con el asistente.';const button=document.createElement('button');button.className='plain';button.textContent='Consultar asistencia →';button.onclick=()=>{window.monitorChat.open();window.monitorChat.setCourse(course.id);};content.append(h,info,button);card.append(art,content);container.append(card);});if(!context.courses.length)container.textContent='No tienes cursos asignados.';
+})();

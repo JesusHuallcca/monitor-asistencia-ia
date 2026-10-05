@@ -1,18 +1,26 @@
-﻿// Envía el token JWT del login (guardado por js/auth.js)
+﻿
+// Envía el token JWT del login (guardado por js/auth.js)
 function fetchConToken(url, opciones = {}) {
-    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    const token =
+        localStorage.getItem("token") ||
+        sessionStorage.getItem("token");
+
     if (!token) {
         window.location.href = "../login.html";
         throw new Error("Sin sesión iniciada");
     }
+
     return fetch(url, {
         ...opciones,
-        headers: { ...(opciones.headers || {}), Authorization: "Bearer " + token }
+        headers: {
+            ...(opciones.headers || {}),
+            Authorization: "Bearer " + token
+        }
     });
 }
 
-const API_URL = "http://127.0.0.1:8000/api/attendance/camera/check-in";
-const RESET_URL = "http://127.0.0.1:8000/api/attendance/camera/reset";
+const API_URL =
+    "http://127.0.0.1:8000/api/attendance/camera/check-in";
 
 
 class AttendanceCamera {
@@ -21,11 +29,17 @@ class AttendanceCamera {
 
         this.video = videoElement;
 
-        this.onStatus = callbacks.onStatus || (() => {});
-        this.onSuccess = callbacks.onSuccess || (() => {});
+        this.onStatus =
+            callbacks.onStatus || (() => {});
+
+        this.onSuccess =
+            callbacks.onSuccess || (() => {});
+
         this.onAlreadyRegistered =
             callbacks.onAlreadyRegistered || (() => {});
-        this.onError = callbacks.onError || (() => {});
+
+        this.onError =
+            callbacks.onError || (() => {});
 
         this.stream = null;
         this.running = false;
@@ -39,8 +53,6 @@ class AttendanceCamera {
     async start() {
 
         try {
-
-            await this.resetBackend();
 
             if (!this.stream) {
 
@@ -71,28 +83,13 @@ class AttendanceCamera {
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Error iniciando cámara:",
+                error
+            );
 
             this.onError(
                 "No se pudo acceder a la cámara"
-            );
-        }
-    }
-
-
-    async resetBackend() {
-
-        try {
-
-            await fetchConToken(RESET_URL, {
-                method: "POST"
-            });
-
-        } catch (error) {
-
-            console.warn(
-                "No se pudo reiniciar la sesión:",
-                error
             );
         }
     }
@@ -174,6 +171,24 @@ class AttendanceCamera {
             const data =
                 await response.json();
 
+            if (!response.ok) {
+
+                console.error(
+                    "Error del servidor:",
+                    response.status,
+                    data
+                );
+
+                this.onStatus({
+                    status: "ERROR",
+                    message:
+                        data.detail ||
+                        "Error al procesar la asistencia"
+                });
+
+                return;
+            }
+
             this.handleResponse(data);
 
         } catch (error) {
@@ -243,7 +258,7 @@ class AttendanceCamera {
 
             this.onStatus({
                 status: "VERIFYING",
-                message: "Verificando identidad..."
+                message: "Verificando que seas una persona real..."
             });
 
             return;
@@ -255,6 +270,42 @@ class AttendanceCamera {
             this.onStatus({
                 status: "VERIFYING",
                 message: "Confirmando identidad..."
+            });
+
+            return;
+        }
+
+
+        if (status === "NO_ACTIVE_SESSION") {
+
+            this.pause();
+
+            this.onError(
+                "No hay una sesión de clase activa en este momento"
+            );
+
+            return;
+        }
+
+
+        if (status === "IDENTITY_MISMATCH") {
+
+            this.pause();
+
+            this.onError(
+                "El rostro no coincide con el usuario autenticado"
+            );
+
+            return;
+        }
+
+
+        if (status === "LIVENESS_FAILED") {
+
+            this.onStatus({
+                status: "ERROR",
+                message:
+                    "No se pudo validar que eres una persona real"
             });
 
             return;
@@ -307,8 +358,6 @@ class AttendanceCamera {
 
         this.pause();
 
-        await this.resetBackend();
-
         this.running = true;
         this.processing = false;
 
@@ -340,3 +389,4 @@ class AttendanceCamera {
 
 
 window.AttendanceCamera = AttendanceCamera;
+

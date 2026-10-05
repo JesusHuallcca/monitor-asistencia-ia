@@ -40,7 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
         recordarme,
       );
       Auth.guardarSesion(datos, recordarme);
-      window.location.href = form.dataset.destino;
+      window.location.href =
+        form.dataset.destino === "auto"
+          ? Auth.rutaInicio(datos.rol)
+          : form.dataset.destino;
     } catch (err) {
       mensaje.textContent = err.message;
       mensaje.classList.toggle("info", err.status === 403); // cuenta en revisión: aviso, no error

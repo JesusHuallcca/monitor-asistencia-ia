@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Mi perfil</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/rostro.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body class="admin-page">
+    <div class="admin-layout">
+      <aside class="admin-menu">
+        <div class="admin-marca">
+          <img src="../assets/img/senati_blanco.png" alt="Senati" />
+        </div>
+        <nav aria-label="Administración"></nav>
+        <div class="admin-pie">
+          <div class="quien-menu">
+            <strong id="nombre-admin"></strong><span id="rol-admin"></span>
+          </div>
+          <button type="button" id="btn-salir" class="btn-salir">
+            Cerrar sesión
+          </button>
+        </div>
+      </aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1>Mi perfil</h1>
+            <p class="subtitulo-pagina">
+              Tus datos, tu contraseña y tu actividad.
+            </p>
+          </div>
+        </header>
+
+        <main class="admin-cuerpo">
+          <div class="perfil-grid">
+            <section class="panel-card perfil-resumen" aria-label="Resumen">
+              <div id="perfil-avatar"></div>
+              <h2 id="p-nombre"></h2>
+              <span class="badge" id="p-rol"></span>
+              <dl class="datos">
+                <dt>Usuario</dt>
+                <dd id="p-usuario"></dd>
+                <dt>Correo</dt>
+                <dd id="p-correo"></dd>
+                <dt>Miembro desde</dt>
+                <dd id="p-creado"></dd>
+                <dt>Último acceso</dt>
+                <dd id="p-ultimo"></dd>
+              </dl>
+            </section>
+
+            <div>
+              <section class="panel-card">
+                <h3>Datos personales</h3>
+                <form id="form-datos" novalidate>
+                  <p id="msg-datos" class="mensaje-error" role="alert"></p>
+                  <div class="fila">
+                    <div class="campo">
+                      <label for="d-nombres">Nombres</label
+                      ><input type="text" id="d-nombres" maxlength="100" />
+                    </div>
+                    <div class="campo">
+                      <label for="d-apellidos">Apellidos</label
+                      ><input type="text" id="d-apellidos" maxlength="100" />
+                    </div>
+                  </div>
+                  <div class="campo">
+                    <label for="d-email">Correo electrónico</label
+                    ><input
+                      type="text"
+                      id="d-email"
+                      inputmode="email"
+                      maxlength="120"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    id="btn-datos"
+                    class="btn-principal btn-nuevo"
+                  >
+                    Guardar cambios
+                  </button>
+                </form>
+              </section>
+
+              <section class="panel-card">
+                <h3>Cambiar contraseña</h3>
+                <form id="form-clave" novalidate>
+                  <p id="msg-clave" class="mensaje-error" role="alert"></p>
+                  <div class="campo">
+                    <label for="c-actual">Contraseña actual</label
+                    ><input
+                      type="password"
+                      id="c-actual"
+                      autocomplete="current-password"
+                      maxlength="128"
+                    />
+                  </div>
+                  <div class="fila">
+                    <div class="campo">
+                      <label for="c-nueva">Nueva contraseña</label>
+                      <input
+                        type="password"
+                        id="c-nueva"
+                        autocomplete="new-password"
+                        maxlength="128"
+                      />
+                      <div class="fuerza"><span id="fuerza-barra"></span></div>
+                      <p class="fuerza-texto" id="fuerza-texto">
+                        Mínimo 8 caracteres, con letras y números.
+                      </p>
+                    </div>
+                    <div class="campo">
+                      <label for="c-repetir">Repite la nueva</label
+                      ><input
+                        type="password"
+                        id="c-repetir"
+                        autocomplete="new-password"
+                        maxlength="128"
+                      />
+                    </div>
+                  </div>
+                  <label class="mostrar-claves"
+                    ><input type="checkbox" id="c-mostrar" /> Mostrar
+                    contraseñas</label
+                  >
+                  <button
+                    type="submit"
+                    id="btn-clave"
+                    class="btn-principal btn-nuevo"
+                  >
+                    Actualizar contraseña
+                  </button>
+                </form>
+              </section>
+
+              <section class="panel-card">
+                <h3>Seguridad y actividad</h3>
+                <ul class="seguridad-lista">
+                  <li>Tu sesión de administrador dura 60 minutos.</li>
+                  <li>
+                    El login facial no está disponible para administradores.
+                  </li>
+                </ul>
+                <h4>Mi actividad reciente</h4>
+                <ul id="actividad" class="actividad"></ul>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/admin-perfil.js"></script>
+  </body>
+</html>

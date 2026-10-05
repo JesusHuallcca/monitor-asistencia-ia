@@ -3,14 +3,15 @@
     Boolean,
     Column,
     Date,
+    Float,
     DateTime,
     ForeignKey,
     Integer,
     LargeBinary,
+    Numeric,
     String,
     Text,
     Time,
-    Numeric,
     func,
 )
 from sqlalchemy.orm import relationship
@@ -39,7 +40,6 @@ class Usuario(Base):
     profesor = relationship("Profesor", back_populates="usuario", uselist=False)
     estudiante = relationship("Estudiante", back_populates="usuario", uselist=False)
     rostro = relationship("Rostro", back_populates="usuario", uselist=False)
-
     asistencias = relationship("Asistencia", back_populates="usuario")
 
 
@@ -157,3 +157,59 @@ class Matricula(Base):
     estudiante_id = Column(Integer, ForeignKey("estudiantes.id"), nullable=False)
     matriculado_por = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
     matriculado_en = Column(DateTime, server_default=func.now())
+
+
+class Evaluacion(Base):
+    __tablename__ = "evaluaciones"
+
+    id = Column(Integer, primary_key=True)
+    curso_id = Column(Integer, ForeignKey("cursos.id"), nullable=False)
+    nombre = Column(String(150), nullable=False)
+    fecha_vencimiento = Column(Date, nullable=True)
+    peso = Column(Numeric(5, 2), nullable=False, default=0)
+    creado_por = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
+    creado_en = Column(DateTime, server_default=func.now())
+
+
+class Nota(Base):
+    __tablename__ = "notas"
+
+    id = Column(Integer, primary_key=True)
+    evaluacion_id = Column(Integer, ForeignKey("evaluaciones.id"), nullable=False)
+    estudiante_id = Column(Integer, ForeignKey("estudiantes.id"), nullable=False)
+    nota = Column(Numeric(4, 2), nullable=True)
+    estado = Column(String(20), nullable=False, default="pendiente")
+    registrada_por = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
+    registrada_en = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    
+class Prediccion(Base):
+    __tablename__ = "predicciones"
+
+    id_prediccion = Column(Integer, primary_key=True)
+    id_estudiante = Column(Integer, ForeignKey("estudiantes.id"), nullable=False)
+    prob_falta = Column(Float)
+    prob_tardanza = Column(Float)
+    fecha = Column(Date, nullable=False)
+    modelo_version = Column(String(100), nullable=False)
+
+
+class Metrica(Base):
+    __tablename__ = "metricas_modelo"
+
+    id_metrica = Column(Integer, primary_key=True)
+    modelo = Column(String(100))
+    version = Column(String(100))
+    accuracy = Column(Float)
+    precision = Column(Float)
+    recall = Column(Float)
+    f1 = Column(Float)
+
+
+class ChatHistorial(Base):
+    __tablename__ = "chat_historial"
+
+    id_mensaje = Column(Integer, primary_key=True)
+    id_usuario = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    pregunta = Column(Text, nullable=False)
+    respuesta = Column(Text, nullable=False)
+    fecha_hora = Column(DateTime, nullable=False)

@@ -1,0 +1,22 @@
+{
+  "accuracy": 0.6748,
+  "precision": 0.7564,
+  "recall": 0.7023,
+  "f1": 0.7284,
+  "roc_auc": 0.7374,
+  "n_train": 5062,
+  "n_test": 1688,
+  "n_features": 8,
+  "features": [
+    "asistencia_ratio_30d",
+    "asistencias_consecutivas",
+    "ausencias_consecutivas",
+    "dia_semana",
+    "hora_inicio_clase",
+    "es_inicio_ciclo",
+    "promedio_notas",
+    "tardanzas_ratio"
+  ],
+  "trained_at": "2026-10-05T05:43:06.215424+00:00",
+  "model_type": "LogisticRegression"
+}

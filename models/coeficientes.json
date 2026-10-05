@@ -1,0 +1,13 @@
+{
+  "intercept": 0.08051803029027878,
+  "coefficients": {
+    "asistencia_ratio_30d": 0.544,
+    "asistencias_consecutivas": 0.2343,
+    "ausencias_consecutivas": -0.2447,
+    "dia_semana": 0.1205,
+    "hora_inicio_clase": -0.1078,
+    "es_inicio_ciclo": 0.0548,
+    "promedio_notas": 0.205,
+    "tardanzas_ratio": 0.1071
+  }
+}

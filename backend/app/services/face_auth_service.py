@@ -91,7 +91,7 @@ def enrolar(db: Session, user: Usuario, imagenes: list[str], consentimiento: boo
     # Un mismo rostro no puede estar en dos cuentas
     if _rostro_duplicado(db, motor, promedio, user.id):
         registrar_auditoria(db, user.id, "rostro_duplicado", "rostro ya asociado a otra cuenta", ip, False)
-        raise HTTPException(status_code=409, detail="Este rostro ya está asociado a otra cuenta.")
+        raise HTTPException(status_code=409, detail="Este rostro ya está registrado en otra cuenta, por eso no puedes crear ni activar otra con él.")
 
     try:
         cifrado = encrypt_embedding(promedio)
@@ -210,7 +210,7 @@ def preparar_rostro_registro(db: Session, imagenes: list[str], consentimiento: b
     promedio = promedio / np.linalg.norm(promedio)
 
     if _rostro_duplicado(db, motor, promedio, 0):  # 0: todavía no existe usuario
-        raise HTTPException(status_code=409, detail="Este rostro ya está asociado a otra cuenta.")
+        raise HTTPException(status_code=409, detail="Este rostro ya está registrado en otra cuenta, por eso no puedes crear ni activar otra con él.")
 
     try:
         return encrypt_embedding(promedio)

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Curso</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+
+  <body class="admin-page" data-rol="estudiante">
+    <div class="admin-layout">
+      <aside class="admin-menu"></aside>
+
+      <div class="admin-principal">
+        <header class="admin-cabecera">
+          <div>
+            <h1 id="curso-nombre">Curso</h1>
+            <p class="subtitulo-pagina" id="curso-sub"></p>
+          </div>
+
+          <a
+            class="btn-principal btn-nuevo enlace-boton"
+            href="cursos.html"
+          >
+            ← Mis cursos
+          </a>
+        </header>
+
+        <main class="admin-cuerpo">
+          <div class="pestanas" role="tablist">
+            <button
+              type="button"
+              class="pestana activo"
+              data-tab="contenido"
+              role="tab"
+            >
+              Contenido
+            </button>
+
+            <button
+              type="button"
+              class="pestana"
+              data-tab="calendario"
+              role="tab"
+            >
+              Calendario
+            </button>
+
+            <button
+              type="button"
+              class="pestana"
+              data-tab="anuncios"
+              role="tab"
+            >
+              Anuncios
+            </button>
+
+            <button
+              type="button"
+              class="pestana"
+              data-tab="notas"
+              role="tab"
+            >
+              Libro de calificaciones
+            </button>
+
+            <button
+              type="button"
+              class="pestana"
+              data-tab="mensaje"
+              role="tab"
+            >
+              Mensaje
+            </button>
+          </div>
+
+          <section id="tab-contenido" class="panel-pestana">
+            <div id="contenido-curso"></div>
+          </section>
+
+          <section
+            id="tab-calendario"
+            class="panel-pestana panel-card"
+            hidden
+          >
+            <h3>Calendario</h3>
+            <ul id="lista-calendario" class="actividad"></ul>
+          </section>
+
+          <section
+            id="tab-anuncios"
+            class="panel-pestana panel-card"
+            hidden
+          >
+            <div class="vacio-bloque">
+              <strong>Sin anuncios</strong>
+              Aún no hay anuncios en este curso.
+            </div>
+          </section>
+
+          <section
+            id="tab-notas"
+            class="panel-pestana panel-card"
+            hidden
+          >
+            <div class="libro-cabecera">
+              <div class="quien" id="libro-quien"></div>
+
+              <div class="nota-actual">
+                Calificación actual
+                <span id="libro-actual" class="nota-pastilla">—</span>
+              </div>
+            </div>
+
+            <div class="tabla-caja">
+              <table class="tabla">
+                <thead>
+                  <tr>
+                    <th>Nombre del elemento</th>
+                    <th>Fecha de vencimiento</th>
+                    <th>Estado</th>
+                    <th>Calificación</th>
+                  </tr>
+                </thead>
+
+                <tbody id="libro-cuerpo"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section
+            id="tab-mensaje"
+            class="panel-pestana panel-card"
+            hidden
+          >
+            <div class="vacio-bloque">
+              <strong>Mensajes</strong>
+              La mensajería con tus docentes estará disponible próximamente.
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div
+      id="aviso"
+      class="aviso"
+      role="status"
+      aria-live="polite"
+      hidden
+    ></div>
+
+    <!-- Drawer de asistencia -->
+    <aside
+      id="drawer-asistencia"
+      class="drawer-asistencia"
+      aria-hidden="true"
+    >
+      <div class="drawer-asistencia-cabecera">
+        <h2>Asistencia</h2>
+
+        <button
+          type="button"
+          id="cerrar-drawer-asistencia"
+          class="drawer-cerrar"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="drawer-asistencia-cuerpo">
+        <div class="drawer-estudiante">
+          <strong id="asistencia-nombre"></strong>
+        </div>
+
+        <div class="asistencia-resumen">
+          <span>Calificación general</span>
+          <strong id="asistencia-promedio">—</strong>
+        </div>
+
+        <div class="asistencia-presentes">
+          <strong id="asistencia-presentes">0</strong>
+          <span>Presentes</span>
+        </div>
+
+        <div class="asistencia-separador"></div>
+
+        <div class="asistencia-historial">
+          <div class="asistencia-historial-cabecera">
+            <span>Fecha</span>
+            <span>Estado</span>
+            <span>Calific.</span>
+          </div>
+
+          <div id="asistencia-registros"></div>
+        </div>
+      </div>
+    </aside>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/contenido-curso.js"></script>
+    <script src="../js/estudiante-curso.js"></script>
+  </body>
+</html>

@@ -1,9 +1,21 @@
-﻿from fastapi import FastAPI
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
-from app.api import admin_users, auth, cursos, face_auth, users
+from app.api import (
+    admin_auditoria,
+    admin_users,
+    auth,
+    chatbot,
+    cursos,
+    face_auth,
+    notas,
+    users,
+)
+from app.api.analytics import router as analytics_router
+from app.api.predictions import router as predictions_router
 from app.api.attendance import router as attendance_router
+from app.api.sesiones import router as sesiones_router
 from app.db.database import engine
 
 
@@ -27,16 +39,70 @@ app.add_middleware(
 )
 
 
+# =========================
 # Asistencia facial
+# =========================
+
 app.include_router(attendance_router)
 
-# AutenticaciÃ³n y usuarios
+
+# =========================
+# Sesiones de clase
+# =========================
+
+app.include_router(sesiones_router)
+
+
+# =========================
+# Autenticación y usuarios
+# =========================
+
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(admin_users.router)
+app.include_router(admin_auditoria.router)
+
+
+# =========================
+# Cursos
+# =========================
+
 app.include_router(cursos.router)
+
+
+# =========================
+# Reconocimiento facial
+# =========================
+
 app.include_router(face_auth.router)
 
+
+# =========================
+# Notas
+# =========================
+
+app.include_router(notas.router)
+
+# =========================
+# Chatbot IA
+# =========================
+from app.api.analytics import router as analytics_router
+from app.api.predictions import router as predictions_router
+app.include_router(chatbot.router)
+# =========================
+# Analytics
+# =========================
+
+app.include_router(analytics_router)
+
+# =========================
+# Predicciones ML
+# =========================
+
+app.include_router(predictions_router)
+# =========================
+# Rutas generales
+# =========================
 
 @app.get("/")
 def root():
