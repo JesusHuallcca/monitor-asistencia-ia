@@ -13,3 +13,4 @@ scikit-learn
 joblib
 opencv-python-headless
 python-multipart
+email-validator
