@@ -1,7 +1,7 @@
 from pathlib import Path
+import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
 # Raíz del repo: backend/app/core/config.py -> subir 3 niveles
 ROOT_DIR = Path(__file__).resolve().parents[3]
 ENV_FILE = ROOT_DIR / ".env"
@@ -22,8 +22,14 @@ class Settings(BaseSettings):
     FACE_ENCRYPTION_KEY: str = ""
     FACE_THRESHOLD: float = 0.363
     FACE_MODELS_DIR: str = str(ROOT_DIR / "ai" / "face" / "models")
+        # Chatbot IA
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL: str = ""
+    APP_TIMEZONE: str = "America/Lima"
 
     model_config = SettingsConfigDict(env_file=str(ENV_FILE), extra="ignore")
 
 
 settings = Settings()
+TIMEZONE = settings.APP_TIMEZONE
+DEMO_MODE = os.getenv("CHATBOT_DEMO_MODE", "false").lower() == "true"

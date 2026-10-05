@@ -3,6 +3,7 @@
     Boolean,
     Column,
     Date,
+    Float,
     DateTime,
     ForeignKey,
     Integer,
@@ -180,3 +181,35 @@ class Nota(Base):
     estado = Column(String(20), nullable=False, default="pendiente")
     registrada_por = Column(Integer, ForeignKey("usuarios.id"), nullable=True)
     registrada_en = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    
+class Prediccion(Base):
+    __tablename__ = "predicciones"
+
+    id_prediccion = Column(Integer, primary_key=True)
+    id_estudiante = Column(Integer, ForeignKey("estudiantes.id"), nullable=False)
+    prob_falta = Column(Float)
+    prob_tardanza = Column(Float)
+    fecha = Column(Date, nullable=False)
+    modelo_version = Column(String(100), nullable=False)
+
+
+class Metrica(Base):
+    __tablename__ = "metricas_modelo"
+
+    id_metrica = Column(Integer, primary_key=True)
+    modelo = Column(String(100))
+    version = Column(String(100))
+    accuracy = Column(Float)
+    precision = Column(Float)
+    recall = Column(Float)
+    f1 = Column(Float)
+
+
+class ChatHistorial(Base):
+    __tablename__ = "chat_historial"
+
+    id_mensaje = Column(Integer, primary_key=True)
+    id_usuario = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    pregunta = Column(Text, nullable=False)
+    respuesta = Column(Text, nullable=False)
+    fecha_hora = Column(DateTime, nullable=False)

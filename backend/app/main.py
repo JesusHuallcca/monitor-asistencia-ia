@@ -6,6 +6,7 @@ from app.api import (
     admin_auditoria,
     admin_users,
     auth,
+    chatbot,
     cursos,
     face_auth,
     notas,
@@ -80,7 +81,11 @@ app.include_router(face_auth.router)
 
 app.include_router(notas.router)
 
+# =========================
+# Chatbot IA
+# =========================
 
+app.include_router(chatbot.router)
 # =========================
 # Rutas generales
 # =========================
