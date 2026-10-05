@@ -1,2 +1,2 @@
 // Dirección del backend FastAPI
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://monitor-asistencia-ia-production.up.railway.app";
