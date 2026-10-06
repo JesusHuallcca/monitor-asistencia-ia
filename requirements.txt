@@ -17,5 +17,5 @@ joblib
 opencv-python-headless
 aiofiles
 alembic
-bcrypt
+bcrypt==4.0.1
 cryptography
