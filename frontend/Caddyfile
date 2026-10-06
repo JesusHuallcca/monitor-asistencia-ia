@@ -1,5 +1,10 @@
+{
+    auto_https off
+}
+
 :{$PORT} {
-    root * .
-    file_server
+    root * /app
+    encode gzip
     try_files {path} /index.html
-}  
+    file_server
+}
