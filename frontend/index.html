@@ -1,13 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta http-equiv="refresh" content="0; url=/login.html">
-  <title>Redirigiendo...</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitor de Asistencia IA</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      text-align: center;
+      max-width: 500px;
+      padding: 40px;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+    }
+    p {
+      color: #94a3b8;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    a {
+      display: block;
+      padding: 16px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      transition: all 0.2s;
+    }
+    .btn-login {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-login:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+    .btn-register {
+      background: transparent;
+      border: 2px solid #3b82f6;
+      color: #3b82f6;
+    }
+    .btn-register:hover {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-admin {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+      margin-top: 20px;
+    }
+    .btn-admin:hover {
+      border-color: #94a3b8;
+    }
+  </style>
 </head>
 <body>
-  <p>Redirigiendo a login...</p>
-  <script>
-    window.location.href = "/login.html";
-  </script>
+  <div class="container">
+    <h1>Monitor de Asistencia IA</h1>
+    <p>Sistema inteligente de control de asistencia con reconocimiento facial</p>
+
+    <div class="buttons">
+      <a href="login.html" class="btn-login">Iniciar Sesión</a>
+      <a href="register.html" class="btn-register">Registrarse</a>
+      <a href="login.html" class="btn-admin">Acceso Administrador / Profesor</a>
+    </div>
+  </div>
 </body>
 </html>
