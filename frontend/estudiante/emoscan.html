@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Análisis emocional</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+    <style>
+        .analisis-emocional-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .aviso-camara {
+            background: #FEF9E7;
+            border-left: 4px solid #F1C40F;
+            padding: 0.85rem 1.1rem;
+            border-radius: 6px;
+            color: #7D6608;
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
+        .aviso-camara strong { color: #9A7D0A; }
+        #emoscan-loading {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #54718c;
+            font-weight: 600;
+        }
+        #emoscan-loading .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #d7e6f3;
+            border-top-color: #0b5cab;
+            border-radius: 50%;
+            margin: 0 auto 0.75rem;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #emoscan-error {
+            display: none;
+            background: #FDEDEC;
+            border-left: 4px solid #B03A2E;
+            color: #7B241C;
+            padding: 1rem 1.15rem;
+            border-radius: 6px;
+            line-height: 1.5;
+        }
+        #emoscan-error strong { display: block; margin-bottom: 0.35rem; }
+        #emoscan-frame {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 8px;
+            background: #111;
+            display: none;
+        }
+        .acciones-emoscan {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+            margin-top: 0.25rem;
+        }
+        .btn-regresar {
+            display: inline-block;
+            padding: 0.55rem 1.1rem;
+            background: #0b5cab;
+            color: #fff !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-regresar:hover { background: #084b8c; }
+        .btn-reintentar {
+            display: none;
+            padding: 0.55rem 1.1rem;
+            background: #148F77;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .btn-reintentar:hover { background: #0E6655; }
+        .nota-limitacion {
+            font-size: 0.82rem;
+            color: #6c8499;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="admin-page" data-rol="estudiante">
+    <div class="admin-layout">
+        <aside class="admin-menu"></aside>
+
+        <div class="admin-principal">
+            <header class="admin-cabecera">
+                <div>
+                    <h1>Análisis emocional</h1>
+                    <p class="subtitulo-pagina">Módulo EmoScan integrado en el Monitor de Asistencia</p>
+                </div>
+            </header>
+
+            <main class="admin-cuerpo">
+                <!-- Señuelo para que panel-cursos no falle al montar el menú -->
+                <div id="cursos-grid" style="display: none;"></div>
+
+                <div class="analisis-emocional-wrap">
+                    <div class="aviso-camara">
+                        <strong>Aviso:</strong> El análisis es voluntario. Autoriza el acceso a la cámara solo si deseas continuar.
+                        Los resultados de la sesión se guardan en el servicio EmoScan (CSV) y no se mezclan con la base de datos del Monitor en esta versión.
+                    </div>
+
+                    <div id="emoscan-loading">
+                        <div class="spinner" aria-hidden="true"></div>
+                        Cargando módulo EmoScan…
+                    </div>
+
+                    <div id="emoscan-error" role="alert">
+                        <strong>No se pudo conectar con EmoScan</strong>
+                        Verifica que el servicio esté en ejecución (normalmente en
+                        <code>http://127.0.0.1:5000</code>) e inténtalo de nuevo.
+                        El resto del Monitor sigue funcionando con normalidad.
+                    </div>
+
+                    <iframe
+                        id="emoscan-frame"
+                        title="Módulo EmoScan – Análisis de expresiones faciales"
+                        allow="camera; microphone"
+                        loading="lazy"
+                    ></iframe>
+
+                    <div class="acciones-emoscan">
+                        <a class="btn-regresar" href="cursos.html">← Volver al dashboard</a>
+                        <button type="button" class="btn-reintentar" id="btn-reintentar">Reintentar conexión</button>
+                    </div>
+
+                    <p class="nota-limitacion">
+                        Nota: en esta versión EmoScan utiliza la cámara del equipo donde corre Flask.
+                        Si Flask está en otra máquina, el video puede no corresponder a la cámara de este navegador.
+                    </p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/panel-cursos.js"></script>
+    <script>
+    (function () {
+        // URL de EmoScan en desarrollo. En producción, cambiar por la URL pública del servicio.
+        var EMOSCAN_URL = "http://127.0.0.1:5000";
+        var TIMEOUT_MS = 8000;
+
+        var frame = document.getElementById("emoscan-frame");
+        var loading = document.getElementById("emoscan-loading");
+        var errorBox = document.getElementById("emoscan-error");
+        var btnReintentar = document.getElementById("btn-reintentar");
+        var loaded = false;
+        var timer = null;
+
+        function mostrarError() {
+            loading.style.display = "none";
+            frame.style.display = "none";
+            errorBox.style.display = "block";
+            btnReintentar.style.display = "inline-block";
+        }
+
+        function mostrarExito() {
+            loaded = true;
+            if (timer) clearTimeout(timer);
+            loading.style.display = "none";
+            errorBox.style.display = "none";
+            btnReintentar.style.display = "none";
+            frame.style.display = "block";
+        }
+
+        function intentarCarga() {
+            loaded = false;
+            loading.style.display = "block";
+            errorBox.style.display = "none";
+            btnReintentar.style.display = "none";
+            frame.style.display = "none";
+
+            // Forzar recarga del iframe
+            frame.src = "about:blank";
+            setTimeout(function () {
+                frame.src = EMOSCAN_URL;
+            }, 50);
+
+            if (timer) clearTimeout(timer);
+            timer = setTimeout(function () {
+                if (!loaded) mostrarError();
+            }, TIMEOUT_MS);
+        }
+
+        frame.addEventListener("load", function () {
+            // about:blank también dispara load; ignorar hasta que apunte a EmoScan
+            try {
+                if (!frame.src || frame.src === "about:blank") return;
+            } catch (e) {}
+            mostrarExito();
+        });
+
+        btnReintentar.addEventListener("click", intentarCarga);
+
+        // Arranque
+        intentarCarga();
+    })();
+    </script>
+</body>
+</html>

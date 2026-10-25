@@ -34,6 +34,11 @@ const Panel = Object.assign(Object.create(Admin), {
         icono: I.notas,
       });
       base.push({ href: "ia.html", texto: "Asistente IA", icono: I.ia });
+      base.push({
+        href: "emoscan.html",
+        texto: "Análisis emocional",
+        icono: '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>'
+      });
     }
     base.push({ href: "perfil.html", texto: "Perfil", icono: I.perfil });
     return base;
