@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
@@ -17,11 +18,22 @@ from app.api.predictions import router as predictions_router
 from app.api.attendance import router as attendance_router
 from app.api.sesiones import router as sesiones_router
 from app.db.database import engine
+from app.api.expressions import router as expressions_router
+from app.services.expression_service import expression_service
+
+
+@asynccontextmanager
+async def lifespan(app):
+    try:
+        yield
+    finally:
+        expression_service.close()
 
 
 app = FastAPI(
     title="Monitor Inteligente de Asistencia con IA",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 
@@ -46,6 +58,7 @@ app.add_middleware(
 # =========================
 
 app.include_router(attendance_router)
+app.include_router(expressions_router)
 
 
 # =========================

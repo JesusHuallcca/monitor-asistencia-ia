@@ -318,6 +318,13 @@ class AttendanceCamera {
 
             this.onSuccess(data);
 
+            // Attendance is already shown; expression errors cannot alter it.
+            if (window.EmoScanAttendance) {
+                try {
+                    window.EmoScanAttendance.follow(data.expression_analysis);
+                } catch (_) { /* Optional UI only. */ }
+            }
+
             return;
         }
 
