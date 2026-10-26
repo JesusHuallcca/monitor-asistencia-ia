@@ -1,0 +1,4 @@
+# Install alongside the Monitor's existing dependencies. Reuses its OpenCV.
+onnxruntime>=1.18,<2
+# Original standalone interface and its regression test.
+Flask>=3.0,<4

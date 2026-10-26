@@ -13,6 +13,7 @@ from app.db.models import Asistencia, SesionClase, Usuario
 from app.services.attendance_face_service import attendance_face_service
 from app.services.attendance_service import attendance_service
 from app.services.liveness_service import liveness_service
+from app.services.expression_service import after_attendance
 
 
 router = APIRouter(
@@ -294,6 +295,7 @@ def check_in(
         liveness_score=liveness["score"]
     )
 
+    result = after_attendance(result, user.id, frame)
     return {
         **result,
         "recognition": reconocimiento,
@@ -386,6 +388,7 @@ def camera_check_in(
         liveness_score=liveness["score"]
     )
 
+    result = after_attendance(result, user.id, frame)
     return {
         **result,
         "recognition": reconocimiento,

@@ -1,0 +1,9 @@
+.venv*/
+__pycache__/
+logs/
+models/*.onnx
+dataset/
+*.part
+resultado_prueba.*
+imagenes_prueba/*
+!imagenes_prueba/ORIGEN.md
