@@ -31,6 +31,8 @@ async def lifespan(app):
         from app.db.database import Base
         import app.db.models
         Base.metadata.create_all(bind=engine)
+    except Exception:
+        pass
     try:
         import os
         import urllib.request
