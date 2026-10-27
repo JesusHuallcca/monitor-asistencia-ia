@@ -31,6 +31,16 @@ async def lifespan(app):
         from app.db.database import Base
         import app.db.models
         Base.metadata.create_all(bind=engine)
+    try:
+        import os
+        import urllib.request
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        model_dir = os.path.abspath(os.path.join(base_dir, "..", "..", "integraciones", "emoscan"))
+        model_path = os.path.join(model_dir, "emotion-ferplus-8.onnx")
+        if not os.path.exists(model_path):
+            os.makedirs(model_dir, exist_ok=True)
+            url = "https://github.com/onnx/models/raw/main/vision/classification/emotion_ferplus/model/emotion-ferplus-8.onnx"
+            urllib.request.urlretrieve(url, model_path)
     except Exception:
         pass
     try:
