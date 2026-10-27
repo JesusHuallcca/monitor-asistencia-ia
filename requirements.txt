@@ -21,3 +21,5 @@ bcrypt==4.0.1
 cryptography
 onnxruntime
 pillow
+matplotlib
+threadpoolctl
