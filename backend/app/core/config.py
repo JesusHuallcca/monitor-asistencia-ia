@@ -11,11 +11,11 @@ ENV_FILE = ROOT_DIR / ".env"
 class Settings(BaseSettings):
     DB_HOST: str = "localhost"
     DB_PORT: int = 3306
-    DB_NAME: str
-    DB_USER: str
-    DB_PASSWORD: str
+    DB_NAME: str = "monitor_asistencia"
+    DB_USER: str = "root"
+    DB_PASSWORD: str = ""
 
-    JWT_SECRET_KEY: str
+    JWT_SECRET_KEY: str = "monitor-asistencia-default-secret-key-change-in-prod"
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 60
 
