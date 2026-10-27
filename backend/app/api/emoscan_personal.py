@@ -93,16 +93,86 @@ async def analyze(request: Request, response: Response, user=Depends(student), d
     return result
 
 
+from app.db.emoscan_repository import (
+    obtener_historial_por_estudiante,
+    obtener_historial_por_usuario,
+    obtener_resumen_emocional_estudiante,
+    registrar_historial_emocion,
+)
+
+docente_o_admin = require_roles('profesor', 'administrador')
+
+
 @router.get('/jobs/{job_id}')
-def result(job_id: str, response: Response, user=Depends(student)):
+def result(job_id: str, response: Response, user=Depends(student), db: Session = Depends(get_db)):
     response.headers['Cache-Control'] = 'no-store'
     value = personal_service.get(user.id, job_id)
     if value is None:
         raise HTTPException(404, 'Resultado no disponible o caducado.', headers={'Cache-Control': 'no-store'})
+
+    # Persistir en MySQL el resultado según estudiante_id/usuario_id
+    if value.get('status') == 'READY' and not value.get('_guardado'):
+        try:
+            registrar_historial_emocion(db, user.id, value, origen='personal')
+            value['_guardado'] = True
+        except Exception:
+            db.rollback()
+
     return value
+
+
+@router.get('/historial')
+def mi_historial(user=Depends(student), db: Session = Depends(get_db), limit: int = 50):
+    """Devuelve el historial de emociones del propio estudiante autenticado."""
+    registros = obtener_historial_por_usuario(db, user.id, limit=limit)
+    return [
+        {
+            "id": r.id,
+            "emocion": r.emocion_predominante,
+            "confianza": float(r.confianza) if r.confianza is not None else None,
+            "origen": r.origen,
+            "fecha": r.fecha_registro.isoformat() if r.fecha_registro else None,
+        }
+        for r in registros
+    ]
+
+
+@router.get('/estudiante/{estudiante_id}/historial')
+def historial_estudiante(
+    estudiante_id: int,
+    user=Depends(docente_o_admin),
+    db: Session = Depends(get_db),
+    limit: int = 50,
+):
+    """Permite a profesores o administradores verificar el historial emocional según estudiante_id."""
+    registros = obtener_historial_por_estudiante(db, estudiante_id, limit=limit)
+    return [
+        {
+            "id": r.id,
+            "estudiante_id": r.estudiante_id,
+            "usuario_id": r.usuario_id,
+            "emocion": r.emocion_predominante,
+            "confianza": float(r.confianza) if r.confianza is not None else None,
+            "origen": r.origen,
+            "sesion_id": r.sesion_id,
+            "fecha": r.fecha_registro.isoformat() if r.fecha_registro else None,
+        }
+        for r in registros
+    ]
+
+
+@router.get('/estudiante/{estudiante_id}/resumen')
+def resumen_estudiante(
+    estudiante_id: int,
+    user=Depends(docente_o_admin),
+    db: Session = Depends(get_db),
+):
+    """Devuelve la distribución agregada de emociones de un estudiante para el profesor."""
+    return obtener_resumen_emocional_estudiante(db, estudiante_id)
 
 
 @router.delete('/jobs', status_code=204)
 def clear(response: Response, user=Depends(student)):
     response.headers['Cache-Control'] = 'no-store'
     personal_service.revoke(user.id)
+

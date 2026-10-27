@@ -44,9 +44,17 @@ def update_consent(data: ConsentRequest, response: Response,
 
 
 @router.get('/jobs/{job_id}')
-def result(job_id: str, response: Response, user=Depends(student)):
+def result(job_id: str, response: Response, user=Depends(student), db: Session = Depends(get_db)):
     response.headers['Cache-Control'] = 'no-store'
     value = expression_service.get(user.id, job_id)
     if value is None:
         raise HTTPException(404, 'Resultado no disponible o caducado', headers={'Cache-Control': 'no-store'})
+    if value.get('status') == 'READY' and not value.get('_guardado'):
+        try:
+            from app.db.emoscan_repository import registrar_historial_emocion
+            registrar_historial_emocion(db, user.id, value, origen='asistencia')
+            value['_guardado'] = True
+        except Exception:
+            db.rollback()
     return value
+

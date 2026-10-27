@@ -1,4 +1,4 @@
-﻿from sqlalchemy import (
+from sqlalchemy import (
     BigInteger,
     Boolean,
     Column,
@@ -213,3 +213,21 @@ class ChatHistorial(Base):
     pregunta = Column(Text, nullable=False)
     respuesta = Column(Text, nullable=False)
     fecha_hora = Column(DateTime, nullable=False)
+
+
+class EmoscanHistorial(Base):
+    __tablename__ = "emoscan_historial"
+
+    id = Column(BigInteger, primary_key=True)
+    usuario_id = Column(Integer, ForeignKey("usuarios.id"), nullable=False)
+    estudiante_id = Column(Integer, ForeignKey("estudiantes.id"), nullable=True)
+    emocion_predominante = Column(String(50), nullable=False)
+    confianza = Column(Numeric(5, 4), nullable=True)
+    scores_json = Column(Text, nullable=True)
+    origen = Column(String(30), nullable=False, default="personal")
+    sesion_id = Column(Integer, ForeignKey("sesiones_clase.id"), nullable=True)
+    fecha_registro = Column(DateTime, server_default=func.now())
+
+    usuario = relationship("Usuario")
+    estudiante = relationship("Estudiante")
+    sesion = relationship("SesionClase")

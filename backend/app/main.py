@@ -28,10 +28,17 @@ from app.services.expression_service import expression_service
 @asynccontextmanager
 async def lifespan(app):
     try:
+        from app.db.database import Base
+        import app.db.models
+        Base.metadata.create_all(bind=engine)
+    except Exception:
+        pass
+    try:
         yield
     finally:
         expression_service.close()
         personal_service.close()
+
 
 
 app = FastAPI(

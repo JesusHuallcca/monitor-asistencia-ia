@@ -37,8 +37,12 @@ integraciones/emoscan/*.onnx
 *.log
 *.tmp
 *.part
+*.rar
+*.zip
+certs/
+test_aiven.py
 .pytest_cache/
 .coverage
 htmlcov/
 playwright-report/
-test-results/
+test-results/
