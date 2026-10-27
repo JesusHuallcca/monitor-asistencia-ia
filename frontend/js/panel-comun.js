@@ -27,6 +27,9 @@ const Panel = Object.assign(Object.create(Admin), {
         icono: I.libro,
       },
     ];
+    if (rol === "profesor") {
+      base.push({ href: "segmentacion.html", texto: "Segmentación IA", icono: I.ia });
+    }
     if (rol === "estudiante") {
       base.push({
         href: "calificaciones.html",
@@ -34,6 +37,7 @@ const Panel = Object.assign(Object.create(Admin), {
         icono: I.notas,
       });
       base.push({ href: "ia.html", texto: "Asistente IA", icono: I.ia });
+      base.push({ href: "emoscan.html", texto: "EmoScan", icono: I.ia });
     }
     base.push({ href: "perfil.html", texto: "Perfil", icono: I.perfil });
     return base;

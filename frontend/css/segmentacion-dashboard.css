@@ -1,0 +1,169 @@
+/* Exclusivo del dashboard de Segmentación IA. */
+.seg-dashboard { --seg-blue:#1558b0; background:#eef2f7; }
+.seg-dashboard .admin-layout { grid-template-columns:224px minmax(0,1fr); }
+.seg-dashboard .admin-principal,.seg-dashboard .seg-page { min-width:0; }
+.seg-dashboard .admin-cabecera { position:static; padding:20px 26px; background:#fff; border-bottom:1px solid #dbe3ef; gap:14px; }
+.seg-dashboard .admin-cabecera h1 { margin:5px 0 0; font-size:clamp(1.1rem,1.7vw,1.65rem); color:#16385e; }
+.seg-dashboard .seg-eyebrow { font-size:.62rem; letter-spacing:.12em; color:#52627b; font-weight:700; }
+.seg-dashboard .seg-badge { background:#eaf5f1; color:#17664b; border:1px solid #bfdfd0; border-radius:6px; font-size:.62rem; font-weight:700; padding:7px 9px; white-space:normal; }
+.seg-dashboard .seg-page { max-width:1720px; margin:auto; padding:18px 24px; }
+.seg-dashboard h2 { font-size:1rem; margin:0; }
+.seg-dashboard h3 { font-size:.86rem; margin:0; line-height:1.4; color:#1d3554; }
+.seg-dashboard h4 { font-size:.8rem; margin:0; }
+.seg-dashboard .seg-command { padding:13px 16px 0; background:white; border:1px solid #dae3ef; border-radius:10px; }
+.seg-dashboard .seg-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.seg-dashboard .seg-btn,.seg-dashboard .seg-outline { border-radius:6px; padding:9px 13px; font:600 .76rem 'Segoe UI',sans-serif; cursor:pointer; }
+.seg-dashboard .seg-btn { background:#1558b0; color:white; border:1px solid #1558b0; }
+.seg-dashboard .seg-outline { border:1px solid #b9c9dd; color:#21456c; background:white; }
+.seg-dashboard button:disabled { opacity:.48; cursor:not-allowed; }
+.seg-dashboard .seg-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:11px 0 0; padding:9px 0; border-top:1px solid #edf1f7; font-size:.75rem; }
+.seg-dashboard .seg-toolbar label { display:flex; align-items:center; gap:8px; color:#334e70; }
+.seg-dashboard select { border:1px solid #bbcbdc; border-radius:5px; background:#f8fafc; color:#233f63; padding:5px 8px; font:inherit; }
+.seg-dashboard #seg-visible { margin-left:auto; color:#52627b; font-variant-numeric:tabular-nums; }
+.seg-dashboard .seg-link-button { background:none; border:none; color:#1558b0; text-decoration:underline; text-underline-offset:3px; cursor:pointer; padding:5px 0; font-size:.75rem; }
+.seg-dashboard #seg-upload { margin-top:9px; }
+.seg-dashboard #seg-upload:not([open]) { display:none; }
+.seg-dashboard #seg-upload > summary { padding:10px 14px; background:#e6eef9; border-radius:7px; font-size:.8rem; cursor:pointer; color:#23466f; }
+.seg-dashboard .seg-upload-zone { background:#fff; border:1px dashed #89a6c7; border-radius:8px; padding:16px; font-size:.78rem; color:#415673; }
+.seg-dashboard .seg-file input { padding:9px; background:#f6f8fb; max-width:100%; box-sizing:border-box; }
+.seg-dashboard code { overflow-wrap:anywhere; }
+.seg-dashboard .seg-feedback { margin:8px 2px; font-size:.73rem; color:#52627b; }
+.seg-dashboard .seg-feedback p { margin:0; }
+.seg-dashboard .seg-feedback .seg-error { margin-top:6px; }
+.seg-dashboard .seg-safety { padding:8px 12px; margin:0 0 14px; border-left:3px solid #4f87ce; background:#e4edf9; border-radius:0 6px 6px 0; color:#3c5676; font-size:.72rem; line-height:1.5; }
+.seg-dashboard .seg-empty { padding:45px 25px; text-align:center; background:white; border:1px dashed #bacbdd; border-radius:10px; }
+.seg-dashboard .seg-empty h2 { font-size:1.35rem; margin:12px 0; }
+.seg-dashboard .seg-empty p { max-width:660px; margin:auto; color:#52627b; font-size:.85rem; }
+.seg-dashboard .seg-analysis-heading { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin:12px 0; }
+.seg-dashboard .seg-muted { font-size:.71rem; color:#52627b; line-height:1.5; }
+.seg-dashboard .seg-card { min-width:0; margin:0; border:1px solid #dbe4ef; border-radius:9px; padding:13px 15px; background:white; box-shadow:0 2px 5px #17365c05; }
+.seg-dashboard .seg-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:0 0 14px; }
+.seg-dashboard .seg-stats article { border-top:3px solid #2e70c4; }
+.seg-dashboard .seg-stats article:nth-child(2) { border-top-color:#d97706; }
+.seg-dashboard .seg-stats article:nth-child(3) { border-top-color:#059669; }
+.seg-dashboard .seg-stats article:nth-child(4) { border-top-color:#9333ea; }
+.seg-dashboard .seg-stats span { font-size:.73rem; color:#415673; }
+.seg-dashboard .seg-stats strong { display:block; font-size:1.8rem; color:#173c68; margin:3px 0; line-height:1.2; }
+.seg-dashboard .seg-stats small { font-size:.64rem; color:#63758b; display:block; }
+.seg-dashboard .seg-chart-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; align-items:stretch; }
+.seg-dashboard .seg-chart-card { position:relative; display:flex; flex-direction:column; }
+.seg-dashboard .seg-chart-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; min-height:24px; }
+.seg-dashboard .seg-chart-index { font-size:.65rem; color:#5c7595; background:#edf3fb; padding:3px 6px; border-radius:4px; flex-shrink:0; }
+.seg-dashboard .seg-plot { width:100%; height:300px; min-width:0; }
+.seg-dashboard .seg-plot-short { height:230px; }
+.seg-dashboard .seg-chart-note { font-size:.7rem; line-height:1.5; color:#52627b; padding-top:8px; border-top:1px solid #edf1f7; margin:8px 0 0; }
+.seg-dashboard .seg-axis-picker { font-size:.68rem; color:#1558b0; margin:4px 0 0; }
+.seg-dashboard .seg-axis-picker summary { cursor:pointer; }
+.seg-dashboard .seg-axis-controls { display:flex; flex-wrap:wrap; gap:8px; padding-top:6px; }
+.seg-dashboard .seg-axis-controls label { flex:1; min-width:0; }
+.seg-dashboard .seg-axis-controls select { display:block; max-width:100%; width:100%; font-size:.7rem; }
+.seg-dashboard .seg-group { border:1px solid #e1e8f1; border-left:3px solid var(--cluster); padding:8px 10px; border-radius:6px; margin:7px 0; }
+.seg-dashboard .seg-group button { border:none; background:none; padding:0; color:#254971; font:600 .75rem 'Segoe UI',sans-serif; text-decoration:underline; cursor:pointer; }
+.seg-dashboard .seg-group p { margin:4px 0 0; font-size:.69rem; color:#52627b; line-height:1.5; }
+.seg-dashboard .seg-eval-callout { background:#edf3fb; border-radius:6px; padding:10px; margin-top:9px; }
+.seg-dashboard .seg-eval-callout p { font-size:.7rem; color:#415673; line-height:1.5; margin:5px 0 0; }
+.seg-dashboard .seg-selection { margin-top:14px; padding:14px; background:white; border:1px solid #b9cce5; border-radius:8px; }
+.seg-dashboard .seg-table-wrap { overflow-x:auto; }
+.seg-dashboard .seg-selection table { font-size:.73rem; }
+.seg-dashboard .seg-selection caption { text-align:left; padding:8px 0; color:#52627b; }
+.seg-dashboard .modebar-group { background:#f1f5f9 !important; border-radius:5px; }
+.seg-dashboard .modebar-btn { background:transparent !important; box-shadow:none !important; }
+.seg-dashboard .modebar-btn path { fill:#52627b !important; }
+.seg-dashboard .modebar-btn.active path { fill:#0b57d0 !important; }
+.seg-dashboard [hidden] { display:none !important; }
+.seg-dashboard :focus-visible { outline:3px solid #60a5fa; outline-offset:3px; }
+@media(min-width:1650px) { .seg-dashboard .seg-plot { height:330px; } .seg-dashboard .seg-plot-short { height:245px; } }
+@media(max-width:820px) {
+  .seg-dashboard .admin-layout { grid-template-columns:minmax(0,1fr); }
+  .seg-dashboard .admin-menu { min-width:0; }
+  .seg-dashboard .admin-menu nav { order:2; flex:1 1 100%; min-width:0; max-width:100%; box-sizing:border-box; }
+  .seg-dashboard .admin-cabecera { padding:16px; }
+  .seg-dashboard .seg-page { padding:14px; }
+}
+@media(max-width:650px) {
+  .seg-dashboard .seg-chart-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+  .seg-dashboard .seg-stats { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+  .seg-dashboard .seg-stats strong { font-size:1.5rem; }
+  .seg-dashboard .seg-card { padding:12px; }
+  .seg-dashboard .seg-plot { height:320px; }
+  .seg-dashboard .seg-plot-short { height:245px; }
+  .seg-dashboard .seg-command { padding:11px 12px 0; }
+  .seg-dashboard .seg-actions > button { flex:1 1 44%; }
+  .seg-dashboard #seg-visible { margin-left:0; width:100%; }
+  .seg-dashboard .seg-stats small { line-height:1.4; }
+}
+
+/* Inspectores de puntos fuera del dibujo, con altura estable en cada dispersión. */
+.seg-dashboard .seg-point-inspector { height:112px; flex-shrink:0; display:flex; align-items:center; justify-content:center; padding-top:4px; box-sizing:border-box; min-width:0; }
+.seg-dashboard .seg-point-tooltip { box-sizing:border-box; max-width:100%; width:244px; padding:8px 11px; background:#fff; color:#193653; border:1px solid #d8e3f0; border-radius:9px; box-shadow:0 3px 12px #16385e0c; font:11px/17px 'Segoe UI',Arial,sans-serif; overflow-wrap:anywhere; pointer-events:none; }
+.seg-dashboard .seg-point-tooltip strong { display:block; margin-bottom:3px; color:#153454; font-weight:650; }
+.seg-dashboard .seg-tooltip-dot { display:inline-block; width:6px; height:6px; margin:0 6px 1px 0; border-radius:50%; }
+.seg-dashboard .seg-point-hint { color:#62768e; text-align:center; font-size:.68rem; max-width:260px; }
+.seg-dashboard .seg-chart-card > .seg-chart-note { margin-top:auto; }
+.seg-dashboard .js-plotly-plot .plotly .modebar { top:2px; right:2px; }
+.seg-dashboard .modebar-group { background:rgba(248,250,252,.94) !important; padding:1px !important; }
+.seg-dashboard .modebar-btn { padding:3px 4px !important; font-size:13px; }
+.seg-dashboard .js-plotly-plot .plotly .modebar:focus-within { opacity:1 !important; }
+@media(max-width:650px) {
+  .seg-dashboard .seg-point-tooltip { font-size:11px; line-height:17px; }
+}
+
+/* Seis tarjetas centradas en explicar el modelo, con leyenda descriptiva compartida. */
+.seg-dashboard .admin-cabecera > div { min-width:0; max-width:1120px; }
+.seg-dashboard .admin-cabecera h1 { font-size:clamp(1.05rem,1.55vw,1.65rem); line-height:1.25; }
+.seg-dashboard .seg-intro { font-size:.77rem; color:#52627b; margin:7px 0 0; line-height:1.5; }
+.seg-dashboard .seg-badge { max-width:200px; flex-shrink:0; font-size:.68rem; text-align:center; }
+.seg-dashboard .seg-group-overview { margin:6px 0 14px; }
+.seg-dashboard #seg-groups { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.seg-dashboard .seg-group { background:#fff; margin:0; padding:10px 12px; }
+.seg-dashboard .seg-group button { text-align:left; line-height:1.5; }
+.seg-dashboard .seg-group button[aria-pressed="true"] { color:#1558b0; }
+.seg-dashboard .seg-group p { font-size:.72rem; line-height:1.65; }
+.seg-dashboard .seg-plot { height:320px; }
+.seg-dashboard .seg-plot-tall { height:408px; }
+.seg-dashboard .seg-four-means { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px 12px; padding-top:8px; }
+.seg-dashboard .seg-four-means section { min-width:0; }
+.seg-dashboard .seg-four-means h4 { font-size:.7rem; font-weight:600; color:#52627b; margin:0 0 2px; }
+.seg-dashboard .seg-four-means .seg-plot { height:164px; }
+.seg-dashboard .seg-silhouette-inspector { height:132px; }
+.seg-dashboard .seg-chart-card[data-chart="seg-samples"] .seg-plot { height:300px; }
+.seg-dashboard .seg-chart-note { margin-top:auto; padding-top:8px; }
+@media(max-width:1100px) {
+  .seg-dashboard .admin-cabecera { align-items:flex-start; flex-wrap:wrap; }
+  .seg-dashboard #seg-groups { grid-template-columns:minmax(0,1fr); gap:7px; }
+}
+@media(max-width:650px) {
+  .seg-dashboard .seg-plot { height:310px; }
+  .seg-dashboard .seg-plot-tall { height:340px; }
+  .seg-dashboard .seg-four-means { gap:9px 8px; }
+  .seg-dashboard .seg-four-means .seg-plot { height:160px; }
+  .seg-dashboard .seg-badge { max-width:none; }
+}
+
+/* Ocho tarjetas en cuatro filas; PCA destacado sin reducir sus análisis complementarios. */
+.seg-dashboard .seg-chart-grid { grid-template-columns:repeat(12,minmax(0,1fr)); }
+.seg-dashboard .seg-chart-grid > .seg-chart-card { grid-column:span 6; }
+.seg-dashboard .seg-chart-grid > [data-chart="seg-pca"] { grid-column:span 7; border-top:3px solid #1558b0; box-shadow:0 3px 14px #1558b012; }
+.seg-dashboard .seg-chart-grid > [data-chart="seg-samples"] { grid-column:span 5; }
+.seg-dashboard .seg-primary-label { display:block; font-size:.6rem; font-weight:700; letter-spacing:.08em; color:#1558b0; margin-bottom:3px; }
+.seg-dashboard [data-chart="seg-pca"] h3 { font-size:1rem; color:#163d70; }
+.seg-dashboard #seg-pca { height:350px; }
+.seg-dashboard .seg-chart-card[data-chart="seg-samples"] .seg-plot { height:330px; }
+.seg-dashboard .seg-complement .seg-plot { height:300px; }
+.seg-dashboard #seg-elbow,.seg-dashboard #seg-heatmap { height:270px; }
+.seg-dashboard #seg-distribution { height:370px; }
+.seg-dashboard .seg-four-means .seg-plot { height:174px; }
+@media(max-width:650px) {
+  .seg-dashboard .seg-chart-grid { grid-template-columns:minmax(0,1fr); }
+  .seg-dashboard .seg-chart-grid > .seg-chart-card,
+  .seg-dashboard .seg-chart-grid > [data-chart="seg-pca"],
+  .seg-dashboard .seg-chart-grid > [data-chart="seg-samples"] { grid-column:1; }
+  .seg-dashboard #seg-pca { height:350px; }
+  .seg-dashboard .seg-complement .seg-plot { height:310px; }
+  .seg-dashboard #seg-distribution { height:310px; }
+}
+
+.seg-dashboard .seg-expression-detail { margin-top:14px; }
+.seg-dashboard .seg-expression-control { font-size:.75rem; display:flex; align-items:center; gap:8px; color:#415673; }
+.seg-dashboard #seg-expression-chart { height:350px; }
+@media(max-width:650px) { .seg-dashboard #seg-expression-chart { height:400px; } }

@@ -1,0 +1,7 @@
+# Instalación en un entorno NUEVO del worktree de integración.
+-r requirements.txt
+-r requirements-emoscan.txt
+-r segmentacion/requirements.txt
+Pillow>=10,<13
+# El worker FERPlus existente utiliza CascadeClassifier y los datos Haar de OpenCV 4.
+opencv-python-headless>=4.8,<5

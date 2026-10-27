@@ -1,7 +1,10 @@
 # Entornos virtuales y secretos
 venv/
 .venv/
+.venv*/
 .env
+.env.*
+!.env.example
 *.pyc
 __pycache__/
 .DS_Store
@@ -22,3 +25,20 @@ ai/face/models/.cache/
 # Frontend
 node_modules/
 dist/
+
+# Archivo temporal local, sin uso en la integración
+integraciones/o.pb
+
+# Artefactos locales: no publicar pesos descargados, bases, logs ni cachés de pruebas
+integraciones/emoscan/*.onnx
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.tmp
+*.part
+.pytest_cache/
+.coverage
+htmlcov/
+playwright-report/
+test-results/

@@ -2,9 +2,13 @@
   "name": "frontend",
   "version": "1.0.0",
   "scripts": {
-    "start": "serve -s . -l $PORT"
+    "start": "serve -s . -l $PORT",
+    "test:integration": "node tests/integracion-final.test.cjs"
   },
   "dependencies": {
     "serve": "^14.2.3"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0"
   }
 }

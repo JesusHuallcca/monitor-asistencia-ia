@@ -1,0 +1,6 @@
+# Python 3.12 recomendado; sin FER, TensorFlow ni PyTorch.
+Flask>=3.0,<4
+numpy>=1.26,<3
+opencv-python>=4.9,<5
+onnxruntime>=1.18,<2
+pandas>=2.2,<3

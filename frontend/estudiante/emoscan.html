@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Senati | EmoScan — Mis expresiones</title>
+  <link rel="stylesheet" href="../css/login.css" /><link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/segmentacion.css" /><link rel="stylesheet" href="../css/emoscan-personal.css" />
+</head>
+<body class="admin-page" data-rol="estudiante">
+  <div class="admin-layout"><aside class="admin-menu"></aside><div class="admin-principal">
+    <header class="admin-cabecera"><div><h1>EmoScan — Mis expresiones</h1><p class="subtitulo-pagina">Un análisis voluntario, separado de tu asistencia.</p></div></header>
+    <main class="admin-cuerpo seg-page">
+      <section class="seg-notice"><strong>Una estimación, no una lectura de tus emociones.</strong>
+        Las puntuaciones del modelo no representan emociones internas verificadas, atención ni rendimiento.
+        Esta sección no registra asistencia. No guardamos fotografías, videos ni resultados.</section>
+      <section class="seg-card"><h2>Tú decides cuándo analizar</h2>
+        <p id="emo-consent-text">Cargando el consentimiento específico…</p>
+        <label><input id="emo-consent" type="checkbox" disabled /> Acepto el análisis personal voluntario descrito arriba.</label>
+        <button id="emo-revoke" class="seg-btn" type="button" disabled>Retirar consentimiento</button>
+      </section>
+      <div class="seg-grid">
+        <section class="seg-card"><h2>Vista previa de la cámara</h2>
+          <video id="emo-video" autoplay muted playsinline aria-label="Vista previa local de la cámara"></video>
+          <p class="seg-muted">La cámara solo envía una captura cuando tú pulsas analizar. Encuadra un único rostro.</p>
+          <div class="seg-actions">
+            <button id="emo-start" class="seg-btn" type="button" disabled>Activar cámara</button>
+            <button id="emo-analyze" class="seg-btn" type="button" disabled>Analizar expresión</button>
+            <button id="emo-repeat" class="seg-btn" type="button" disabled>Repetir análisis</button>
+            <button id="emo-stop" class="seg-btn" type="button" disabled>Desactivar cámara</button>
+          </div>
+        </section>
+        <section class="seg-card"><h2>Resultado temporal</h2>
+          <p id="emo-status" role="status" aria-live="polite">Verificando tu sesión…</p>
+          <p id="emo-error" class="seg-error" role="alert" hidden></p>
+          <div id="emo-result" hidden><h3 id="emo-label"></h3><div id="emo-scores"></div>
+            <p class="seg-muted">Puntuaciones FERPlus. El resultado se borra al caducar, retirar el consentimiento o salir de esta sección.</p></div>
+        </section>
+      </div>
+    </main>
+  </div></div>
+  <script src="../js/config.js"></script><script src="../js/auth.js"></script>
+  <script src="../js/admin-comun.js"></script><script src="../js/panel-comun.js"></script>
+  <script src="../js/emoscan-personal.js"></script>
+</body>
+</html>

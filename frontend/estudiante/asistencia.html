@@ -250,6 +250,16 @@
             </p>
 
 
+            <section aria-label="Análisis opcional de expresiones" style="margin: 1rem 0;">
+                <p id="expressionConsentText">El análisis de expresiones es opcional. Tu asistencia funciona sin activarlo.</p>
+                <label>
+                    <input type="checkbox" id="expressionConsent" disabled>
+                    Acepto voluntariamente el análisis de expresiones descrito arriba.
+                </label>
+                <button type="button" id="expressionRevoke" disabled>Revocar permiso</button>
+                <p id="expressionResult" role="status" aria-live="polite"></p>
+            </section>
+
             <div class="camera-container">
 
                 <video
@@ -337,6 +347,7 @@
 
 
     <script src="../components/camera.js"></script>
+    <script src="../js/expresiones-asistencia.js"></script>
 
 
     <script>
