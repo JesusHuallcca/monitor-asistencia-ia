@@ -1,23 +1,23 @@
 #!/usr/bin/env bash
-# railway_startup.sh
-# Se ejecuta antes de arrancar uvicorn en Railway.
-# Descarga el modelo FERPlus ONNX si no existe (no se sube a Git por su tamaño).
-
 set -e
 
-MODEL_DIR="/app/integraciones/emoscan"
-MODEL_PATH="${MODEL_DIR}/emotion-ferplus-8.onnx"
-MODEL_URL="https://huggingface.co/onnxmodelzoo/emotion-ferplus-8/resolve/main/model/emotion-ferplus-8.onnx?download=true"
+# Directory where the ONNX model lives (relative to project root)
+MODEL_DIR="integraciones/emoscan"
+MODEL_FILE="emotion-ferplus-8.onnx"
+# Public URL for the model (GitHub raw file)
+MODEL_URL="https://github.com/onnx/models/raw/main/vision/classification/emotion_ferplus/model/emotion-ferplus-8.onnx"
 
+# Ensure the directory exists
 mkdir -p "$MODEL_DIR"
 
-if [ ! -f "$MODEL_PATH" ] || [ "$(wc -c < "$MODEL_PATH")" -lt 1000000 ]; then
-    echo "Descargando modelo FERPlus ONNX..."
-    curl -L --retry 3 --retry-delay 5 -o "${MODEL_PATH}.part" "$MODEL_URL"
-    mv "${MODEL_PATH}.part" "$MODEL_PATH"
-    echo "Modelo descargado correctamente: $(du -sh "$MODEL_PATH" | cut -f1)"
+# Download the model if it is not already present
+if [ ! -f "$MODEL_DIR/$MODEL_FILE" ]; then
+  echo "Downloading ONNX model..."
+  curl -L -o "$MODEL_DIR/$MODEL_FILE" "$MODEL_URL"
 else
-    echo "Modelo FERPlus ONNX ya presente: $(du -sh "$MODEL_PATH" | cut -f1)"
+  echo "ONNX model already present."
 fi
 
-echo "Startup completado. Arrancando uvicorn..."
+# Start the FastAPI server with proper PYTHONPATH (project root + backend)
+cd backend
+PYTHONPATH=/app:/app/backend uvicorn app.main:app --host 0.0.0.0 --port $PORT
