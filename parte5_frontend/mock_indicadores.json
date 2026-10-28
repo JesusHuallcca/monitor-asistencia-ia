@@ -1,0 +1,136 @@
+{
+  "empresa": "SENATI - Monitor Inteligente de Asistencia",
+  "fecha_consulta": "2026-10-23",
+  "periodo": "Semana 11 (actual)",
+  "estadisticas": {
+    "media_emocional_positiva": 0.68,
+    "mediana_asistencia": 0.85,
+    "desviacion_std_engagement": 0.14,
+    "varianza_asistencia": 0.019,
+    "probabilidad_asistencia_alta": 0.72,
+    "total_sesiones_analizadas": 124,
+    "total_estudiantes": 48
+  },
+  "prediccion_regresion": {
+    "indicador": "Probabilidad de asistencia próxima sesión",
+    "valor": 0.81,
+    "valor_porcentaje": "81%",
+    "intervalo_confianza": "75% – 87%",
+    "modelo": "Regresión lineal simple",
+    "r2": 0.74,
+    "features_usadas": [
+      "pct_emocion_positiva",
+      "hora_del_dia",
+      "dia_semana"
+    ],
+    "interpretacion": "Según el modelo, el grupo tiene alta probabilidad de asistencia en la próxima sesión."
+  },
+  "segmentacion": {
+    "algoritmo": "K-Means (k=3)",
+    "segmento_actual": "Alto engagement",
+    "segmento_id": 0,
+    "descripcion": "Estudiantes con alta asistencia y emociones positivas predominantes.",
+    "distribucion": [
+      {
+        "nombre": "Alto engagement",
+        "cantidad": 18,
+        "porcentaje": 37.5
+      },
+      {
+        "nombre": "Participación media",
+        "cantidad": 21,
+        "porcentaje": 43.8
+      },
+      {
+        "nombre": "Riesgo de deserción emocional",
+        "cantidad": 9,
+        "porcentaje": 18.7
+      }
+    ]
+  },
+  "tendencia_semanal": {
+    "labels": [
+      "Lun",
+      "Mar",
+      "Mié",
+      "Jue",
+      "Vie"
+    ],
+    "asistencia": [
+      0.82,
+      0.79,
+      0.88,
+      0.85,
+      0.91
+    ],
+    "emocion_positiva": [
+      0.61,
+      0.65,
+      0.72,
+      0.68,
+      0.74
+    ]
+  },
+  "kpis_rapidos": [
+    {
+      "id": "media",
+      "titulo": "Media emocional positiva",
+      "valor": "68%",
+      "icono": "😊",
+      "color": "#148F77"
+    },
+    {
+      "id": "prediccion",
+      "titulo": "Predicción asistencia",
+      "valor": "81%",
+      "icono": "📈",
+      "color": "#0b5cab"
+    },
+    {
+      "id": "segmento",
+      "titulo": "Segmento actual",
+      "valor": "Alto engagement",
+      "icono": "🎯",
+      "color": "#E67E22"
+    },
+    {
+      "id": "sesiones",
+      "titulo": "Sesiones analizadas",
+      "valor": "124",
+      "icono": "📊",
+      "color": "#8E44AD"
+    }
+  ],
+  "emoscan": {
+    "motor": "EmoScan · OpenCV + clasificador facial",
+    "sesion_ref": "mock-2026-10-23",
+    "distribucion": [
+      {
+        "key": "feliz",
+        "pct": 52
+      },
+      {
+        "key": "neutral",
+        "pct": 28
+      },
+      {
+        "key": "triste",
+        "pct": 9
+      },
+      {
+        "key": "sorprendido",
+        "pct": 6
+      },
+      {
+        "key": "enojado",
+        "pct": 3
+      },
+      {
+        "key": "miedo",
+        "pct": 2
+      }
+    ],
+    "emocion_dominante": "feliz",
+    "confianza_media": 0.86
+  }
+}
