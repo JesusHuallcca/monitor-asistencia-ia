@@ -1,0 +1,17 @@
+{
+  "puntaje_asistencia": 86.13,
+  "estado": "PRESENTE",
+  "features_usadas": {
+    "dia_semana": 0,
+    "hora_llegada": 482,
+    "confianza": 0.92,
+    "liveness_score": 0.88,
+    "happy": 0.55,
+    "neutral": 0.30,
+    "sad": 0.10,
+    "angry": 0.05
+  },
+  "modelo": "Regresion Lineal Multiple",
+  "r2": 0.7790,
+  "mae": 6.18
+}

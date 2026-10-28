@@ -1,0 +1,30 @@
+{
+  "modelo": "Regresión Lineal Múltiple",
+  "features": [
+    "dia_semana",
+    "hora_llegada",
+    "confianza",
+    "liveness_score",
+    "happy",
+    "neutral",
+    "sad",
+    "angry"
+  ],
+  "coeficientes": [
+    0.20018823921192547,
+    -11.593321244186551,
+    4.0299878292910245,
+    2.1577249432422,
+    -7.76233477556015,
+    -7.766771528040934,
+    -7.214379103174954,
+    -5.298787560633429
+  ],
+  "intercepto": 73.53406249999998,
+  "metricas": {
+    "r2_simple": 0.1777,
+    "mae_simple": 12.262,
+    "r2_multiple": 0.779,
+    "mae_multiple": 6.184
+  }
+}
