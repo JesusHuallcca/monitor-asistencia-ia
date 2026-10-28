@@ -200,6 +200,9 @@ def health():
         "pass_len": pass_len,
         "host": settings.DB_HOST,
         "user": settings.DB_USER,
+        "emoscan_model_exists": os.path.exists(settings.EMOSCAN_MODEL_PATH),
+        "version": "v1.1-emoscan-model",
     }
+
 
 
