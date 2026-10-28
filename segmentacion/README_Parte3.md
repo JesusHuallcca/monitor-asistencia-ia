@@ -1,93 +1,138 @@
-# Parte 3: K-Means con cuatro variables sintéticas
+# Parte 3 — Segmentación no supervisada con K-Means
 
-La versión principal agrupa **150 perfiles sintéticos** usando asistencia,
-tardanzas, promedio de notas y expresiones positivas sintéticas. El modelo está
-en `segmentacion_kmeans.py`; sus gráficos, métricas e informes están en `resultados/`.
-La versión anterior de tres variables se puede recuperar desde Git. La carpeta
-actual contiene únicamente el modelo de cuatro variables y sus archivos necesarios.
+Esta entrega funciona de forma independiente dentro de `segmentacion/`. No modifica
+el backend, frontend, modelos supervisados ni los archivos de otros integrantes.
+No requiere MySQL, reconocimiento facial, servidor web ni conexión a GitHub.
 
-## Ejecutar desde la raíz del worktree
+## Análisis del proyecto y fuente de datos
 
-Con Python y las dependencias de `segmentacion/requirements.txt` instaladas:
+- `backend/app/db/models.py` define usuarios, sesiones, asistencias y notas.
+- `ai/ml/train.py` implementa regresión logística supervisada; esta parte tiene un objetivo diferente: describir grupos.
+- No se encontró un CSV histórico en la copia inicial del proyecto. `database/mysql/02_seed.sql`
+  contiene cinco alumnos ficticios y sesiones, pero no un historial de asistencias suficiente.
+- Se reutiliza **sin modificar** la función `generate_synthetic_attendance` de
+  `ai/ml/generate_dataset.py`: 150 estudiantes × 45 sesiones = 6750 registros,
+  con semilla 42. Sus perfiles internos no se usan como etiquetas ni variables.
+- Estos datos son **SINTÉTICOS**. No representan estudiantes reales y no permiten
+  sacar conclusiones sobre la institución. La procedencia aparece en CSV, figura e informe.
 
-```powershell
-python -B segmentacion/segmentacion_kmeans.py
-python -B -m unittest discover -s segmentacion -t . -v
-```
+## Instalación y ejecución (PowerShell, desde la raíz del proyecto)
 
-Si necesitas un entorno local:
+Python 3.10 o superior. Se recomienda un entorno independiente para esta entrega:
 
 ```powershell
 python -m venv segmentacion/.venv
-.\segmentacion\.venv\Scripts\python.exe -m pip install -r segmentacion/requirements.txt
-.\segmentacion\.venv\Scripts\python.exe -B segmentacion/segmentacion_kmeans.py
-.\segmentacion\.venv\Scripts\python.exe -B -m unittest discover -s segmentacion -t . -v
+./segmentacion/.venv/Scripts/python.exe -m pip install -r segmentacion/requirements.txt
+./segmentacion/.venv/Scripts/python.exe segmentacion/segmentacion_kmeans.py
+./segmentacion/.venv/Scripts/python.exe -m unittest discover -s segmentacion -p "test_segmentacion.py" -v
 ```
 
-## Datos y método
+Si ya tienes las dependencias instaladas, puedes sustituir la ruta al intérprete por
+`python`. Si el alias de Windows no funciona, utiliza la ruta completa de tu instalación
+de Python. No es necesario instalar los requisitos del backend.
 
-- Entrada predeterminada: `datos_asistencia_sinteticos.csv`.
-  Se reutilizan sin modificar sus 6750 sesiones: 150 usuarios ficticios, 45 sesiones cada uno.
-- Asistencia = (PRESENTE + TARDANZA) / sesiones; tardanzas = TARDANZA / sesiones;
-  promedio de notas = media académica, en escala de 0 a 20.
-- La cuarta variable es `expresiones_positivas_ratio`: conteo binomial simulado / 40
-  observaciones ficticias por perfil, con probabilidad uniforme entre 0.05 y 0.95.
-  Su generador usa semilla 2026 y no consulta las otras variables ni etiquetas.
-- StandardScaler y K-Means trabajan con las **cuatro columnas**. No se usan IDs,
-  etiquetas ni conteos auxiliares como variables de entrenamiento.
-- Semilla K-Means 42, 30 inicializaciones y 500 iteraciones máximas. Se evalúa k=2…8;
-  se elige la mayor silueta entre k≥3, por requisito de la entrega. El mejor k global
-  y el codo orientativo se informan por separado. PCA solo sirve para visualizar.
-- Se rechazan fuentes no sintéticas, expresiones externas, duplicados, faltantes
-  y valores fuera de rango. La entrada debe estar dentro de `segmentacion/` y la
-  salida dentro de esa carpeta.
+El script resuelve las rutas desde su propia ubicación. También funciona desde otra
+carpeta usando la ruta completa a `segmentacion_kmeans.py`. Por defecto escribe aquí.
+`--output-dir` permite una subcarpeta dentro de `segmentacion`; para conservar dos
+ejecuciones, usa subcarpetas distintas.
 
-Todos los datos son sintéticos. No hay conexión con EmoScan, cámara, base de datos,
-backend ni frontend. «Positivas» es una categoría ficticia; no mide emociones internas,
-atención ni riesgo de deserción. La silueta mide separación interna, no exactitud.
+## Cómo funciona
 
-## Resultados principales
+1. Busca `data/dataset_asistencias.csv` y luego `data/dataset_asistencias_sintetico.csv`.
+   Si ninguno existe, reutiliza el generador del proyecto. Un CSV existente inválido
+   produce un error explícito; no se sustituye silenciosamente por datos inventados.
+2. Valida identificadores, sesiones únicas, estados, procedencia y notas en 0–20.
+   Rechaza faltantes y fuentes mezcladas. No imputa ausencias ni calificaciones.
+3. Agrega una fila por `usuario_id`: asistencia (incluye tardanzas), tardanzas sobre
+   sesiones observadas y promedio de notas. La cantidad de sesiones se conserva para auditoría.
+4. Aplica `StandardScaler` a las tres variables. IDs, fechas, cursos, `perfil` y
+   `asistira` quedan fuera del entrenamiento. No se duplican variables complementarias
+   como asistencia y ausencia, que darían doble peso a la misma información.
+5. Ejecuta K-Means con semilla 42, 30 inicializaciones y hasta 500 iteraciones.
+   Evalúa k=2…8 (limitado por cantidad de estudiantes y perfiles distintos).
+6. Elige la mayor silueta entre k≥3 por el requisito de la entrega. También informa
+   el mejor k global, incluyendo k=2, y la inercia para la curva del codo.
+7. Ordena los segmentos por asistencia media y les pone nombres relativos después
+   de entrenar. PCA solo se usa para visualizar; no cambia las variables de K-Means.
 
-| Archivo en `resultados/` | Contenido |
+## Entregables
+
+| Archivo | Contenido |
 |---|---|
-| `datos_perfiles_sinteticos.csv` | 150 perfiles, cuatro variables y procedencia sintética |
-| `segmentos_asignados.csv` | Perfiles, segmentos E1…Ek y coordenadas PCA |
-| `resumen_segmentos.csv` | Tamaño y medias por segmento |
-| `evaluacion_k.csv` | Silueta e inercia para cada k |
-| `metricas_segmentacion.json` | Variables, semillas, hash de entrada, escalado, PCA y versiones |
-| `visualizacion_clusters.png` | PCA, centroides de cuatro variables, silueta y codo |
-| `descripcion_segmentos.md` | Informe calculado e interpretación |
+| `segmentacion_kmeans.py` | Flujo reproducible y argumentos de ejecución |
+| `segmentos_asignados.csv` | Una fila por estudiante: variables, origen, segmento y coordenadas PCA |
+| `visualizacion_clusters.png` | Dispersión, PCA, silueta y codo en cuatro paneles |
+| `descripcion_segmentos.md` | Resultados calculados, interpretación, acciones y guion para exponer |
+| `README_Parte3.md` | Instrucciones y decisiones de esta entrega |
+| `datos_asistencia_sinteticos.csv` | Historial sintético reutilizado para reproducir el análisis |
+| `evaluacion_k.csv` | Silueta e inercia por cada k evaluado |
+| `metricas_segmentacion.json` | Procedencia, parámetros, versiones y métricas |
+| `test_segmentacion.py` | Pruebas con unittest, sin dependencias del backend |
+| `requirements.txt` | Dependencias exclusivas de esta parte |
 
-Con las semillas predeterminadas: k=3, silueta 0.2374, grupos de 45, 60 y 45 perfiles;
-mejor k global 2, codo orientativo 4 y varianza PCA 2D 73.8 %.
-Consulta los archivos calculados para los valores completos.
-
-Una ejecución alternativa conserva los resultados principales:
-
-```powershell
-python -B segmentacion/segmentacion_kmeans.py --seed-expresiones 7 --output-dir segmentacion/resultados_semilla7
-```
-
-## Recuperar la versión anterior desde Git
-
-Antes de eliminar las copias antiguas se verificaron los diez archivos originales
-contra el commit `5a0f2a54d87aa2c61a6cb338922a29b0aa0f0a47`: sus hashes SHA-256
-coinciden con el manifiesto previo considerando la normalización LF/CRLF de Git.
-La documentación y los resultados de la antigua carpeta experimental también
-coinciden con los guardados en `b33ed020e7972ad7b1e1808381ecec1969e47bd2`.
-El CSV compartido se conserva sin cambiar sus bytes; no se necesitan copias locales
-de los scripts, pruebas, gráficos ni manifiestos antiguos.
-
-Para consultar o exportar la entrega original sin cambiar la rama ni los archivos
-actuales, ejecutar desde la raíz:
+## Usar un CSV propio
 
 ```powershell
-git show 5a0f2a5:segmentacion/segmentacion_kmeans.py
-git archive --format=zip --output=segmentacion/.cache/parte3-original.zip 5a0f2a5 segmentacion/
+python segmentacion/segmentacion_kmeans.py --dataset ruta/al/historial.csv --origen real --output-dir segmentacion/resultados_reales
 ```
 
-El segundo comando requiere que exista `segmentacion/.cache/`; se puede crear con
-`New-Item -ItemType Directory -Force segmentacion/.cache`.
+`--origen real` es una declaración del usuario sobre su fuente; el script no puede
+verificarla. Sin declaración ni columna de procedencia se marca `no_verificado`.
+Un archivo con `sintetico` en el nombre se marca sintético si falta la columna.
+Si ya existe `origen_datos`, esa columna es la fuente de procedencia y se valida.
 
-`GUION_EXPOSICION.md` presenta exclusivamente la versión principal. El informe de
-verificación está en `RESULTADOS_PRUEBAS.md`.
+Contrato mínimo (filas por estudiante y sesión):
+
+```csv
+usuario_id,sesion_id,estado,promedio_notas,origen_datos
+101,1,PRESENTE,15.5,real
+101,2,AUSENTE,15.5,real
+```
+
+El ejemplo solo muestra el formato: se necesitan al menos cuatro estudiantes y
+tres perfiles numéricos diferentes. `sesion` puede sustituir a `sesion_id`;
+si hay `curso_id`, se incluye en la clave de duplicados. `promedio_notas` debe
+ser el promedio académico comparable de ese estudiante; no una nota aislada.
+Se aceptan PRESENTE, TARDANZA y AUSENTE (normalizados a mayúsculas).
+Los datos históricos reales deben incluir ausencias explícitas de todas las clases
+esperadas y un periodo comparable. Un export solo de marcaciones positivas no
+sirve para medir asistencia. No se ejecuta SQL ni se consulta la base de datos.
+
+## Pruebas y exposición
+
+Las pruebas verifican las fórmulas de agregación, rechazo de datos inválidos,
+duplicados y fuentes mezcladas, ausencia de etiquetas objetivo en el entrenamiento,
+reproducibilidad, selección de al menos tres grupos, archivos y formato PNG.
+La prueba de integración escribe únicamente en una carpeta temporal bajo `segmentacion`
+y la elimina al finalizar.
+
+Consulta `descripcion_segmentos.md` para los valores efectivamente calculados y un
+guion de dos minutos. Explica que la silueta mide separación interna, **no exactitud**,
+y que imponer k≥3 es un requisito del trabajo. Los segmentos son descriptivos:
+no equivalen a un diagnóstico ni a la predicción de la siguiente asistencia.
+
+No se realizan commits, pushes ni publicaciones automáticamente.
+
+## Resultado de la ejecución de entrega
+
+Ejecución verificada con Python 3.14.7, NumPy 2.5.2, Pandas 3.0.5,
+scikit-learn 1.9.0 y Matplotlib 3.11.1. **7 pruebas aprobadas** con unittest,
+incluida la generación completa y la igualdad del CSV al repetir la ejecución.
+También se inspeccionó visualmente la figura generada.
+
+| Segmento | Estudiantes | Asistencia media | Tardanzas / sesiones | Nota media |
+|---|---:|---:|---:|---:|
+| S1: asistencia relativa baja | 45 | 34,7 % | 3,9 % | 10,88 |
+| S2: asistencia relativa intermedia | 70 | 68,2 % | 7,0 % | 14,93 |
+| S3: asistencia relativa alta | 35 | 85,0 % | 13,8 % | 15,31 |
+
+Se eligió **k=3**, con silueta **0,2953**, entre los valores admisibles de al menos
+tres segmentos. El mejor global fue k=2, con 0,3709; k=4 obtuvo 0,2948,
+muy cerca de k=3. La separación es limitada y hay solapamiento: no se presenta
+como una clasificación exacta. Las dos componentes PCA conservan el 88,3 %
+de la varianza estandarizada. S3 tiene la mayor asistencia, pero también más
+tardanzas por sesión; conviene mencionarlo al proponer seguimiento de puntualidad.
+
+Esta tabla resume la ejecución con semilla 42 y datos sintéticos. Si cambias
+los datos o parámetros, consulta los informes regenerados; esta sección del README
+conserva el resultado de la entrega original.
