@@ -29,7 +29,8 @@ def infer_expression(connection, frame, model_path):
     except Exception as e:
         import traceback
         traceback.print_exc()
-        connection.send({'status': 'UNAVAILABLE'})
+        connection.send({'status': 'UNAVAILABLE', 'error_detail': f"{type(e).__name__}: {str(e)}"})
+
 
     finally:
         connection.close()
