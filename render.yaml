@@ -3,6 +3,7 @@ services:
   - type: web
     name: monitor-asistencia-backend
     runtime: python
+    plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: cd backend && PYTHONPATH=..:. uvicorn app.main:app --host 0.0.0.0 --port $PORT
     envVars:
