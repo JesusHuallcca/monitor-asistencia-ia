@@ -18,7 +18,6 @@ data/
 *.joblib
 
 # Reconocimiento facial
-ai/face/models/*.onnx
 backend/fotos_prueba/
 ai/face/models/.cache/
 
