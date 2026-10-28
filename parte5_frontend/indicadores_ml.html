@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Indicadores ML · ASISTENCIA IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f0f4fa;
+      --sidebar: #0b1c3d;
+      --sidebar-2: #12264f;
+      --azul: #2563eb;
+      --azul-hover: #1d4ed8;
+      --azul-soft: #dbeafe;
+      --texto: #0f172a;
+      --texto-suave: #64748b;
+      --linea: #e2e8f0;
+      --blanco: #ffffff;
+      --verde: #10b981;
+      --verde-soft: #d1fae5;
+      --naranja: #f59e0b;
+      --naranja-soft: #fef3c7;
+      --morado: #8b5cf6;
+      --morado-soft: #ede9fe;
+      --rojo: #ef4444;
+      --rojo-soft: #fee2e2;
+      --sombra: 0 1px 3px rgba(15,23,42,.06), 0 8px 24px rgba(15,23,42,.04);
+      --radio: 16px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--texto);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .layout { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+
+    /* SIDEBAR */
+    .sidebar {
+      background: linear-gradient(180deg, var(--sidebar) 0%, #08122a 100%);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 12px;
+      padding: 22px 20px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .brand-logo {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      display: grid; place-items: center;
+      box-shadow: 0 6px 16px rgba(37,99,235,.4);
+    }
+    .brand-logo svg { width: 22px; height: 22px; }
+    .brand h1 { font-size: .95rem; font-weight: 800; letter-spacing: -.01em; }
+    .brand p { font-size: .7rem; color: #94a3b8; margin-top: 2px; font-weight: 500; }
+    .nav { padding: 14px 12px; flex: 1; }
+    .nav-label {
+      font-size: .65rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: #64748b; padding: 10px 12px 6px;
+    }
+    .nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 10px;
+      color: #cbd5e1; text-decoration: none;
+      font-size: .875rem; font-weight: 500;
+      margin-bottom: 2px; transition: .15s;
+    }
+    .nav a:hover { background: rgba(255,255,255,.06); color: #fff; }
+    .nav a.active {
+      background: linear-gradient(90deg, #2563eb, #3b82f6);
+      color: #fff; box-shadow: 0 6px 16px rgba(37,99,235,.35);
+    }
+    .nav a svg { width: 18px; height: 18px; opacity: .9; flex-shrink: 0; }
+    .side-foot {
+      padding: 14px 16px 18px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      font-size: .72rem; color: #64748b;
+    }
+
+    /* MAIN */
+    .main { min-width: 0; display: flex; flex-direction: column; }
+    .topbar {
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--linea);
+      padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      position: sticky; top: 0; z-index: 20;
+    }
+    .search {
+      flex: 1; max-width: 420px;
+      display: flex; align-items: center; gap: 10px;
+      background: #f8fafc; border: 1px solid var(--linea);
+      border-radius: 999px; padding: 10px 16px;
+    }
+    .search input {
+      border: 0; outline: 0; background: transparent;
+      width: 100%; font: inherit; font-size: .875rem; color: var(--texto);
+    }
+    .search svg { color: #94a3b8; width: 18px; height: 18px; }
+    .top-actions { display: flex; align-items: center; gap: 12px; }
+    .badge-mock {
+      background: var(--naranja-soft); color: #b45309;
+      border: 1px solid #fde68a; font-size: .72rem; font-weight: 700;
+      padding: 6px 12px; border-radius: 999px;
+    }
+    .btn {
+      border: 0; cursor: pointer; font: inherit; font-weight: 600;
+      border-radius: 10px; padding: 10px 16px; font-size: .875rem;
+      display: inline-flex; align-items: center; gap: 8px; transition: .15s;
+    }
+    .btn-primary { background: var(--azul); color: #fff; box-shadow: 0 6px 16px rgba(37,99,235,.3); }
+    .btn-primary:hover { background: var(--azul-hover); }
+    .btn-ghost {
+      background: #fff; color: var(--azul); border: 1px solid #bfdbfe;
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 10px;
+      padding: 4px 4px 4px 12px; background: #fff;
+      border: 1px solid var(--linea); border-radius: 999px;
+    }
+    .user-chip span { font-size: .8rem; font-weight: 600; }
+    .user-chip small { display: block; font-size: .68rem; color: var(--texto-suave); font-weight: 500; }
+    .avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg,#3b82f6,#8b5cf6);
+      color: #fff; display: grid; place-items: center;
+      font-size: .75rem; font-weight: 700;
+    }
+
+    .content { padding: 24px 28px 40px; max-width: 1280px; }
+    .page-head { margin-bottom: 20px; }
+    .page-head h2 { font-size: 1.45rem; font-weight: 800; letter-spacing: -.02em; }
+    .page-head p { color: var(--texto-suave); font-size: .9rem; margin-top: 4px; }
+
+    .aviso {
+      background: linear-gradient(90deg, #eff6ff, #f5f3ff);
+      border: 1px solid #c7d2fe;
+      border-radius: 14px; padding: 12px 16px;
+      font-size: .84rem; color: #3730a3; margin-bottom: 20px;
+      display: flex; gap: 10px; align-items: flex-start;
+    }
+
+    /* KPI CARDS */
+    .kpis {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 14px; margin-bottom: 18px;
+    }
+    .kpi {
+      background: var(--blanco); border-radius: var(--radio);
+      padding: 18px; box-shadow: var(--sombra); border: 1px solid rgba(226,232,240,.8);
+      position: relative; overflow: hidden;
+    }
+    .kpi::after {
+      content: ""; position: absolute; right: -20px; top: -20px;
+      width: 90px; height: 90px; border-radius: 50%; opacity: .12;
+    }
+    .kpi.k1::after { background: var(--azul); }
+    .kpi.k2::after { background: var(--verde); }
+    .kpi.k3::after { background: var(--naranja); }
+    .kpi.k4::after { background: var(--morado); }
+    .kpi-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      display: grid; place-items: center; margin-bottom: 12px;
+    }
+    .kpi.k1 .kpi-icon { background: var(--azul-soft); color: var(--azul); }
+    .kpi.k2 .kpi-icon { background: var(--verde-soft); color: var(--verde); }
+    .kpi.k3 .kpi-icon { background: var(--naranja-soft); color: #d97706; }
+    .kpi.k4 .kpi-icon { background: var(--morado-soft); color: var(--morado); }
+    .kpi-label { font-size: .72rem; font-weight: 600; color: var(--texto-suave); text-transform: uppercase; letter-spacing: .04em; }
+    .kpi-value { font-size: 1.7rem; font-weight: 800; margin-top: 4px; letter-spacing: -.02em; }
+    .kpi.k1 .kpi-value { color: var(--azul); }
+    .kpi.k2 .kpi-value { color: #059669; }
+    .kpi.k3 .kpi-value { color: #d97706; }
+    .kpi.k4 .kpi-value { color: #7c3aed; }
+    .kpi-sub { font-size: .75rem; color: var(--texto-suave); margin-top: 6px; }
+
+    /* GRID */
+    .grid-2 { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .grid-3 { display: grid; grid-template-columns: 1.2fr 1fr .9fr; gap: 16px; margin-bottom: 16px; }
+    .card {
+      background: var(--blanco); border-radius: var(--radio);
+      box-shadow: var(--sombra); border: 1px solid rgba(226,232,240,.8);
+      overflow: hidden;
+    }
+    .card-h {
+      padding: 14px 18px; border-bottom: 1px solid var(--linea);
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .card-h h3 { font-size: .95rem; font-weight: 700; }
+    .card-h .chip {
+      font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+      background: var(--azul-soft); color: var(--azul);
+    }
+    .card-b { padding: 18px; }
+
+    /* PREDICCION */
+    .pred {
+      display: grid; grid-template-columns: 140px 1fr; gap: 18px; align-items: center;
+    }
+    .pred-circle {
+      width: 140px; height: 140px; border-radius: 50%;
+      background: conic-gradient(var(--azul) calc(var(--p) * 1%), #e2e8f0 0);
+      display: grid; place-items: center; position: relative;
+    }
+    .pred-circle::before {
+      content: ""; position: absolute; inset: 12px; border-radius: 50%;
+      background: #fff;
+    }
+    .pred-circle .inner {
+      position: relative; text-align: center; z-index: 1;
+    }
+    .pred-circle .inner strong {
+      display: block; font-size: 1.8rem; font-weight: 800; color: var(--azul); line-height: 1;
+    }
+    .pred-circle .inner span { font-size: .7rem; color: var(--texto-suave); font-weight: 600; }
+    .pred-info p { font-size: .9rem; color: var(--texto-suave); margin-bottom: 12px; line-height: 1.45; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-bottom: 12px; font-size: .82rem; }
+    .meta b { color: var(--texto); }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      background: #f1f5f9; border: 1px solid var(--linea);
+      color: #475569; font-size: .7rem; font-weight: 600;
+      padding: 4px 10px; border-radius: 999px;
+    }
+
+    /* SEGMENTOS */
+    .seg-item { margin-bottom: 14px; }
+    .seg-item:last-child { margin-bottom: 0; }
+    .seg-top { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: .82rem; font-weight: 600; }
+    .seg-bar { height: 9px; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+    .seg-bar i { display: block; height: 100%; border-radius: 999px; }
+    .seg-desc { font-size: .84rem; color: var(--texto-suave); margin-bottom: 16px; line-height: 1.45; }
+
+    /* EMOSCAN */
+    .emo-chart-box { position: relative; height: 200px; }
+    .emo-live {
+      margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+      background: linear-gradient(135deg, #0b1c3d, #1e3a8a);
+      color: #fff; display: flex; align-items: center; gap: 12px;
+    }
+    .emo-live .ring {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.25);
+      display: grid; place-items: center; font-size: 1.2rem;
+      background: rgba(255,255,255,.08);
+    }
+    .emo-live strong { display: block; font-size: .9rem; }
+    .emo-live span { font-size: .75rem; color: #93c5fd; }
+    .emo-pulse {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: #22c55e; margin-right: 6px;
+      box-shadow: 0 0 0 0 rgba(34,197,94,.5);
+      animation: pulse 1.4s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34,197,94,.45); }
+      70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+      100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+    }
+    .emo-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; margin-bottom: 8px; flex-wrap: wrap;
+    }
+    .emo-toolbar .live-tag {
+      font-size: .72rem; font-weight: 700; color: #059669;
+      background: #d1fae5; padding: 4px 10px; border-radius: 999px;
+    }
+
+    /* CHART */
+    .chart-box { height: 250px; position: relative; }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--linea); }
+    th {
+      font-size: .7rem; text-transform: uppercase; letter-spacing: .05em;
+      color: var(--texto-suave); font-weight: 700; background: #f8fafc;
+    }
+    td.val { font-weight: 700; font-variant-numeric: tabular-nums; }
+    tr:last-child td { border-bottom: 0; }
+
+    .estado { text-align: center; padding: 48px; color: var(--texto-suave); font-weight: 600; }
+    .error {
+      display: none; background: var(--rojo-soft); border: 1px solid #fecaca;
+      color: #991b1b; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;
+    }
+    .oculto { display: none !important; }
+
+    @media (max-width: 1100px) {
+      .kpis { grid-template-columns: repeat(2, 1fr); }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .content { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        </div>
+        <div>
+          <h1>ASISTENCIA IA</h1>
+          <p>Campus Virtual · ML</p>
+        </div>
+      </div>
+      <nav class="nav">
+        <div class="nav-label">Analítica</div>
+        <a class="active" href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
+          Indicadores ML
+        </a>
+        <a href="#pred">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          Predicción
+        </a>
+        <a href="#seg">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+          Segmentación
+        </a>
+        <a href="#emo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+          EmoScan
+        </a>
+        <div class="nav-label">Sistema</div>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Estudiantes
+        </a>
+        <a href="#">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Reportes
+        </a>
+      </nav>
+      <div class="side-foot">Parte 5 · Frontend independiente<br/>Monitor + EmoScan</div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="search" placeholder="Buscar indicadores, sesiones o modelos..." />
+        </div>
+        <div class="top-actions">
+          <span class="badge-mock" id="badge-fuente">Datos: mock</span>
+          <button class="btn btn-primary" type="button" onclick="cargarIndicadores()">Actualizar</button>
+          <div class="user-chip">
+            <div>
+              <span>Jesús Q.</span>
+              <small>Parte 5 · ML</small>
+            </div>
+            <div class="avatar">JQ</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="page-head">
+          <h2>Indicadores ML aplicados a la empresa</h2>
+          <p>Predicción, segmentación K-Means, EmoScan y estadística en un solo panel.</p>
+        </div>
+
+        <div class="aviso">
+          <span>💡</span>
+          <div>
+            <strong>Parte 5 independiente.</strong>
+            Funciona con <code>mock_indicadores.json</code>. Cuando existan APIs de las Partes 1–3 y EmoScan, solo se cambia la URL de datos.
+          </div>
+        </div>
+
+        <div class="error" id="error-box"></div>
+        <div class="estado" id="estado-carga">Cargando indicadores…</div>
+
+        <div id="panel" class="oculto">
+          <!-- KPIs -->
+          <section class="kpis" id="kpis"></section>
+
+          <div class="grid-2">
+            <!-- Predicción -->
+            <section class="card" id="pred">
+              <div class="card-h">
+                <h3>Predicción — Regresión lineal</h3>
+                <span class="chip">Modelo supervisado</span>
+              </div>
+              <div class="card-b">
+                <div class="pred">
+                  <div class="pred-circle" id="pred-circle" style="--p: 0">
+                    <div class="inner">
+                      <strong id="pred-pct">—</strong>
+                      <span>asistencia</span>
+                    </div>
+                  </div>
+                  <div class="pred-info">
+                    <p id="pred-texto">—</p>
+                    <div class="meta">
+                      <span>Intervalo: <b id="pred-intervalo">—</b></span>
+                      <span>R²: <b id="pred-r2">—</b></span>
+                    </div>
+                    <div class="tags" id="pred-tags"></div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Segmentación -->
+            <section class="card" id="seg">
+              <div class="card-h">
+                <h3>Segmentación K-Means</h3>
+                <span class="chip">No supervisado</span>
+              </div>
+              <div class="card-b">
+                <p class="seg-desc" id="seg-desc">—</p>
+                <div id="segmentos"></div>
+              </div>
+            </section>
+          </div>
+
+          <div class="grid-3">
+            <!-- Tendencia -->
+            <section class="card">
+              <div class="card-h">
+                <h3>Tendencia semanal</h3>
+                <span class="chip">Asistencia vs emoción</span>
+              </div>
+              <div class="card-b">
+                <div class="emo-toolbar">
+                  <span class="live-tag"><span class="emo-pulse"></span>En vivo (simulado)</span>
+                  <span id="trend-tick" style="font-size:.72rem;color:var(--texto-suave)">Actualiza cada 2 s</span>
+                </div>
+                <div class="chart-box"><canvas id="chart-tendencia"></canvas></div>
+              </div>
+            </section>
+
+            <!-- EmoScan -->
+            <section class="card" id="emo">
+              <div class="card-h">
+                <h3>EmoScan · Emociones</h3>
+                <span class="chip">Visión por computador</span>
+              </div>
+              <div class="card-b">
+                <div class="emo-toolbar">
+                  <span class="live-tag"><span class="emo-pulse"></span>En vivo (simulado)</span>
+                  <span id="emo-tick" style="font-size:.72rem;color:var(--texto-suave)">Actualiza cada 1.5 s</span>
+                </div>
+                <div class="emo-chart-box">
+                  <canvas id="chart-emoscan"></canvas>
+                </div>
+                <div class="emo-live">
+                  <div class="ring" id="emo-live-emoji">😊</div>
+                  <div>
+                    <strong id="emo-live-label">Emoción dominante</strong>
+                    <span id="emo-live-sub">Sesión agregada · mock</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Resumen ML -->
+            <section class="card">
+              <div class="card-h">
+                <h3>Resumen del modelo</h3>
+              </div>
+              <div class="card-b" id="resumen-modelo" style="font-size:.84rem;color:var(--texto-suave);line-height:1.55">
+              </div>
+            </section>
+          </div>
+
+          <!-- Tabla -->
+          <section class="card">
+            <div class="card-h">
+              <h3>Estadística básica aplicada a la empresa</h3>
+            </div>
+            <div class="card-b" style="padding:0">
+              <table>
+                <thead>
+                  <tr><th>Métrica</th><th>Valor</th><th>Descripción</th></tr>
+                </thead>
+                <tbody id="tabla-stats"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const URL_DATOS = "mock_indicadores.json";
+    let chartTendencia = null;
+    let chartEmo = null;
+    let emoBase = [];
+    let emoTimer = null;
+    let emoTick = 0;
+    let trendBase = { labels: [], asistencia: [], emocion_positiva: [] };
+    let trendTimer = null;
+    let trendTick = 0;
+    const COLORES = ["#10b981", "#2563eb", "#f59e0b", "#8b5cf6", "#ef4444"];
+    const EMO_MAP = {
+      feliz: { emoji: "😊", label: "Feliz" },
+      neutral: { emoji: "😐", label: "Neutral" },
+      triste: { emoji: "😔", label: "Triste" },
+      enojado: { emoji: "😠", label: "Enojado" },
+      sorprendido: { emoji: "😮", label: "Sorprendido" },
+      miedo: { emoji: "😨", label: "Miedo" },
+      positivo: { emoji: "😊", label: "Positiva" },
+      negativo: { emoji: "😔", label: "Negativa" }
+    };
+
+
+    function renderEmoChart(list, animate) {
+      const labels = list.map(e => {
+        const m = EMO_MAP[e.key] || { emoji: "", label: e.key };
+        return (m.emoji ? m.emoji + " " : "") + (m.label || e.key);
+      });
+      const values = list.map(e => e.pct);
+      const colors = ["#22c55e", "#94a3b8", "#3b82f6", "#f59e0b", "#a855f7", "#ef4444"];
+      const ctx = document.getElementById("chart-emoscan");
+      if (chartEmo) {
+        chartEmo.data.labels = labels;
+        chartEmo.data.datasets[0].data = values;
+        chartEmo.update(animate ? "active" : "none");
+        return;
+      }
+      chartEmo = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels,
+          datasets: [{
+            label: "% detecciones",
+            data: values,
+            backgroundColor: colors,
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 28,
+            categoryPercentage: 0.8,
+            barPercentage: 0.9
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 700, easing: "easeOutQuart" },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: (c) => c.parsed.y + "%" } }
+          },
+          scales: {
+            y: {
+              min: 0, max: 100,
+              ticks: { callback: v => v + "%", font: { size: 10 }, color: "#94a3b8" },
+              grid: { color: "#f1f5f9" },
+              border: { display: false }
+            },
+            x: {
+              ticks: { font: { size: 9 }, color: "#64748b", maxRotation: 45, minRotation: 0, autoSkip: false },
+              grid: { display: false },
+              border: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderTrendChart(asistencia, emocion, animate) {
+      const ctx = document.getElementById("chart-tendencia");
+      if (chartTendencia) {
+        chartTendencia.data.datasets[0].data = asistencia;
+        chartTendencia.data.datasets[1].data = emocion;
+        chartTendencia.update(animate ? "active" : "none");
+        return;
+      }
+      chartTendencia = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: trendBase.labels,
+          datasets: [
+            {
+              label: "Asistencia",
+              data: asistencia,
+              borderColor: "#2563eb",
+              backgroundColor: "rgba(37,99,235,.12)",
+              fill: true,
+              tension: 0.35,
+              pointRadius: 4,
+              pointBackgroundColor: "#2563eb",
+              borderWidth: 2.5
+            },
+            {
+              label: "Emoción +",
+              data: emocion,
+              borderColor: "#10b981",
+              backgroundColor: "rgba(16,185,129,.10)",
+              fill: true,
+              tension: 0.35,
+              pointRadius: 4,
+              pointBackgroundColor: "#10b981",
+              borderWidth: 2.5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          animation: { duration: 750, easing: "easeOutQuart" },
+          plugins: {
+            legend: {
+              position: "top",
+              align: "end",
+              labels: { usePointStyle: true, boxWidth: 8, font: { family: "Inter", size: 11 } }
+            }
+          },
+          scales: {
+            y: {
+              min: 0, max: 100,
+              ticks: { callback: v => v + "%", font: { size: 11 }, color: "#94a3b8" },
+              grid: { color: "#f1f5f9" },
+              border: { display: false }
+            },
+            x: {
+              ticks: { font: { size: 11 }, color: "#94a3b8" },
+              grid: { display: false },
+              border: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function tickTrendLive() {
+      if (!trendBase.asistencia.length) return;
+      trendTick += 1;
+      const jitter = (arr) => arr.map(v => {
+        const n = v + (Math.random() - 0.5) * 3;
+        return +Math.max(40, Math.min(98, n)).toFixed(1);
+      });
+      // mezcla con base para no derivar
+      let asis = jitter(trendBase.asistencia).map((v, i) => +((v * 0.5) + (trendBase.asistencia[i] * 0.5)).toFixed(1));
+      let emo = jitter(trendBase.emocion_positiva).map((v, i) => +((v * 0.5) + (trendBase.emocion_positiva[i] * 0.5)).toFixed(1));
+      renderTrendChart(asis, emo, true);
+      const el = document.getElementById("trend-tick");
+      if (el) el.textContent = "Tick #" + trendTick + " · asistencia en vivo";
+    }
+
+    function updateEmoDominant(list) {
+      const top = list.slice().sort((a, b) => b.pct - a.pct)[0];
+      if (!top) return;
+      const m = EMO_MAP[top.key] || { emoji: "😊", label: top.key };
+      document.getElementById("emo-live-emoji").textContent = m.emoji;
+      document.getElementById("emo-live-label").textContent = "Dominante: " + m.label;
+      document.getElementById("emo-live-sub").textContent =
+        top.pct.toFixed(1) + "% de las detecciones · EmoScan";
+    }
+
+    function tickEmoLive() {
+      if (!emoBase.length) return;
+      emoTick += 1;
+      // Variación suave tipo "sesión en vivo" (mantiene suma ~100)
+      let next = emoBase.map(e => {
+        const jitter = (Math.random() - 0.5) * 4; // ±2 pts
+        return { key: e.key, pct: Math.max(1, e.pct + jitter) };
+      });
+      const sum = next.reduce((a, b) => a + b.pct, 0) || 1;
+      next = next.map(e => ({ key: e.key, pct: +(e.pct * 100 / sum).toFixed(1) }));
+      // Anclar un poco a la base para no derivar
+      next = next.map((e, i) => ({
+        key: e.key,
+        pct: +((e.pct * 0.55) + (emoBase[i].pct * 0.45)).toFixed(1)
+      }));
+      const sum2 = next.reduce((a, b) => a + b.pct, 0) || 1;
+      next = next.map(e => ({ key: e.key, pct: +(e.pct * 100 / sum2).toFixed(1) }));
+      renderEmoChart(next, true);
+      updateEmoDominant(next);
+      const t = document.getElementById("emo-tick");
+      if (t) t.textContent = "Tick #" + emoTick + " · simulación en vivo";
+    }
+
+    async function cargarIndicadores() {
+      const carga = document.getElementById("estado-carga");
+      const panel = document.getElementById("panel");
+      const errorBox = document.getElementById("error-box");
+      carga.classList.remove("oculto");
+      panel.classList.add("oculto");
+      errorBox.style.display = "none";
+      try {
+        const res = await fetch(URL_DATOS + "?t=" + Date.now());
+        if (!res.ok) throw new Error("No se pudo cargar " + URL_DATOS);
+        pintar(await res.json());
+        carga.classList.add("oculto");
+        panel.classList.remove("oculto");
+      } catch (err) {
+        carga.classList.add("oculto");
+        errorBox.style.display = "block";
+        errorBox.textContent = "Error: " + err.message + ". Usa: python -m http.server";
+      }
+    }
+
+    function pintar(data) {
+      if (data.fecha_consulta) {
+        document.getElementById("badge-fuente").textContent = "Datos: " + data.fecha_consulta + " (mock)";
+      }
+
+      const kpis = data.kpis_rapidos || [];
+      const icons = [
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>',
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>',
+        '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>'
+      ];
+      document.getElementById("kpis").innerHTML = kpis.map((k, i) => `
+        <article class="kpi k${(i % 4) + 1}">
+          <div class="kpi-icon">${icons[i % icons.length]}</div>
+          <div class="kpi-label">${esc(k.titulo)}</div>
+          <div class="kpi-value">${esc(k.valor)}</div>
+          <div class="kpi-sub">Indicador ML · empresa</div>
+        </article>`).join("");
+
+      const p = data.prediccion_regresion || {};
+      const pctNum = parseFloat(String(p.valor_porcentaje || "0").replace("%", "")) || 0;
+      document.getElementById("pred-circle").style.setProperty("--p", pctNum);
+      document.getElementById("pred-pct").textContent = p.valor_porcentaje || "—";
+      document.getElementById("pred-texto").textContent = p.interpretacion || "";
+      document.getElementById("pred-intervalo").textContent = p.intervalo_confianza || "—";
+      document.getElementById("pred-r2").textContent = p.r2 != null ? Number(p.r2).toFixed(2) : "—";
+      document.getElementById("pred-tags").innerHTML = (p.features_usadas || []).concat(p.modelo ? [p.modelo] : [])
+        .map(t => `<span class="tag">${esc(t)}</span>`).join("");
+
+      const s = data.segmentacion || {};
+      document.getElementById("seg-desc").innerHTML =
+        `Segmento actual: <strong style="color:var(--texto)">${esc(s.segmento_actual || "—")}</strong> — ${esc(s.descripcion || "")}`;
+      document.getElementById("segmentos").innerHTML = (s.distribucion || []).map((d, i) => `
+        <div class="seg-item">
+          <div class="seg-top"><span>${esc(d.nombre)}</span><span>${Number(d.porcentaje).toFixed(1)}%</span></div>
+          <div class="seg-bar"><i style="width:${Number(d.porcentaje)||0}%;background:${COLORES[i % COLORES.length]}"></i></div>
+        </div>`).join("");
+
+      // EmoScan histograma animado
+      const emo = data.emoscan || data.emociones || {};
+      const emoItems = emo.distribucion || [
+        { key: "feliz", pct: Math.round((data.estadisticas?.media_emocional_positiva || 0.68) * 100) },
+        { key: "neutral", pct: 18 },
+        { key: "triste", pct: 8 },
+        { key: "enojado", pct: 3 },
+        { key: "sorprendido", pct: 2 },
+        { key: "miedo", pct: 1 }
+      ];
+      emoBase = emoItems.slice(0, 6).map(e => ({
+        key: e.key || e.nombre,
+        pct: Number(e.pct != null ? e.pct : e.porcentaje) || 0
+      }));
+      renderEmoChart(emoBase, true);
+      updateEmoDominant(emoBase);
+      if (emoTimer) clearInterval(emoTimer);
+      emoTick = 0;
+      emoTimer = setInterval(tickEmoLive, 1500);
+
+      // Chart tendencia + animación en vivo
+      const t = data.tendencia_semanal || { labels: [], asistencia: [], emocion_positiva: [] };
+      trendBase = {
+        labels: t.labels || [],
+        asistencia: (t.asistencia || []).map(v => +(Number(v) * 100).toFixed(1)),
+        emocion_positiva: (t.emocion_positiva || []).map(v => +(Number(v) * 100).toFixed(1))
+      };
+      renderTrendChart(trendBase.asistencia, trendBase.emocion_positiva, true);
+      if (trendTimer) clearInterval(trendTimer);
+      trendTick = 0;
+      trendTimer = setInterval(tickTrendLive, 2000);
+
+      // Resumen
+      document.getElementById("resumen-modelo").innerHTML = `
+        <p style="margin-bottom:10px"><b style="color:var(--texto)">Regresión:</b> predice asistencia de la próxima sesión a partir de emoción, hora y día.</p>
+        <p style="margin-bottom:10px"><b style="color:var(--texto)">K-Means:</b> agrupa estudiantes en perfiles de engagement para intervención temprana.</p>
+        <p><b style="color:var(--texto)">EmoScan:</b> clasifica emociones en clase y alimenta los KPIs de clima emocional.</p>`;
+
+      // Tabla
+      const e = data.estadisticas || {};
+      const filas = [
+        ["Media emocional positiva", pct(e.media_emocional_positiva), "Promedio de emociones positivas (EmoScan)"],
+        ["Mediana de asistencia", pct(e.mediana_asistencia), "Valor central de asistencia del grupo"],
+        ["Desv. estándar engagement", num(e.desviacion_std_engagement), "Dispersión del engagement emocional"],
+        ["Varianza de asistencia", num(e.varianza_asistencia), "Variabilidad de la asistencia"],
+        ["P(asistencia ≥ 80%)", pct(e.probabilidad_asistencia_alta), "Probabilidad de asistencia alta"],
+        ["Sesiones analizadas", String(e.total_sesiones_analizadas ?? "—"), "Sesiones con asistencia + emoción"],
+        ["Estudiantes", String(e.total_estudiantes ?? "—"), "Estudiantes en el periodo"]
+      ];
+      document.getElementById("tabla-stats").innerHTML = filas.map(([m, v, d]) =>
+        `<tr><td>${esc(m)}</td><td class="val">${esc(v)}</td><td>${esc(d)}</td></tr>`
+      ).join("");
+    }
+
+    function pct(v) { if (v == null || Number.isNaN(Number(v))) return "—"; return Math.round(Number(v) * 100) + "%"; }
+    function num(v) { if (v == null || Number.isNaN(Number(v))) return "—"; return Number(v).toFixed(3); }
+    function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+    cargarIndicadores();
+  </script>
+</body>
+</html>
