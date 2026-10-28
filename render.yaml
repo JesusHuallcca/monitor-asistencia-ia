@@ -30,7 +30,7 @@ services:
         value: "60"
 
   # Frontend Web
-  - type: static
+  - type: web
     name: monitor-asistencia-frontend
-    rootDir: frontend
-    publishPath: .
+    runtime: static
+    staticPublishPath: ./frontend
