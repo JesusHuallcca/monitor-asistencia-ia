@@ -182,10 +182,27 @@ def root():
 
 @app.get("/api/health")
 def health():
-    with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
+    from app.core.config import settings, _FALLBACK_DB_PASS
+    from app.db.database import db_pass
+    has_fallback = (db_pass == _FALLBACK_DB_PASS)
+    pass_prefix = db_pass[:4] if db_pass else "EMPTY"
+    pass_len = len(db_pass) if db_pass else 0
+    db_err = None
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+    except Exception as e:
+        db_err = str(e)
 
     return {
-        "status": "ok",
-        "database": "conectada"
+        "status": "ok" if not db_err else "error",
+        "database": "conectada" if not db_err else "desconectada",
+        "db_error": db_err,
+        "has_fallback": has_fallback,
+        "pass_prefix": pass_prefix,
+        "pass_len": pass_len,
+        "host": settings.DB_HOST,
+        "user": settings.DB_USER,
     }
+
+
