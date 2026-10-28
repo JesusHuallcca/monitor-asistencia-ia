@@ -82,7 +82,8 @@ app.add_middleware(
         "http://127.0.0.1:5500",
         "http://localhost:5500",
         "https://monitor-asistencia-frontend.vercel.app",
-        "https://chic-quietude-production-7952.up.railway.app",   # ← agrega esta línea
+        "https://chic-quietude-production-7952.up.railway.app",
+        "https://monitor-asistencia-frontend.onrender.com",
     ],
     allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.up\.railway\.app",
     allow_credentials=True,
