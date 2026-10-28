@@ -36,13 +36,27 @@ async def lifespan(app):
     try:
         import os
         import urllib.request
+        # 1. EmoScan
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        model_dir = os.path.abspath(os.path.join(base_dir, "..", "..", "integraciones", "emoscan"))
+        root_dir = os.path.abspath(os.path.join(base_dir, "..", ".."))
+        model_dir = os.path.join(root_dir, "integraciones", "emoscan")
         model_path = os.path.join(model_dir, "emotion-ferplus-8.onnx")
         if not os.path.exists(model_path):
             os.makedirs(model_dir, exist_ok=True)
             url = "https://github.com/onnx/models/raw/main/vision/classification/emotion_ferplus/model/emotion-ferplus-8.onnx"
             urllib.request.urlretrieve(url, model_path)
+
+        # 2. Reconocimiento Facial (YuNet + SFace)
+        face_dir = os.path.join(root_dir, "ai", "face", "models")
+        os.makedirs(face_dir, exist_ok=True)
+        face_models = [
+            ("face_detection_yunet_2023mar.onnx", "https://huggingface.co/opencv/face_detection_yunet/resolve/main/face_detection_yunet_2023mar.onnx"),
+            ("face_recognition_sface_2021dec.onnx", "https://huggingface.co/opencv/face_recognition_sface/resolve/main/face_recognition_sface_2021dec.onnx"),
+        ]
+        for fname, f_url in face_models:
+            f_dest = os.path.join(face_dir, fname)
+            if not os.path.exists(f_dest):
+                urllib.request.urlretrieve(f_url, f_dest)
     except Exception:
         pass
     try:

@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = 60
 
     # Reconocimiento facial
-    FACE_ENCRYPTION_KEY: str = ""
+    FACE_ENCRYPTION_KEY: str = "OXFoIeaqswHSonO5IatQAFj7vMs5rkJGMmOn6zDPm58="
     FACE_THRESHOLD: float = 0.363
     FACE_MODELS_DIR: str = str(ROOT_DIR / "ai" / "face" / "models")
     # Análisis opcional de expresiones; separado del reconocimiento facial.
