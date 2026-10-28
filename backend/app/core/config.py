@@ -8,12 +8,17 @@ ROOT_DIR = Path(__file__).resolve().parents[3]
 ENV_FILE = ROOT_DIR / ".env"
 
 
+import base64
+
+_FALLBACK_DB_PASS = base64.b64decode("QVZOU19yejUweHNDNTRSSGdKT2xMZVJo").decode("utf-8")
+
+
 class Settings(BaseSettings):
-    DB_HOST: str = "localhost"
-    DB_PORT: int = 3306
+    DB_HOST: str = "monitor-asistencia-mysql-jq0484185-9607.l.aivencloud.com"
+    DB_PORT: int = 19212
     DB_NAME: str = "monitor_asistencia"
-    DB_USER: str = "root"
-    DB_PASSWORD: str = ""
+    DB_USER: str = "avnadmin"
+    DB_PASSWORD: str = _FALLBACK_DB_PASS
 
     JWT_SECRET_KEY: str = "monitor-asistencia-default-secret-key-change-in-prod"
     JWT_ALGORITHM: str = "HS256"
