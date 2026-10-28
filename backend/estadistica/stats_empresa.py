@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import json
 import sys
 
@@ -11,7 +11,18 @@ import matplotlib.pyplot as plt
 BASE = Path(__file__).resolve().parent
 ROOT = BASE.parent
 ASISTENCIA_CSV = BASE / "dataset_asistencia_sintetico.csv"
-LOGS_DIR = ROOT / "EmoScan - copia (2)" / "logs"
+
+LOGS_DIR = BASE / "logs"
+if not LOGS_DIR.exists() or not list(LOGS_DIR.glob("*.csv")):
+    for alt in [
+        BASE.parents[2] / "EmoScan - copia (2)" / "logs",
+        BASE.parents[1] / "integraciones" / "emoscan" / "logs",
+        ROOT / "EmoScan - copia (2)" / "logs",
+    ]:
+        if alt.exists() and list(alt.glob("*.csv")):
+            LOGS_DIR = alt
+            break
+
 
 SALIDA_DATASET = BASE / "dataset_ejemplo.csv"
 SALIDA_JSON = BASE / "reporte_kpis.json"
