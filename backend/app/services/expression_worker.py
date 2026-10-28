@@ -3,8 +3,14 @@
 
 def infer_expression(connection, frame, model_path):
     try:
+        import os, sys
+        root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+        if root_dir not in sys.path:
+            sys.path.insert(0, root_dir)
+
         import cv2
         from integraciones.emoscan.emotion_onnx import EmotionONNX
+
 
         cascade = cv2.CascadeClassifier(
             cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
@@ -20,8 +26,10 @@ def infer_expression(connection, frame, model_path):
         connection.send({'status': 'READY', 'estimated_expression': label,
                          'scores': scores, 'model': 'FERPlus',
                          'notice': 'Expresión facial estimada; no demuestra emociones internas.'})
-    except Exception:
-        # Never serialize exception details (could contain paths or input data).
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         connection.send({'status': 'UNAVAILABLE'})
+
     finally:
         connection.close()

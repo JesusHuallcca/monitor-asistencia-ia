@@ -28,9 +28,9 @@ dist/
 # Archivo temporal local, sin uso en la integración
 integraciones/o.pb
 
-# Artefactos locales: no publicar pesos descargados, bases, logs ni cachés de pruebas
-integraciones/emoscan/*.onnx
+# Artefactos locales: no publicar bases, logs ni cachés de pruebas
 *.db
+
 *.sqlite
 *.sqlite3
 *.log

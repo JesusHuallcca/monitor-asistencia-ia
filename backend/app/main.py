@@ -39,12 +39,9 @@ async def lifespan(app):
         # 1. EmoScan
         base_dir = os.path.dirname(os.path.abspath(__file__))
         root_dir = os.path.abspath(os.path.join(base_dir, "..", ".."))
-        model_dir = os.path.join(root_dir, "integraciones", "emoscan")
-        model_path = os.path.join(model_dir, "emotion-ferplus-8.onnx")
-        if not os.path.exists(model_path):
-            os.makedirs(model_dir, exist_ok=True)
-            url = "https://github.com/onnx/models/raw/main/vision/classification/emotion_ferplus/model/emotion-ferplus-8.onnx"
-            urllib.request.urlretrieve(url, model_path)
+        model_path = os.path.join(root_dir, "integraciones", "emoscan", "emotion-ferplus-8.onnx")
+        print(f"[Lifespan] EmoScan model present: {os.path.exists(model_path)}")
+
 
         # 2. Reconocimiento Facial (YuNet + SFace)
         face_dir = os.path.join(root_dir, "ai", "face", "models")
