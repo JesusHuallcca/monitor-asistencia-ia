@@ -138,39 +138,28 @@ class ExpressionService:
         if not self._allowed(key, job):
             self._discard(key, job)
             return
-        ctx = multiprocessing.get_context('spawn')
-        receiver, sender = ctx.Pipe(duplex=False)
-        process = ctx.Process(target=self.target, args=(sender, job.frame, self.model_path), daemon=True)
+
+        class LocalConnection:
+            def __init__(self):
+                self.result = {'status': 'UNAVAILABLE'}
+            def send(self, val):
+                self.result = val
+            def close(self):
+                pass
+
+        conn = LocalConnection()
         result = None
         try:
-            process.start()
-            sender.close()
-            job.frame = None  # The child now owns its private copy.
-            while process.is_alive() and not receiver.poll(0.05):
-                # Never wait on the database while supervising the model deadline.
-                if not self._alive(key, job):
-                    self._discard(key, job)
-                    return
-            if not self._alive(key, job):
-                self._discard(key, job)
-                return
-            result = receiver.recv() if receiver.poll() else {'status': 'UNAVAILABLE'}
+            self.target(conn, job.frame, self.model_path)
+            result = conn.result
         except Exception:
+            import traceback
+            traceback.print_exc()
             result = {'status': 'UNAVAILABLE'}
         finally:
-            if process.pid is not None:
-                if process.is_alive():
-                    process.terminate()
-                process.join(timeout=1)
-                if process.is_alive():
-                    process.kill()
-                    process.join(timeout=1)
-                process.close()
-            receiver.close()
-            sender.close()
             job.frame = None
+
         if result is not None:
-            # The child and its image are gone before re-checking the database.
             self._finish(key, job, result)
 
     def _sweep(self):
