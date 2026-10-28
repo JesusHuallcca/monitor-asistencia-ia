@@ -1,0 +1,36 @@
+services:
+  # Backend API
+  - type: web
+    name: monitor-asistencia-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: cd backend && PYTHONPATH=..:. uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      - key: DB_HOST
+        value: monitor-asistencia-mysql-jq0484185-9607.l.aivencloud.com
+      - key: DB_PORT
+        value: "19212"
+      - key: DB_USER
+        value: avnadmin
+      - key: DB_NAME
+        value: monitor_asistencia
+      - key: DB_PASSWORD
+        sync: false
+      - key: EMOSCAN_ENABLED
+        value: "true"
+      - key: FACE_ENCRYPTION_KEY
+        value: OXFoIeaqswHSonO5IatQAFj7vMs5rkJGMmOn6zDPm58=
+      - key: JWT_SECRET_KEY
+        value: senati_monitor_asistencia_clave_secreta_2026
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_EXPIRE_MINUTES
+        value: "60"
+
+  # Frontend Web
+  - type: static
+    name: monitor-asistencia-frontend
+    rootDir: frontend
+    publishPath: .

@@ -84,6 +84,7 @@ app.add_middleware(
         "https://monitor-asistencia-frontend.vercel.app",
         "https://chic-quietude-production-7952.up.railway.app",   # ← agrega esta línea
     ],
+    allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.up\.railway\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
