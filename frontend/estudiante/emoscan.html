@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Senati | Análisis emocional</title>
+    <link rel="stylesheet" href="../css/login.css" />
+    <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body class="admin-page" data-rol="estudiante">
+    <div class="admin-layout">
+        <!-- Aquí es donde el script inyectará el menú lateral negro -->
+        <aside class="admin-menu"></aside>
+
+        <div class="admin-principal">
+            <header class="admin-cabecera">
+                <div>
+                    <h1>Análisis emocional</h1>
+                    <p class="subtitulo-pagina">El análisis es voluntario. Autoriza el acceso a la cámara solo si deseas continuar.</p>
+                </div>
+            </header>
+
+            <main class="admin-cuerpo">
+                <!-- Señuelo invisible para engañar al script y que cargue el menú sin errores -->
+                <div id="cursos-grid" style="display: none;"></div>
+
+                <!-- Tu cámara EmoScan incrustada -->
+                <iframe
+                    src="http://127.0.0.1:5000"
+                    title="Módulo EmoScan"
+                    allow="camera"
+                    loading="lazy"
+                    width="100%"
+                    height="800px"
+                    style="border: none; border-radius: 8px;">
+                </iframe>
+            </main>
+        </div>
+    </div>
+
+    <!-- Contenedor para mensajes de error o avisos del sistema -->
+    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
+
+    <!-- Scripts necesarios para la sesión y el menú -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/panel-cursos.js"></script>
+</body>
+</html>

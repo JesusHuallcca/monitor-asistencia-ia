@@ -8,7 +8,6 @@ import cv2
 import numpy as np
 import onnxruntime as ort
 
-
 MODEL = config.MODEL_PATHS['emotion_onnx']
 CLASSES = ("neutral", "happy", "surprise", "sad", "angry", "disgust", "fear", "contempt")
 
