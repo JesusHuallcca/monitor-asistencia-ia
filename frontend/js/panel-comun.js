@@ -29,6 +29,7 @@ const Panel = Object.assign(Object.create(Admin), {
     ];
     if (rol === "profesor") {
       base.push({ href: "segmentacion.html", texto: "Segmentación IA", icono: I.ia });
+      base.push({ href: "red-neuronal.html", texto: "Red Neuronal IA — Parte 6", icono: I.ia });
     }
     if (rol === "estudiante") {
       base.push({
