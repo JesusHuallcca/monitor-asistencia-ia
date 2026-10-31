@@ -1,0 +1,4 @@
+-r requirements-parte7-proactivo.txt
+pypdf>=6,<7
+pytest>=8,<10
+PyYAML>=6,<7

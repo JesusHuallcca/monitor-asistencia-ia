@@ -1,0 +1,3 @@
+-r requirements-parte7-reportes.txt
+APScheduler==3.11.3
+tzlocal==5.4.5
