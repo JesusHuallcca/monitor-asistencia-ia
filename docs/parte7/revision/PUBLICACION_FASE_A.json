@@ -1,0 +1,17 @@
+{
+  "phase": "A",
+  "backend_passed": 260,
+  "chrome_checks": 509,
+  "voice_and_context": "passed",
+  "mysql": "blocked",
+  "production_modified": false,
+  "inherited_secrets_removed_from_current_tree": true,
+  "rotation_by_owner_pending": true,
+  "integration_approved": false,
+  "base_main": "6557e65fdb3cf66b2f7e4f563c6b1fce891fe9c8",
+  "commits_before_documentation": [
+    "369bc8ffad1adcf487edba1b441a7d7b1f4f58c6 feat(frontend): integrar asistente SENATI amplio con voz y notificaciones",
+    "eef7023c9a53d5b7eb68ec0289f613cb7f46b9a5 feat(parte7): integrar conversacion reportes ML y recordatorios autorizados",
+    "458d93383287454e99ee85e919165396b75bc79c fix(security): eliminar secretos heredados y sanear diagnosticos publicos"
+  ]
+}

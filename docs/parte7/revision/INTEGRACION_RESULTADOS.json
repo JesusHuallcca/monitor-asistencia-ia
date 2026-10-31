@@ -1,0 +1,42 @@
+{
+  "origin_main": "6557e65fdb3cf66b2f7e4f563c6b1fce891fe9c8",
+  "backend": {
+    "passed": 447,
+    "skipped": 1,
+    "failed": 0,
+    "errors": 0,
+    "total": 448
+  },
+  "academic_kmeans": {
+    "passed": 7
+  },
+  "experimental": {
+    "methods": 10,
+    "passed": 9,
+    "failed": 1,
+    "failed_subtests": 4,
+    "reason": "historical_manifest_drift_already_in_main",
+    "update_authorization": "rejected"
+  },
+  "chrome": {
+    "parte7_checks": 583,
+    "legacy_integration_checks": 281,
+    "total_counted": 864,
+    "real_browser": "Chrome",
+    "physical_camera": false,
+    "physical_microphone": false
+  },
+  "mysql": "MYSQL_DESARROLLO.json",
+  "dependencies": "DEPENDENCIAS_WINDOWS.txt",
+  "publication": "draft_pr_required",
+  "production_connected": false,
+  "render_modified": false,
+  "model_algorithms_and_weights_changed": false,
+  "blockers": [
+    "historical_manifest_review",
+    "Linux_Render_validation_and_memory",
+    "trusted_facial_artifact_provisioning",
+    "Aiven_actual_schema_clone_validation",
+    "coordinated_exposed_secret_rotation"
+  ]
+}

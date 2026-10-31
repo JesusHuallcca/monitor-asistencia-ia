@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT), str(ROOT / "backend")]
 import pandas as pd
 from app.services.segmentacion_service import process_csv
-from segmentacion.segmentacion_kmeans import DEFAULT_DATA
+from segmentacion.modelo_cuatro_variables import DEFAULT_DATA
 
 if __name__ == "__main__":
     output = ROOT / "segmentacion" / ".cache"

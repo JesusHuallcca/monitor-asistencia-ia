@@ -11,7 +11,7 @@ from sklearn.decomposition import PCA
 from sklearn.metrics import silhouette_samples
 from threadpoolctl import threadpool_limits
 
-from segmentacion.experimental_expresiones.segmentacion_expresiones import FEATURES, fit_segments, prepare_students
+from segmentacion.modelo_cuatro_variables import FEATURES, fit_segments, prepare_students
 
 from app.services.segmentacion_expresiones import (OPTIONAL_COLUMNS, validate_optional_columns,
     generate_counts, counts_from_csv, summarize_counts)
@@ -53,8 +53,31 @@ def read_synthetic_csv(content: bytes) -> pd.DataFrame:
         
         # ── DETECCIÓN: ¿Es CSV de perfiles/resultados exportados (sin columna 'estado')? ──
         is_profile = 'estado' not in orig_columns and 'usuario_id' in orig_columns and 'promedio_notas' in orig_columns
+        forbidden = {'foto', 'image', 'imagen', 'embedding', 'face', 'fotografia'}
+        if set(orig_columns) & forbidden:
+            raise ValueError('No se admiten imágenes ni información facial en esta demostración.')
         if is_profile:
+            if 'origen_datos' not in orig_columns or 'origen_expresiones' not in orig_columns:
+                raise ValueError('Los perfiles deben declarar origen_datos y origen_expresiones sintéticos.')
             df = pd.read_csv(io.StringIO(text))
+            if df.empty or len(df) > MAX_ROWS or not df.origen_datos.eq('sintetico').all() or not df.origen_expresiones.eq('sintetico').all():
+                raise ValueError('Solo se admiten perfiles explícitamente sintéticos dentro del límite de filas.')
+            for name, upper in [('asistencia_ratio',1), ('tardanzas_ratio',1), ('promedio_notas',20)]:
+                if name not in df:
+                    raise ValueError(f'Falta {name} en los perfiles.')
+                values = pd.to_numeric(df[name], errors='coerce')
+                if not np.isfinite(values).all() or not values.between(0,upper).all():
+                    raise ValueError(f'{name}: valores fuera del rango permitido.')
+                df[name] = values
+            if (df.tardanzas_ratio > df.asistencia_ratio).any():
+                raise ValueError('Las tardanzas no pueden superar las asistencias.')
+            if not df.usuario_id.astype(str).str.fullmatch(r'[1-9][0-9]{0,14}').all() or df.usuario_id.duplicated().any():
+                raise ValueError('Los perfiles requieren identificadores enteros positivos únicos.')
+            if 'expresiones_positivas_ratio' in df:
+                values = pd.to_numeric(df.expresiones_positivas_ratio, errors='coerce')
+                if not np.isfinite(values).all() or not values.between(0,1).all():
+                    raise ValueError('expresiones_positivas_ratio debe estar entre 0 y 1.')
+                df['expresiones_positivas_ratio'] = values
             if 'asistencia_ratio' not in df.columns and 'asistencia' in df.columns:
                 df['asistencia_ratio'] = df['asistencia']
             if 'asistencia_ratio' not in df.columns:

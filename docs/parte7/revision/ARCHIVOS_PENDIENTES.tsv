@@ -1,0 +1,118 @@
+estado	archivo	bytes
+ M	backend/app/api/chatbot.py	8191
+ M	backend/app/schemas/chatbot.py	1254
+ M	backend/app/services/chatbot_service.py	21384
+ M	frontend/components/chatbot.js	37435
+ M	frontend/css/chatbot.css	18665
+ M	frontend/estudiante/asistencia.html	16844
+ M	frontend/estudiante/ia.html	1780
+ M	frontend/js/chatbot-init.js	1315
+ M	frontend/js/panel-comun.js	8423
+ M	frontend/package.json	670
+ M	frontend/tests/chatbot.voice.test.mjs	3651
+??	backend/app/api/chatbot_ml.py	5807
+??	backend/app/api/chatbot_proactive.py	4837
+??	backend/app/api/chatbot_reports.py	8673
+??	backend/app/db/proactive_models.py	2775
+??	backend/app/schemas/chatbot_proactive.py	3804
+??	backend/app/schemas/chatbot_reports.py	1616
+??	backend/app/services/chatbot_conversation.py	7314
+??	backend/app/services/chatbot_ml.py	21268
+??	backend/app/services/chatbot_proactive.py	23271
+??	backend/app/services/chatbot_proactive_scheduler.py	977
+??	backend/app/services/chatbot_report_documents.py	11651
+??	backend/app/services/chatbot_report_store.py	4892
+??	backend/app/services/chatbot_reports.py	9190
+??	backend/app/services/chatbot_security.py	4820
+??	backend/parte7_demo.py	8604
+??	backend/parte7_deployment_check.py	5246
+??	backend/parte7_proactive_examples.py	5519
+??	backend/parte7_report_examples.py	3311
+??	backend/parte7_worker.py	1214
+??	backend/tests/parte7/conftest.py	4068
+??	backend/tests/parte7/test_chatbot_security.py	12298
+??	backend/tests/parte7/test_conversation.py	8082
+??	backend/tests/parte7/test_demo.py	1759
+??	backend/tests/parte7/test_ml.py	16713
+??	backend/tests/parte7/test_proactive.py	17866
+??	backend/tests/parte7/test_reports.py	17255
+??	database/mysql/migrations/parte7/001_proactividad_additive.sql	3125
+??	docs/parte7/AUDITORIA_PUBLICACION.md	23840
+??	docs/parte7/FASE2_CONVERSACION_Y_VOZ.md	12999
+??	docs/parte7/FASE3_REPORTES_ACADEMICOS.md	16680
+??	docs/parte7/FASE4_INTEGRACION_ML.md	12245
+??	docs/parte7/FASE5_ASISTENTE_PROACTIVO.md	15685
+??	docs/parte7/INFORME_FINAL_INTEGRACION.md	26718
+??	docs/parte7/PLAN_IMPLEMENTACION.md	21100
+??	docs/parte7/REDISENO_INTERFAZ.md	14900
+??	docs/parte7/RESULTADOS_FASE4_ML.md	3841
+??	docs/parte7/RESULTADOS_FASE5.md	4427
+??	docs/parte7/despliegue/GUIA_DESPLIEGUE_Y_ROLLBACK.md	27000
+??	docs/parte7/despliegue/MATRIZ_VARIABLES.md	11919
+??	docs/parte7/despliegue/PRECHECK_LOCAL.json	1022
+??	docs/parte7/despliegue/render-parte7.propuesta.yaml	2952
+??	docs/parte7/despliegue/worker-render.example.yaml	818
+??	docs/parte7/ejemplos/FASE5_DEMOSTRACION.json	1587
+??	docs/parte7/ejemplos/VERIFICACION.json	1516
+??	docs/parte7/ejemplos/ejemplo-asistencia-autorizada.docx	38889
+??	docs/parte7/ejemplos/ejemplo-asistencia-autorizada.pdf	5202
+??	docs/parte7/ejemplos/ejemplo-asistencia-autorizada.xlsx	10478
+??	docs/parte7/ejemplos/fase5-reporte-semanal.docx	38812
+??	docs/parte7/ejemplos/fase5-reporte-semanal.pdf	4469
+??	docs/parte7/ejemplos/fase5-reporte-semanal.xlsx	10277
+??	docs/parte7/evidencias/chatbot-1366.png	308107
+??	docs/parte7/evidencias/chatbot-1920.png	584822
+??	docs/parte7/evidencias/chatbot-390.png	115710
+??	docs/parte7/evidencias/demo-conversacion.png	371907
+??	docs/parte7/evidencias/ml-1366.png	297229
+??	docs/parte7/evidencias/ml-1920.png	570263
+??	docs/parte7/evidencias/ml-390.png	127720
+??	docs/parte7/evidencias/proactivo-1366.png	260181
+??	docs/parte7/evidencias/proactivo-1920.png	275157
+??	docs/parte7/evidencias/proactivo-390.png	188413
+??	docs/parte7/evidencias/reportes-1366.png	313872
+??	docs/parte7/evidencias/reportes-1920.png	611029
+??	docs/parte7/evidencias/reportes-390.png	131857
+??	docs/parte7/evidencias/workspace-estudiante-1366.png	382857
+??	docs/parte7/evidencias/workspace-estudiante-1920.png	648111
+??	docs/parte7/evidencias/workspace-estudiante-390.png	144986
+??	docs/parte7/evidencias/workspace-estudiante-820.png	340112
+??	docs/parte7/evidencias/workspace-profesor-1366.png	402540
+??	docs/parte7/evidencias/workspace-profesor-1920.png	668240
+??	docs/parte7/evidencias/workspace-profesor-390.png	147262
+??	docs/parte7/evidencias/workspace-profesor-820.png	340841
+??	docs/parte7/evidencias/workspace-real-estudiante-390.png	162392
+??	docs/parte7/evidencias/workspace-real-estudiante-820.png	356584
+??	docs/parte7/evidencias/workspace-real-profesor-1366.png	429836
+??	docs/parte7/evidencias/workspace-real-profesor-1920.png	701128
+??	docs/parte7/evidencias/workspace-real-reporte-1366.png	311033
+??	docs/parte7/evidencias/workspace-referencia-conversacion-1366.png	384201
+??	docs/parte7/evidencias/workspace-referencia-conversacion-1920.png	701066
+??	docs/parte7/evidencias/workspace-verificacion.json	755
+??	docs/parte7/revision/ARCHIVOS_PENDIENTES.tsv	5984
+??	docs/parte7/revision/AUDITORIA_ESTATICA.json	15469
+??	docs/parte7/revision/DEFAULT_DATA_DIAGNOSTICO.json	798
+??	docs/parte7/revision/PROPUESTA_DEFAULT_DATA_NO_APLICADA.patch	2613
+??	docs/parte7/revision/RESULTADOS_PRUEBAS.json	2515
+??	docs/parte7/revision/SEGURIDAD_Y_CONFIGURACION.json	2757
+??	docs/parte7/revision/auditar_backend.py	2110
+??	frontend/assets/img/chatbot-waves.svg	813
+??	frontend/components/proactive.js	18813
+??	frontend/css/panel-navigation.css	2595
+??	frontend/css/proactive.css	4024
+??	frontend/js/chatbot-legacy-page.js	1160
+??	frontend/js/panel-navigation.js	2296
+??	frontend/package-lock.json	41365
+??	frontend/profesor/ia.html	1778
+??	frontend/tests/parte7-tools.mjs	539
+??	frontend/tests/parte7.chrome.test.mjs	9898
+??	frontend/tests/parte7.live-demo.test.mjs	2499
+??	frontend/tests/parte7.ml.chrome.test.mjs	6344
+??	frontend/tests/parte7.proactive.chrome.test.mjs	7900
+??	frontend/tests/parte7.reports.chrome.test.mjs	7481
+??	frontend/tests/parte7.workspace.chrome.test.mjs	12615
+??	frontend/tests/parte7.workspace.live.test.mjs	5330
+??	requirements-parte7-lock.txt	1188
+??	requirements-parte7-proactivo.txt	74
+??	requirements-parte7-pruebas.txt	51
+??	requirements-parte7-reportes.txt	127

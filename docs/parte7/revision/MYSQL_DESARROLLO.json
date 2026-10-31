@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "mysql_version": "8.0.46",
+  "storage": "fresh_native_mysql_structural_copy",
+  "source": "versioned_SQLAlchemy_schema_and_synthetic_rows",
+  "cloud_schema_verified": false,
+  "production_connected": false,
+  "migration_tables": 5,
+  "base_tables_preserved": true,
+  "rollback_empty_copy": true,
+  "rollback_with_data_refused": true,
+  "native_foreign_keys_and_check": true,
+  "concurrent_workers_no_duplicates": true,
+  "restart_no_duplicates": true,
+  "authorized_report_rows": 1,
+  "external_messages": 0,
+  "credentials_printed": false
+}

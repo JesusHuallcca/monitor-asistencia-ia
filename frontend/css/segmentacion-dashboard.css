@@ -619,3 +619,17 @@
   transform: scale(1.25);
   cursor: pointer;
 }
+
+/* Mantener PCA destacado al recuperar los ocho análisis existentes. */
+@media(min-width:651px) { .seg-dashboard .seg-chart-grid { grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); } }
+
+/* Cuatro filas estables: no desplazar las tarjetas bajo el puntero. */
+.seg-dashboard .seg-chart-card:hover { transform:none !important; }
+.seg-dashboard .seg-chart-grid > [data-chart="seg-pca"],
+.seg-dashboard .seg-chart-grid > [data-chart="seg-samples"] { grid-column:auto !important; }
+@media(min-width:651px) {
+  .seg-dashboard .seg-chart-grid { grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) !important; }
+}
+@media(max-width:650px) {
+  .seg-dashboard .seg-chart-grid { grid-template-columns:minmax(0,1fr) !important; }
+}

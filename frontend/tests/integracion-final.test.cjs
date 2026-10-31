@@ -84,8 +84,8 @@ const server = http.createServer((req, res) => {
     await require('./segmentacion-dashboard.checks.cjs')(teacher, url, fixture, sample, check, smallFixture);
 
     const student = await setup('estudiante'), e = student.page;
-    await e.goto(url + '/estudiante/emoscan.html'); await e.locator('.admin-menu a[href="emoscan.html"]').waitFor();
-    check(await e.locator('.admin-menu').innerText().then((x) => x.includes('EmoScan') && !x.includes('Segmentación IA')), 'Student has personal EmoScan only');
+    await e.goto(url + '/estudiante/emoscan.html'); await e.locator('.admin-menu a[href="emoscan.html"], .dashboard-sidebar a[href="emoscan.html"]').waitFor();
+    check(await e.locator('.admin-menu, .dashboard-sidebar').first().innerText().then((x) => x.includes('EmoScan') && !x.includes('Segmentación IA')), 'Student has personal EmoScan only');
     check(await e.locator('#emo-start').isDisabled(), 'Camera requires explicit personal consent');
     await e.locator('#emo-consent').check(); await e.waitForFunction(() => !document.getElementById('emo-start').disabled);
     await e.locator('#emo-start').click(); await e.waitForFunction(() => document.getElementById('emo-video').videoWidth > 0);
@@ -118,7 +118,7 @@ const server = http.createServer((req, res) => {
     check(await e.evaluate(() => document.getElementById('emo-video').srcObject === null), 'Camera denial remains recoverable and does not retain tracks');
     // Test frontend role redirects separately from backend role tests.
     const wrong = await setup('estudiante'); await wrong.page.goto(url + '/profesor/segmentacion.html');
-    await wrong.page.waitForURL('**/estudiante/cursos.html');
+    await wrong.page.waitForURL('**/estudiante/inicio.html');
     check(true, 'Frontend rejects student on professor page');
     const admin = await setup('admin'); await admin.page.goto(url + '/estudiante/emoscan.html');
     await admin.page.waitForURL('**/admin/usuarios.html');

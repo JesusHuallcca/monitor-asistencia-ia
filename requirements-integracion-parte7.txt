@@ -1,0 +1,38 @@
+# Unified Parte 6 + Parte 7 runtime; validate Linux separately.
+fastapi
+uvicorn[standard]
+sqlalchemy
+pymysql
+python-dotenv
+pydantic
+pydantic-settings
+python-jose[cryptography]
+passlib[bcrypt]
+email-validator
+httpx
+python-multipart
+pandas
+numpy
+scikit-learn
+joblib
+opencv-python-headless
+aiofiles
+alembic
+bcrypt==4.0.1
+cryptography
+onnxruntime
+pillow
+matplotlib
+threadpoolctl
+-r requirements-parte7-proactivo.txt
+fastapi==0.119.1
+sqlalchemy==2.0.55
+pymysql==1.2.3
+numpy==2.2.6
+pandas==2.3.3
+scikit-learn==1.7.2
+keras==3.15.1
+tensorflow==2.20.0; sys_platform == "win32"
+tensorflow-cpu==2.20.0; sys_platform != "win32"
+
+opencv-python-headless>=4.9,<5

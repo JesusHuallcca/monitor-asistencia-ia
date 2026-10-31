@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'ausencias_consecutivas','dia_semana','hora_inicio_clase','es_inicio_ciclo','tardanzas_ratio','asistira','perfil',
     // Columnas de salida del modelo (se ignoran en la validación del cliente)
     'segmento','cluster','pca_1','pca_2','asistencia_ratio','expresiones_positivas_ratio','silueta','grupo','etiqueta']);
-  const chartIds = ['seg-pca','seg-comparison','seg-expresiones-scatter','seg-distribution','seg-bar-asistencia','seg-bar-tardanzas','seg-bar-notas','seg-bar-expresiones','seg-expression-chart'];
+  const chartIds = ['seg-samples','seg-elbow','seg-heatmap','seg-pca','seg-comparison','seg-expresiones-scatter','seg-distribution','seg-bar-asistencia','seg-bar-tardanzas','seg-bar-notas','seg-bar-expresiones','seg-expression-chart'];
   const fmt = (value, digits = 2) => Number(value).toLocaleString('es-PE',{maximumFractionDigits:digits});
   const percent = (value) => fmt(value * 100,1) + ' %';
   const number = fmt;
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   const config = {responsive:true,displaylogo:false,displayModeBar:'hover',scrollZoom:true,showTips:false,locale:'es',
-    modeBarButtons:[['zoom2d','pan2d']]};
+    modeBarButtons:[['zoom2d','pan2d','select2d','resetScale2d']]};
   const baseLayout = () => ({
     autosize:true, paper_bgcolor:'transparent', plot_bgcolor:'#ffffff',
     font:{family:'Segoe UI, Arial, sans-serif',size:12,color:'#52627b'},
@@ -469,6 +469,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function renderActive() {
     if (!result) return;
     refreshCounts(); renderGroups();
+    $('seg-samples-note').textContent = 'Una barra por perfil; valores cerca de 1 indican mayor separación, cerca de 0 solapamiento. La línea es la media global.';
+    $('seg-heatmap-note').textContent = 'Centroides estandarizados: azul por debajo de la media y naranja por encima. Son valores z, no porcentajes.';
     $('seg-pca-note').textContent = 'Puntos: perfiles; rombos: centroides. PCA permite ver en 2D un K-Means de cuatro variables y conserva '+
       percent(result.metricas.varianza_pca.reduce((a,b) => a+b,0))+' de la varianza. La leyenda oculta o muestra grupos; los nombres describen esta muestra.';
     $('seg-distribution-note').textContent = 'Cantidad de perfiles en cada grupo; pulsa una barra para filtrarlo. El tamaño de un cluster no implica mejor rendimiento ni una categoría de riesgo.';
@@ -477,7 +479,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const jobs = [scatter('seg-pca','pca_1','pca_2',true),
       scatter('seg-comparison','asistencia_ratio','promedio_notas'),
       scatter('seg-expresiones-scatter','asistencia_ratio','expresiones_positivas_ratio'),
-      expressionDistribution(),
+      sampleSilhouette(), heatmap(), evaluation(), expressionDistribution(),
       bars('seg-distribution','perfiles','Perfiles',Math.max(...result.clusters.map(p => p.perfiles))*1.2)];
     const ids = ['asistencia','tardanzas','notas','expresiones'];
     for (let i=0;i<features.length;i++) jobs.push(bars('seg-bar-'+ids[i],features[i],labels[i],isRatio(features[i]) ? 100 : 20));
@@ -682,14 +684,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
 
-    const card = e.target.closest('.seg-chart-card, #seg-expression-detail');
-    if (card && !e.target.closest('.modebar, .modebar-btn, select, button, a, input, [role="tooltip"]')) {
-      const targetPlot = card.querySelector('.seg-plot');
-      const chartId = card.getAttribute('data-chart') || (targetPlot ? targetPlot.id : null);
-      if (chartId) {
-        openChartModal(chartId, card);
-      }
-    }
+    // Los puntos conservan selección y zoom; ampliar solo desde el botón explícito.
+
   });
 
 

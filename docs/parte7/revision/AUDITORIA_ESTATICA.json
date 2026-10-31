@@ -1,0 +1,625 @@
+{
+  "head": "90e7ce75c34497350728b9aa02afd74c9e8ca188",
+  "origin_main": "6557e65fdb3cf66b2f7e4f563c6b1fce891fe9c8",
+  "divergence_left_right": "0\t2",
+  "stash_ids": [
+    "ea354b5c14574be861b11e6d4326124d7547e163",
+    "7560d9d4c6d3d220af3f720fc9763d3cf355d9e0",
+    "3949fd59ab553975ad9e0ad4d477af833e04e28a"
+  ],
+  "staged_paths": [],
+  "pending_count": 117,
+  "pending_files": [
+    {
+      "status": " M",
+      "path": "backend/app/api/chatbot.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/schemas/chatbot.py"
+    },
+    {
+      "status": " M",
+      "path": "backend/app/services/chatbot_service.py"
+    },
+    {
+      "status": " M",
+      "path": "frontend/components/chatbot.js"
+    },
+    {
+      "status": " M",
+      "path": "frontend/css/chatbot.css"
+    },
+    {
+      "status": " M",
+      "path": "frontend/estudiante/asistencia.html"
+    },
+    {
+      "status": " M",
+      "path": "frontend/estudiante/ia.html"
+    },
+    {
+      "status": " M",
+      "path": "frontend/js/chatbot-init.js"
+    },
+    {
+      "status": " M",
+      "path": "frontend/js/panel-comun.js"
+    },
+    {
+      "status": " M",
+      "path": "frontend/package.json"
+    },
+    {
+      "status": " M",
+      "path": "frontend/tests/chatbot.voice.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/api/chatbot_ml.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/api/chatbot_proactive.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/api/chatbot_reports.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/db/proactive_models.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/schemas/chatbot_proactive.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/schemas/chatbot_reports.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_conversation.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_ml.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_proactive.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_proactive_scheduler.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_report_documents.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_report_store.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_reports.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/app/services/chatbot_security.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/parte7_demo.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/parte7_deployment_check.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/parte7_proactive_examples.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/parte7_report_examples.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/parte7_worker.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/conftest.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/test_chatbot_security.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/test_conversation.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/test_demo.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/test_ml.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/test_proactive.py"
+    },
+    {
+      "status": "??",
+      "path": "backend/tests/parte7/test_reports.py"
+    },
+    {
+      "status": "??",
+      "path": "database/mysql/migrations/parte7/001_proactividad_additive.sql"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/AUDITORIA_PUBLICACION.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/FASE2_CONVERSACION_Y_VOZ.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/FASE3_REPORTES_ACADEMICOS.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/FASE4_INTEGRACION_ML.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/FASE5_ASISTENTE_PROACTIVO.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/INFORME_FINAL_INTEGRACION.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/PLAN_IMPLEMENTACION.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/REDISENO_INTERFAZ.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/RESULTADOS_FASE4_ML.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/RESULTADOS_FASE5.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/despliegue/GUIA_DESPLIEGUE_Y_ROLLBACK.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/despliegue/MATRIZ_VARIABLES.md"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/despliegue/PRECHECK_LOCAL.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/despliegue/render-parte7.propuesta.yaml"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/despliegue/worker-render.example.yaml"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/FASE5_DEMOSTRACION.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/VERIFICACION.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/ejemplo-asistencia-autorizada.docx"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/ejemplo-asistencia-autorizada.pdf"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/ejemplo-asistencia-autorizada.xlsx"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/fase5-reporte-semanal.docx"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/fase5-reporte-semanal.pdf"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/ejemplos/fase5-reporte-semanal.xlsx"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/chatbot-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/chatbot-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/chatbot-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/demo-conversacion.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/ml-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/ml-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/ml-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/proactivo-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/proactivo-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/proactivo-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/reportes-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/reportes-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/reportes-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-estudiante-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-estudiante-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-estudiante-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-estudiante-820.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-profesor-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-profesor-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-profesor-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-profesor-820.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-real-estudiante-390.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-real-estudiante-820.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-real-profesor-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-real-profesor-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-real-reporte-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-referencia-conversacion-1366.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-referencia-conversacion-1920.png"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/evidencias/workspace-verificacion.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/ARCHIVOS_PENDIENTES.tsv"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/AUDITORIA_ESTATICA.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/DEFAULT_DATA_DIAGNOSTICO.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/PROPUESTA_DEFAULT_DATA_NO_APLICADA.patch"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/RESULTADOS_PRUEBAS.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/SEGURIDAD_Y_CONFIGURACION.json"
+    },
+    {
+      "status": "??",
+      "path": "docs/parte7/revision/auditar_backend.py"
+    },
+    {
+      "status": "??",
+      "path": "frontend/assets/img/chatbot-waves.svg"
+    },
+    {
+      "status": "??",
+      "path": "frontend/components/proactive.js"
+    },
+    {
+      "status": "??",
+      "path": "frontend/css/panel-navigation.css"
+    },
+    {
+      "status": "??",
+      "path": "frontend/css/proactive.css"
+    },
+    {
+      "status": "??",
+      "path": "frontend/js/chatbot-legacy-page.js"
+    },
+    {
+      "status": "??",
+      "path": "frontend/js/panel-navigation.js"
+    },
+    {
+      "status": "??",
+      "path": "frontend/package-lock.json"
+    },
+    {
+      "status": "??",
+      "path": "frontend/profesor/ia.html"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7-tools.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.chrome.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.live-demo.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.ml.chrome.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.proactive.chrome.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.reports.chrome.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.workspace.chrome.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "frontend/tests/parte7.workspace.live.test.mjs"
+    },
+    {
+      "status": "??",
+      "path": "requirements-parte7-lock.txt"
+    },
+    {
+      "status": "??",
+      "path": "requirements-parte7-proactivo.txt"
+    },
+    {
+      "status": "??",
+      "path": "requirements-parte7-pruebas.txt"
+    },
+    {
+      "status": "??",
+      "path": "requirements-parte7-reportes.txt"
+    }
+  ],
+  "pending_sensitive_path_candidates": [],
+  "overlap_checks": [
+    {
+      "path": "backend/app/api/chatbot.py",
+      "classification": "clean_text",
+      "conflict_hunks": 0
+    },
+    {
+      "path": "backend/app/services/chatbot_service.py",
+      "classification": "text_conflict",
+      "conflict_hunks": 2
+    },
+    {
+      "path": "frontend/components/chatbot.js",
+      "classification": "text_conflict",
+      "conflict_hunks": 2
+    },
+    {
+      "path": "frontend/estudiante/asistencia.html",
+      "classification": "text_conflict",
+      "conflict_hunks": 1
+    },
+    {
+      "path": "frontend/estudiante/ia.html",
+      "classification": "text_conflict",
+      "conflict_hunks": 2
+    },
+    {
+      "path": "frontend/js/chatbot-init.js",
+      "classification": "clean_text",
+      "conflict_hunks": 0
+    },
+    {
+      "path": "frontend/js/panel-comun.js",
+      "classification": "text_conflict",
+      "conflict_hunks": 2
+    }
+  ],
+  "environment_reads_by_file": {
+    "backend/app/api/chatbot.py": [
+      "GEMINI_API_KEY",
+      "GEMINI_MODEL"
+    ],
+    "backend/app/core/config.py": [
+      "APP_TIMEZONE",
+      "CHATBOT_DEMO_MODE",
+      "DB_HOST",
+      "DB_NAME",
+      "DB_PASSWORD",
+      "DB_PORT",
+      "DB_USER",
+      "EMOSCAN_ENABLED",
+      "EMOSCAN_JOB_TTL_SECONDS",
+      "EMOSCAN_MAX_RESULTS",
+      "EMOSCAN_MODEL_PATH",
+      "EMOSCAN_QUEUE_SIZE",
+      "EMOSCAN_RESULT_TTL_SECONDS",
+      "FACE_ENCRYPTION_KEY",
+      "FACE_MODELS_DIR",
+      "FACE_THRESHOLD",
+      "GEMINI_API_KEY",
+      "GEMINI_MODEL",
+      "JWT_ALGORITHM",
+      "JWT_EXPIRE_MINUTES",
+      "JWT_SECRET_KEY"
+    ]
+  },
+  "experimental_integrity": [
+    {
+      "path": "segmentacion/datos_asistencia_sinteticos.csv",
+      "matches_raw": true,
+      "matches_lf": false,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/descripcion_segmentos.md",
+      "matches_raw": true,
+      "matches_lf": false,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/evaluacion_k.csv",
+      "matches_raw": true,
+      "matches_lf": false,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/metricas_segmentacion.json",
+      "matches_raw": true,
+      "matches_lf": false,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/README_Parte3.md",
+      "matches_raw": false,
+      "matches_lf": true,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/requirements.txt",
+      "matches_raw": false,
+      "matches_lf": true,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/segmentacion_kmeans.py",
+      "matches_raw": false,
+      "matches_lf": true,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/segmentos_asignados.csv",
+      "matches_raw": true,
+      "matches_lf": false,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/test_segmentacion.py",
+      "matches_raw": false,
+      "matches_lf": true,
+      "unchanged_vs_HEAD": true
+    },
+    {
+      "path": "segmentacion/visualizacion_clusters.png",
+      "matches_raw": true,
+      "matches_lf": false,
+      "unchanged_vs_HEAD": true
+    }
+  ],
+  "initial_pending_count": 109,
+  "pending_status_counts": {
+    " M": 11,
+    "??": 106
+  },
+  "proposal_git_apply_check_passed": true,
+  "final_head": "90e7ce75c34497350728b9aa02afd74c9e8ca188",
+  "final_main": "f53d56b97a7ef840df89e7b1913d2f27b706ca54",
+  "final_stash_ids": [
+    "ea354b5c14574be861b11e6d4326124d7547e163",
+    "7560d9d4c6d3d220af3f720fc9763d3cf355d9e0",
+    "3949fd59ab553975ad9e0ad4d477af833e04e28a"
+  ],
+  "final_staged_paths": []
+}

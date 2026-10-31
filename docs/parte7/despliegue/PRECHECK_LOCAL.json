@@ -1,0 +1,38 @@
+{
+  "scope": "local_synthetic_only",
+  "python": "3.12.10",
+  "platform": "Windows",
+  "mysql": "blocked",
+  "render_modified": false,
+  "memory_after_demo_import": {
+    "available": true,
+    "working_set_mib": 129.71,
+    "peak_working_set_mib": 129.71
+  },
+  "memory_after_eight_row_exports": {
+    "available": true,
+    "working_set_mib": 157.07,
+    "peak_working_set_mib": 157.43
+  },
+  "memory_limitations": "Una petición a la vez; sin TensorFlow/ONNX, sin carga máxima, no es dimensionamiento Linux.",
+  "exports": {
+    "xlsx": {
+      "bytes": 10480,
+      "authorized_download": true
+    },
+    "pdf": {
+      "bytes": 5201,
+      "authorized_download": true
+    },
+    "docx": {
+      "bytes": 38886,
+      "authorized_download": true
+    }
+  },
+  "rotation_strategy_test": {
+    "wrong_key_rejected": true,
+    "rotated_ciphertext_decrypts_with_new_key": true,
+    "old_backup_decrypts_with_preserved_old_key": true,
+    "production_keyring_implemented": false
+  }
+}

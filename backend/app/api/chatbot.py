@@ -13,12 +13,20 @@ from app.api.deps import get_current_user
 from app.db.database import get_db
 from app.db.models import (
     ChatHistorial,
-    Estudiante,
-    Usuario,
-    Matricula,
 )
 from app.schemas.chatbot import ChatMessage
-from app.services.chatbot_service import answer, courses_for
+from app.services.chatbot_service import answer
+from app.services.chatbot_conversation import prepare_turn, finish_turn
+from app.api.chatbot_reports import router as reports_router, report_message
+from app.api.chatbot_ml import router as ml_router, report_message as ml_report_message
+from app.services.chatbot_ml import ml_message
+from app.api.chatbot_proactive import router as proactive_router
+from app.services.chatbot_proactive import proactive_message
+from dataclasses import replace
+from app.services.chatbot_security import (
+    academic_scope, require_chatbot_role as validate_chatbot_role, history_scope_key,
+    encode_history_reply, visible_history_reply,
+)
 
 
 router = APIRouter(
@@ -34,12 +42,7 @@ router = APIRouter(
 from fastapi import HTTPException
 
 def require_chatbot_role(user=Depends(get_current_user)):
-    role = str(user.rol).lower()
-    if role not in ("estudiante", "profesor", "admin"):
-        raise HTTPException(
-            status_code=403,
-            detail="El chatbot solo está disponible para Estudiante, Profesor y Admin."
-        )
+    validate_chatbot_role(user)
     return user
 
 
@@ -48,43 +51,9 @@ def context(
     user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
-    courses = courses_for(db, user)
-
-    course_ids = [course.id for course in courses]
-
-    students_query = (
-        select(
-            Estudiante.id,
-            Usuario.nombres,
-            Usuario.apellidos,
-        )
-        .join(
-            Usuario,
-            Estudiante.usuario_id == Usuario.id,
-        )
-        .join(
-            Matricula,
-            Matricula.estudiante_id == Estudiante.id,
-        )
-    )
-
-    if course_ids:
-        students_query = students_query.where(
-            Matricula.curso_id.in_(course_ids)
-        )
-
-    students = db.execute(students_query).unique().all()
-
-    role = str(user.rol).upper()
-
-    own = None
-
-    if role == "ESTUDIANTE":
-        own = db.scalar(
-            select(Estudiante.id).where(
-                Estudiante.usuario_id == user.id
-            )
-        )
+    scope = academic_scope(db, user)
+    courses = scope.courses
+    students = db.execute(scope.students_query()).unique().all()
 
     return {
         "demo": DEMO_MODE,
@@ -97,11 +66,10 @@ def context(
         ],
         "students": [
             {
-                "id": student_id,
+                "id": student.id,
                 "nombre": f"{nombres} {apellidos}".strip(),
             }
-            for student_id, nombres, apellidos in students
-            if role != "ESTUDIANTE" or student_id == own
+            for student, nombres, apellidos in students
         ],
         "gemini_configured": bool(
             os.getenv("GEMINI_API_KEY")
@@ -120,7 +88,19 @@ async def message(
     user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
-    result = answer(db, user, body)
+    scope_key = history_scope_key(db, user)
+    turn = prepare_turn(user, body, scope_key)
+    if turn.intent=="PREDICTION":turn=replace(turn,intent="ML_REGRESSION")
+    result = answer(db, user, turn.body, turn=replace(turn,intent="HELP") if turn.intent in {"REPORT","PROACTIVE"} or turn.intent.startswith("ML_") else turn)
+    selection = result.pop("_selection")
+    if turn.intent=="PROACTIVE":
+        result = proactive_message(db,user,turn,selection)
+    elif turn.intent=="REPORT":
+        result = report_message(db,user,turn,selection)
+    elif turn.intent=="ML_REPORT":
+        result = ml_report_message(db,user,turn,selection)
+    elif turn.intent.startswith("ML_"):
+        result = ml_message(db,user,turn,selection)
 
     key = os.getenv("GEMINI_API_KEY")
     model = os.getenv("GEMINI_MODEL", "")
@@ -205,13 +185,14 @@ async def message(
         ChatHistorial(
             id_usuario=user.id,
             pregunta=body.message,
-            respuesta=result["reply"],
+            respuesta=encode_history_reply(result["reply"], scope_key),
             fecha_hora=now,
         )
     )
 
     db.commit()
 
+    result["context"] = finish_turn(user, scope_key, turn, selection)
     result["demo"] = DEMO_MODE
 
     return result
@@ -226,6 +207,7 @@ def history(
     user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
+    scope_key = history_scope_key(db, user)
     rows = list(
         db.scalars(
             select(ChatHistorial)
@@ -238,7 +220,7 @@ def history(
     return [
         {
             "question": row.pregunta,
-            "reply": row.respuesta,
+            "reply": visible_history_reply(row.respuesta, scope_key),
         }
         for row in reversed(rows)
     ]
@@ -253,6 +235,7 @@ def clear(
     user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
+    require_chatbot_role(user)
     db.execute(
         delete(ChatHistorial)
         .where(ChatHistorial.id_usuario == user.id)
@@ -263,3 +246,9 @@ def clear(
     return {
         "ok": True
     }
+
+router.include_router(reports_router)
+
+router.include_router(ml_router)
+
+router.include_router(proactive_router)

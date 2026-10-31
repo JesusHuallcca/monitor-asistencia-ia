@@ -29,7 +29,6 @@ const Panel = Object.assign(Object.create(Admin), {
         { href: "cursos.html", alias: ["curso.html"], texto: "Mis cursos", icono: I.libro },
         { href: "calificaciones.html", texto: "Mis calificaciones", icono: I.notas },
         { href: "asistencia.html", texto: "Mi asistencia", icono: I.asistencia },
-        { href: "ia.html", texto: "Asistente IA", icono: I.ia },
         { href: "emoscan.html", texto: "EmoScan", icono: I.ia },
         { href: "perfil.html", texto: "Mi perfil", icono: I.perfil },
       ];
@@ -78,6 +77,16 @@ const Panel = Object.assign(Object.create(Admin), {
     return yo;
   },
 
+  // Academic pages must display service errors even when their template lacks #aviso.
+  avisar(texto, tipo = "") {
+    if (!document.getElementById("aviso")) {
+      const aviso = document.createElement("div");
+      aviso.id = "aviso"; aviso.setAttribute("role", "status"); aviso.hidden = true;
+      (document.querySelector(".admin-principal,.dashboard-main") || document.body).prepend(aviso);
+    }
+    return Admin.avisar.call(this, texto, tipo);
+  },
+
   // Si la sesión venció, vuelve al login
   async api(ruta, opciones) {
     const r = await Auth.fetchAutenticado(ruta, opciones);
@@ -90,27 +99,16 @@ const Panel = Object.assign(Object.create(Admin), {
 
   
   montarChatbot() {
-    if (document.getElementById('monitor-chat-root')) return;
-    if (!['estudiante', 'profesor', 'admin'].includes(this.yo?.rol)) return;
-
-    if (!window.monitorReady) {
-      const s1 = document.createElement('script');
-      s1.src = '../js/chatbot-init.js';
-      s1.onload = () => {
-        if (!document.getElementById('monitor-chat-root')) {
-          const s2 = document.createElement('script');
-          s2.src = '../components/chatbot.js';
-          document.body.appendChild(s2);
-        }
-      };
-      document.body.appendChild(s1);
-    } else {
-      if (!document.getElementById('monitor-chat-root')) {
-        const s2 = document.createElement('script');
-        s2.src = '../components/chatbot.js';
-        document.body.appendChild(s2);
-      }
-    }
+    if(!['estudiante','profesor'].includes(this.yo?.rol))return;
+    if(window.monitorChatBootstrap)return window.monitorChatBootstrap;
+    const load=src=>new Promise((resolve,reject)=>{
+      const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.append(script);
+    });
+    window.monitorChatBootstrap=(async()=>{
+      if(!window.monitorReady)await load('../js/chatbot-init.js');
+      if(!document.getElementById('monitor-chat-root')&&!document.querySelector('script[src$="/components/chatbot.js"]'))await load('../components/chatbot.js');
+    })().catch(()=>console.warn('No se pudo cargar la interfaz del asistente.'));
+    return window.monitorChatBootstrap;
   },
 
   montarMenu(rol) {
@@ -404,3 +402,6 @@ const Panel = Object.assign(Object.create(Admin), {
     }
   },
 });
+
+// Existing Parte 6 initializer accesses the shared controller through window.
+window.Panel = Panel;

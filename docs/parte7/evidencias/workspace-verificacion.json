@@ -1,0 +1,38 @@
+{
+  "checks": 336,
+  "pagesChecked": [
+    "estudiante/asistencia.html",
+    "estudiante/calificaciones.html",
+    "estudiante/curso.html",
+    "estudiante/cursos.html",
+    "estudiante/emoscan.html",
+    "estudiante/ia.html",
+    "estudiante/inicio.html",
+    "estudiante/perfil.html",
+    "profesor/curso.html",
+    "profesor/cursos.html",
+    "profesor/estadistica.html",
+    "profesor/ia.html",
+    "profesor/indicadores.html",
+    "profesor/logistica.html",
+    "profesor/perfil.html",
+    "profesor/prediccion.html",
+    "profesor/red-neuronal.html",
+    "profesor/segmentacion.html"
+  ],
+  "emptyLegacyPlaceholders": [
+    "profesor/asistencia.html",
+    "profesor/dashboard.html",
+    "profesor/estadisticas.html",
+    "profesor/estudiantes.html",
+    "profesor/modelos.html"
+  ],
+  "viewports": [
+    "1920x1080",
+    "1366x768",
+    "820x1180",
+    "390x844"
+  ],
+  "api": "synthetic_ui_fixtures",
+  "physical_microphone_tested": false
+}

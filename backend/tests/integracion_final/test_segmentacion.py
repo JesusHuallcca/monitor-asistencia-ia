@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 
 from app.services.segmentacion_service import MAX_BYTES, MODEL_SLOT, process_csv
-from segmentacion.segmentacion_kmeans import DEFAULT_DATA, FEATURES, fit_segments, prepare_students
+from segmentacion.modelo_cuatro_variables import DEFAULT_DATA, FEATURES, fit_segments, prepare_students
 
 HEADERS = {'Content-Type': 'text/csv', 'X-CSV-Filename': 'prueba.csv'}
 

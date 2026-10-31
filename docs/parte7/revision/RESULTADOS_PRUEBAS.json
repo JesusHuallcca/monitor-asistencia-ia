@@ -1,0 +1,83 @@
+{
+  "scope": "local_development_no_mysql_no_production",
+  "python": "3.12.10",
+  "backend_parte7": {
+    "passed": 256,
+    "warnings": 1,
+    "subset_of_backend_global": true
+  },
+  "backend_global_original_imports": {
+    "passed": 291,
+    "failed": 3,
+    "errors": 25,
+    "warnings": 1,
+    "command": "python -B docs/parte7/revision/auditar_backend.py",
+    "failed_cases": [
+      "emoscan/test_expressions.py::test_bounded_queue_timeout_and_recovery",
+      "emoscan/test_expressions.py::test_real_onnx_photo_through_isolated_queue",
+      "emoscan/test_expressions.py::test_real_worker_missing_model_is_unavailable"
+    ],
+    "collection_errors": {
+      "DEFAULT_DATA": 2,
+      "face_repository_missing_get_connection": 1
+    },
+    "setup_errors_missing_legacy_fixtures": 22
+  },
+  "emoscan_queue_isolated_retry": {
+    "failed": 1,
+    "deselected": 28,
+    "reason": "Timed out waiting for the isolated worker"
+  },
+  "kmeans_original_and_experimental": {
+    "passed": 17,
+    "failed_subtests": 4,
+    "passed_subtests": 25,
+    "reason": "CRLF versus LF; all four canonical LF hashes match and files are unchanged versus HEAD"
+  },
+  "proposed_adapter_overlay_only": {
+    "passed": 50,
+    "warnings": 1,
+    "applied_to_product": false
+  },
+  "frontend_chrome": {
+    "chatbot": 72,
+    "workspace": 262,
+    "workspace_live": 29,
+    "proactive": 42,
+    "reports": 44,
+    "ml": 60,
+    "sum_checks": 509,
+    "voice_simulated": "passed",
+    "contextual_live_conversation": "passed"
+  },
+  "legacy_frontend_with_real_computed_proposal_fixtures": {
+    "assertions": 280,
+    "passed": true,
+    "synthetic_camera": true,
+    "product_endpoint_not_validated_by_this_test": true
+  },
+  "legacy_emoscan_javascript": {
+    "assertions": 14,
+    "passed": true
+  },
+  "exports": {
+    "xlsx": "generated_and_opened",
+    "pdf": "generated_and_opened",
+    "docx": "generated_and_opened",
+    "authorized_rows": 8,
+    "attendance_pct": 87.5
+  },
+  "weekly_reminder_demo": {
+    "scheduler": "APScheduler",
+    "browser_required": false,
+    "external_messages": 0,
+    "weekly_rows": 2,
+    "attendance_pct": 50,
+    "accelerated_test_clock": true
+  },
+  "pip_check": "passed for p7 venv; does not certify temporary dependencies or combined TensorFlow/Linux build",
+  "physical_microphone_tested": false,
+  "physical_camera_tested": false,
+  "merge_commit_push_deploy": false,
+  "mysql_connections": "blocked"
+}
