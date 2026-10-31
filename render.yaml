@@ -22,9 +22,9 @@ services:
       - key: EMOSCAN_ENABLED
         value: "true"
       - key: FACE_ENCRYPTION_KEY
-        value: OXFoIeaqswHSonO5IatQAFj7vMs5rkJGMmOn6zDPm58=
+        sync: false
       - key: JWT_SECRET_KEY
-        value: senati_monitor_asistencia_clave_secreta_2026
+        sync: false
       - key: JWT_ALGORITHM
         value: HS256
       - key: JWT_EXPIRE_MINUTES

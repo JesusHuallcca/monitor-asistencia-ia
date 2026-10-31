@@ -93,13 +93,10 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request, exc):
-    import traceback
-    traceback.print_exc()
+    import logging
     from fastapi.responses import JSONResponse
-    return JSONResponse(
-        status_code=500,
-        content={"detail": f"Error interno del servidor: {str(exc)}"},
-    )
+    logging.getLogger("monitor.api").error("request_failed code=internal_error")
+    return JSONResponse(status_code=500, content={"detail": "Error interno del servidor."})
 
 
 
@@ -181,30 +178,8 @@ def root():
 
 @app.get("/api/health")
 def health():
-    from app.core.config import settings, _FALLBACK_DB_PASS
-    from app.db.database import db_pass
-    has_fallback = (db_pass == _FALLBACK_DB_PASS)
-    pass_prefix = db_pass[:4] if db_pass else "EMPTY"
-    pass_len = len(db_pass) if db_pass else 0
-    db_err = None
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-    except Exception as e:
-        db_err = str(e)
-
-    return {
-        "status": "ok" if not db_err else "error",
-        "database": "conectada" if not db_err else "desconectada",
-        "db_error": db_err,
-        "has_fallback": has_fallback,
-        "pass_prefix": pass_prefix,
-        "pass_len": pass_len,
-        "host": settings.DB_HOST,
-        "user": settings.DB_USER,
-        "emoscan_model_exists": os.path.exists(settings.EMOSCAN_MODEL_PATH),
-        "version": "v1.1-emoscan-model",
-    }
+    """Liveness only; diagnostics never expose connection configuration."""
+    return {"status": "ok", "service": "monitor-asistencia-api"}
 
 
 
