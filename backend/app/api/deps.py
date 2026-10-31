@@ -20,7 +20,10 @@ def get_current_user(
     if payload is None or "sub" not in payload:
         raise HTTPException(status_code=401, detail="Token inválido o vencido")
 
-    user = db.get(Usuario, int(payload["sub"]))
+    subject = payload.get("sub")
+    if not isinstance(subject, str) or not subject.isascii() or not subject.isdecimal() or not 0 < int(subject) <= 2147483647:
+        raise HTTPException(status_code=401, detail="Token inválido o vencido")
+    user = db.get(Usuario, int(subject))
     if user is None or user.estado != "activo":
         raise HTTPException(status_code=401, detail="Usuario no disponible")
     return user

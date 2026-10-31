@@ -1,6 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
@@ -29,35 +30,7 @@ from app.services.expression_service import expression_service
 
 @asynccontextmanager
 async def lifespan(app):
-    try:
-        from app.db.database import Base
-        import app.db.models
-        Base.metadata.create_all(bind=engine)
-    except Exception:
-        pass
-    try:
-        import os
-        import urllib.request
-        # 1. EmoScan
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        root_dir = os.path.abspath(os.path.join(base_dir, "..", ".."))
-        model_path = os.path.join(root_dir, "integraciones", "emoscan", "emotion-ferplus-8.onnx")
-        print(f"[Lifespan] EmoScan model present: {os.path.exists(model_path)}")
-
-
-        # 2. Reconocimiento Facial (YuNet + SFace)
-        face_dir = os.path.join(root_dir, "ai", "face", "models")
-        os.makedirs(face_dir, exist_ok=True)
-        face_models = [
-            ("face_detection_yunet_2023mar.onnx", "https://huggingface.co/opencv/face_detection_yunet/resolve/main/face_detection_yunet_2023mar.onnx"),
-            ("face_recognition_sface_2021dec.onnx", "https://huggingface.co/opencv/face_recognition_sface/resolve/main/face_recognition_sface_2021dec.onnx"),
-        ]
-        for fname, f_url in face_models:
-            f_dest = os.path.join(face_dir, fname)
-            if not os.path.exists(f_dest):
-                urllib.request.urlretrieve(f_url, f_dest)
-    except Exception:
-        pass
+    # Schema and model provisioning are explicit deployment steps, never startup actions.
     try:
         yield
     finally:
@@ -75,7 +48,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
+    allow_origins=([value.strip() for value in settings.CORS_ALLOWED_ORIGINS.split(",") if value.strip()] if settings.CORS_ALLOWED_ORIGINS else [
         "http://127.0.0.1:8001",
         "http://localhost:8001",
         "http://127.0.0.1:5500",
@@ -83,8 +56,8 @@ app.add_middleware(
         "https://monitor-asistencia-frontend.vercel.app",
         "https://chic-quietude-production-7952.up.railway.app",
         "https://monitor-asistencia-frontend.onrender.com",
-    ],
-    allow_origin_regex=r"https://.*\.onrender\.com|https://.*\.up\.railway\.app",
+    ]),
+    allow_origin_regex=None,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -93,13 +66,10 @@ app.add_middleware(
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request, exc):
-    import traceback
-    traceback.print_exc()
+    import logging
     from fastapi.responses import JSONResponse
-    return JSONResponse(
-        status_code=500,
-        content={"detail": f"Error interno del servidor: {str(exc)}"},
-    )
+    logging.getLogger("monitor.api").error("request_failed code=internal_error")
+    return JSONResponse(status_code=500, content={"detail": "Error interno del servidor."})
 
 
 
@@ -216,30 +186,8 @@ def root():
 
 @app.get("/api/health")
 def health():
-    from app.core.config import settings, _FALLBACK_DB_PASS
-    from app.db.database import db_pass
-    has_fallback = (db_pass == _FALLBACK_DB_PASS)
-    pass_prefix = db_pass[:4] if db_pass else "EMPTY"
-    pass_len = len(db_pass) if db_pass else 0
-    db_err = None
-    try:
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-    except Exception as e:
-        db_err = str(e)
-
-    return {
-        "status": "ok" if not db_err else "error",
-        "database": "conectada" if not db_err else "desconectada",
-        "db_error": db_err,
-        "has_fallback": has_fallback,
-        "pass_prefix": pass_prefix,
-        "pass_len": pass_len,
-        "host": settings.DB_HOST,
-        "user": settings.DB_USER,
-        "emoscan_model_exists": os.path.exists(settings.EMOSCAN_MODEL_PATH),
-        "version": "v1.1-emoscan-model",
-    }
+    """Liveness only; diagnostics never expose connection configuration."""
+    return {"status": "ok", "service": "monitor-asistencia-api"}
 
 
 

@@ -1,7 +1,8 @@
-from backend.app.db.face_repository import face_repository
 
 
 def main():
+    # Legacy persistence command is intentionally opt-in; not executed by pytest.
+    from backend.app.db.face_repository import face_repository
     embedding = [0.1, 0.2, 0.3, 0.4, 0.5]
 
     class FakeEmbedding:

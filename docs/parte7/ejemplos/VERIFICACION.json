@@ -1,0 +1,49 @@
+{
+  "synthetic": true,
+  "source": "Base académica autorizada (sqlite)",
+  "spec": {
+    "compare_end": null,
+    "compare_start": null,
+    "course_id": 2,
+    "period_end": "2026-10-31",
+    "period_start": "2026-09-01",
+    "report_type": "asistencia",
+    "student_id": null
+  },
+  "generated_at": "2026-10-31T16:02:54.723007-05:00",
+  "dataset_sha256": "830db3558885c4a90e0afcd3af1948f3530498106277d8a696990ec91062d6c9",
+  "metrics": {
+    "asistencia_pct": 87.5,
+    "ausencias": 1,
+    "denominador_asistencia": 8,
+    "presentes": 2,
+    "registros": 8,
+    "sin_clasificar": 0,
+    "tardanzas": 5
+  },
+  "rows": 8,
+  "files": {
+    "xlsx": {
+      "name": "ejemplo-asistencia-autorizada.xlsx",
+      "bytes": 10478,
+      "sha256": "68e6e470258731ce0fa148d3695f8932109f710e518f24dd9a50b2b2c01c96c0"
+    },
+    "pdf": {
+      "name": "ejemplo-asistencia-autorizada.pdf",
+      "bytes": 5202,
+      "sha256": "93c45012590703fc0273ebb08dfb2a18a55c2cfc00735fea0742701266cbdaaf"
+    },
+    "docx": {
+      "name": "ejemplo-asistencia-autorizada.docx",
+      "bytes": 38889,
+      "sha256": "0a21ee10a8571acf8bbd2a6e451eec05b59a3473966323c6f1f4dbc08198d021"
+    }
+  },
+  "verified": [
+    "Autenticación y curso autorizado",
+    "8 filas idénticas de prueba",
+    "Misma huella de dataset en los tres formatos",
+    "Lectura independiente con openpyxl, pypdf y python-docx",
+    "7 asistencias (2 presentes + 5 tardanzas) / 8 registros válidos = 87,5 %"
+  ]
+}

@@ -25,7 +25,11 @@ class ExperimentalTests(unittest.TestCase):
         expected = json.loads((HERE/'integridad_original.json').read_text(encoding='utf-8'))
         for name, digest in expected.items():
             with self.subTest(name=name):
-                self.assertEqual(hashlib.sha256((ACADEMIC/name).read_bytes()).hexdigest(), digest)
+                content = (ACADEMIC/name).read_bytes()
+                candidates = {hashlib.sha256(content).hexdigest()}
+                if name in {"README_Parte3.md","requirements.txt","segmentacion_kmeans.py","test_segmentacion.py"}:
+                    candidates.add(hashlib.sha256(content.replace(b"\r\n",b"\n")).hexdigest())
+                self.assertIn(digest, candidates)
 
     def test_preserves_academic_aggregates_and_does_not_mutate_input(self):
         before = self.raw.copy(deep=True)

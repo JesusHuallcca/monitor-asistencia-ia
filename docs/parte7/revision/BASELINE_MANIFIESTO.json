@@ -1,0 +1,18 @@
+[
+  {
+    "file": "segmentacion/evaluacion_k.csv",
+    "working_equals_origin_main": true
+  },
+  {
+    "file": "segmentacion/metricas_segmentacion.json",
+    "working_equals_origin_main": true
+  },
+  {
+    "file": "segmentacion/segmentos_asignados.csv",
+    "working_equals_origin_main": true
+  },
+  {
+    "file": "segmentacion/visualizacion_clusters.png",
+    "working_equals_origin_main": true
+  }
+]

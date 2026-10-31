@@ -8,24 +8,26 @@ ROOT_DIR = Path(__file__).resolve().parents[3]
 ENV_FILE = ROOT_DIR / ".env"
 
 
-import base64
-
-_FALLBACK_DB_PASS = base64.b64decode("QVZOU19yejUweHNDNTRSSGdKT2xMZVJo").decode("utf-8")
 
 
 class Settings(BaseSettings):
-    DB_HOST: str = "monitor-asistencia-mysql-jq0484185-9607.l.aivencloud.com"
-    DB_PORT: int = 19212
+    # Secrets must be supplied by the operator; no inherited credentials in Git.
+    DB_HOST: str = "127.0.0.1"
+    DB_PORT: int = 3306
     DB_NAME: str = "monitor_asistencia"
-    DB_USER: str = "avnadmin"
-    DB_PASSWORD: str = _FALLBACK_DB_PASS
+    DB_USER: str = ""
+    DB_PASSWORD: str = ""
 
-    JWT_SECRET_KEY: str = "monitor-asistencia-default-secret-key-change-in-prod"
+    JWT_SECRET_KEY: str = ""
+    DB_SSL_CA: str = ""
+    DB_SSL_REQUIRED: bool = False
+    CORS_ALLOWED_ORIGINS: str = ""
+
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRE_MINUTES: int = 720  # 12 horas para sesiones de clase y demostraciones continuas
 
     # Reconocimiento facial
-    FACE_ENCRYPTION_KEY: str = "OXFoIeaqswHSonO5IatQAFj7vMs5rkJGMmOn6zDPm58="
+    FACE_ENCRYPTION_KEY: str = ""
     FACE_THRESHOLD: float = 0.363
     FACE_MODELS_DIR: str = str(ROOT_DIR / "ai" / "face" / "models")
     # Análisis opcional de expresiones; separado del reconocimiento facial.

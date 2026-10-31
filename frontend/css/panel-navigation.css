@@ -1,0 +1,44 @@
+/* Solo los dos roles académicos: no cambia los paneles de administración. */
+body.panel-navigation .admin-menu{background:linear-gradient(175deg,#092d57,#061c37);box-shadow:none;border-right:1px solid #163855}
+body.panel-navigation .admin-menu nav .pronto{display:flex;align-items:center;flex-wrap:wrap;gap:0 10px;padding:11px 14px;color:#93a8c1;font-size:13px;line-height:1.35}
+body.panel-navigation .admin-menu nav .pronto svg{width:19px;height:19px;flex:none}
+body.panel-navigation .admin-menu nav .pronto small{display:block;padding-left:29px;width:100%;font-size:10px;color:#91a7bf;margin-top:3px}
+body.panel-navigation .admin-principal{min-width:0}
+.panel-menu-toggle,.panel-nav-close{display:none}
+body.monitor-chat-active{overflow:hidden}
+body.monitor-chat-active .admin-layout{height:100dvh;min-height:0}
+body.panel-navigation .admin-menu{height:100dvh}
+body.panel-navigation .admin-menu .btn-salir{white-space:nowrap}
+@media(max-width:900px){
+ body.panel-navigation .admin-layout{display:block}
+ body.panel-navigation .admin-menu{position:fixed;inset:0 auto 0 0;width:260px;height:100dvh;display:flex;flex-direction:column;align-items:stretch;flex-wrap:nowrap;transform:translateX(-102%);transition:transform .18s ease;z-index:90;box-shadow:6px 0 25px #0d2e5125}
+ body.panel-navigation.panel-nav-open .admin-menu{transform:translateX(0)}
+ body.panel-navigation .admin-menu nav{display:block;flex:1;width:100%;overflow-x:hidden;overflow-y:auto;padding:14px 12px}
+ body.panel-navigation .admin-menu nav a{display:flex;margin:3px 0;padding:12px 14px;white-space:normal}
+ body.panel-navigation .admin-menu .admin-marca{height:72px;padding:0 22px}
+ body.panel-navigation .admin-menu .admin-pie{display:block;padding:18px;border-top:1px solid #ffffff15}
+ body.panel-navigation .admin-menu .quien-menu{display:block}
+ body.panel-navigation .admin-menu .btn-salir{width:100%;margin-top:10px}
+ body.panel-navigation .admin-cabecera{padding-left:64px;min-height:68px}
+ .panel-menu-toggle{display:grid;place-items:center;position:fixed;top:14px;left:14px;width:38px;height:38px;border:1px solid #d8e4f2;border-radius:11px;background:#fff;color:#164c85;z-index:25;font-size:20px}
+ .panel-nav-close{display:block;position:absolute;right:8px;top:10px;border:0;background:transparent;color:#fff;font-size:26px;cursor:pointer}
+ body.monitor-chat-active #panel-menu-toggle{display:none}
+}
+@media(prefers-reduced-motion:reduce){body.panel-navigation .admin-menu{transition:none}}
+
+body.panel-navigation .admin-marca img{background:#fff;padding:5px 9px;border-radius:7px}
+
+/* Preserve main's dashboard layout; use one academic drawer controller. */
+body.monitor-chat-active .dashboard-layout{height:100dvh;min-height:0}
+body.panel-navigation .admin-barra-movil{display:none!important}
+body.panel-navigation .dashboard-sidebar{flex-shrink:0}
+@media(max-width:900px){
+ body.panel-navigation .dashboard-main{margin-left:0;width:100%;min-width:0}
+ body.panel-navigation .dashboard-sidebar{transform:translateX(-102%)!important}
+ body.panel-navigation.panel-nav-open .dashboard-sidebar{transform:translateX(0)!important}
+}
+
+@media(max-width:900px){
+ body.panel-navigation .admin-menu{width:260px!important;transform:translateX(-102%)!important}
+ body.panel-navigation.panel-nav-open .admin-menu{transform:translateX(0)!important}
+}

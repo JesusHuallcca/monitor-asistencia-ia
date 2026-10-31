@@ -134,6 +134,11 @@
           </article>
 
           <!-- Gráfico 03: Asistencia vs Promedio de Notas -->
+          <article class="seg-card seg-chart-card" data-chart="seg-samples">
+          <div class="seg-chart-heading"><h3>Silueta por perfil</h3><span class="seg-chart-index">02</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-samples" title="Ampliar gráfico">🔍 Ampliar</button></div>
+          <div id="seg-samples" class="seg-plot seg-plot-tall" aria-label="Coeficientes de silueta individuales agrupados por cluster"></div>
+          <p id="seg-samples-note" class="seg-chart-note"></p>
+        </article>
           <article class="seg-card seg-chart-card seg-complement" data-chart="seg-comparison">
             <div class="seg-chart-heading">
               <h3>Asistencia vs. promedio de notas</h3>
@@ -154,6 +159,16 @@
           </article>
 
           <!-- Gráfico 07: Distribución de perfiles por cluster -->
+          <article class="seg-card seg-chart-card" data-chart="seg-elbow">
+          <div class="seg-chart-heading"><h3>Método del codo</h3><span class="seg-chart-index">05</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-elbow" title="Ampliar gráfico">🔍 Ampliar</button></div>
+          <div id="seg-elbow" class="seg-plot" aria-label="Inercia según número de clusters"></div>
+          <p id="seg-elbow-note" class="seg-chart-note"></p>
+        </article>
+          <article class="seg-card seg-chart-card" data-chart="seg-heatmap">
+          <div class="seg-chart-heading"><h3>Mapa de calor de centroides</h3><span class="seg-chart-index">06</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-heatmap" title="Ampliar gráfico">🔍 Ampliar</button></div>
+          <div id="seg-heatmap" class="seg-plot" aria-label="Centroides de las cuatro variables estandarizadas"></div>
+          <p id="seg-heatmap-note" class="seg-chart-note"></p>
+        </article>
           <article class="seg-card seg-chart-card" data-chart="seg-distribution">
             <div class="seg-chart-heading">
               <h3>Distribución de perfiles por cluster</h3>

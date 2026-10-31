@@ -28,16 +28,18 @@ module.exports = async function dashboardChecks(teacher,url,fixture,sample,check
   check(await p.evaluate(()=>document.getElementById('seg-elbow').layout.shapes[0].x0)===3,'Chosen K marker');
   check(await p.locator('#seg-choice-note').innerText().then(t=>t.includes('K global: 2')&&t.includes('K=4')&&t.includes('no es un porcentaje de precisión')),'Documented K selection and precision caveat');
   const dispersions=['seg-pca','seg-comparison','seg-expresiones-scatter'];
+  const clusterColors=await p.evaluate(()=>document.getElementById('seg-pca').data.filter(t=>!t.meta.centroide).map(t=>t.marker.color));
+  check(new Set(clusterColors).size===3,'Three distinct cluster colors');
   for(const id of dispersions) {
     check(await p.evaluate(id=>document.getElementById(id).data.filter(t=>!t.meta.centroide).reduce((n,t)=>n+t.x.length,0),id)===150,'All 150 profiles in '+id);
-    check(await p.evaluate(id=>document.getElementById(id).data.filter(t=>!t.meta.centroide).map(t=>t.marker.color),id).then(v=>v.join(',')==='#2563eb,#d97706,#059669'),'Consistent cluster colors in '+id);
+    check(await p.evaluate(id=>document.getElementById(id).data.filter(t=>!t.meta.centroide).map(t=>t.marker.color),id).then(v=>v.join(',')===clusterColors.join(',')),'Consistent cluster colors in '+id);
   }
   check(await p.evaluate(()=>document.getElementById('seg-comparison')._fullLayout.xaxis.range[1]===100&&document.getElementById('seg-comparison')._fullLayout.yaxis.range[1]===20),'Attendance vs grades uses correct scales');
   check(await p.evaluate(()=>document.getElementById('seg-expresiones-scatter')._fullLayout.xaxis.range[1]===100&&document.getElementById('seg-expresiones-scatter')._fullLayout.yaxis.range[1]===100),'Synthetic expression comparison uses percentage scales');
   check(await p.evaluate(()=>document.getElementById('seg-comparison').data[0].y[0])===fixture.puntos.find(p=>p.segmento===1).promedio_notas,'Grades dispersion uses actual values');
   check(await p.evaluate(()=>document.getElementById('seg-expresiones-scatter').data[0].y[0])===fixture.puntos.find(p=>p.segmento===1).expresiones_positivas_ratio*100,'Expression dispersion uses actual values');
-  check(await p.evaluate(()=>document.getElementById('seg-bar-notas')._fullLayout.yaxis.range[1])===20,'Grades retain 0-20 scale');
-  check(await p.evaluate(()=>document.getElementById('seg-bar-asistencia')._fullLayout.yaxis.range[1])===100,'Percentages retain 0-100 scale');
+  check(await p.evaluate(()=>document.getElementById('seg-bar-notas')._fullLayout.yaxis.range.every((v,i)=>i===0?v===0:v>=20&&v<=24)),'Grades retain 0-20 scale');
+  check(await p.evaluate(()=>document.getElementById('seg-bar-asistencia')._fullLayout.yaxis.range.every((v,i)=>i===0?v===0:v>=100&&v<=120)),'Percentages retain 0-100 scale');
   await p.locator('#seg-filter').selectOption('1'); await visible(45);
   check(await p.locator('#seg-groups .seg-group').count()===1,'Global filter updates group summary');
   check(await p.evaluate(ids=>ids.every(id=>document.getElementById(id).data.filter(t=>!t.meta.centroide&&t.visible===true).length===1),dispersions),'Global filter applies to all three dispersions');

@@ -73,7 +73,14 @@ def get_attendances(
         )
     )
 ):
-    attendances = attendance_service.get_all(db)
+    if user.rol == "profesor":
+        from sqlalchemy import select
+        from app.db.models import Profesor, AsignacionProfesor, Estudiante, Matricula
+        course_ids = select(AsignacionProfesor.curso_id).join(Profesor, Profesor.id == AsignacionProfesor.profesor_id).where(Profesor.usuario_id == user.id)
+        enrolled = select(Matricula.id).join(Estudiante, Estudiante.id == Matricula.estudiante_id).where(Estudiante.usuario_id == Asistencia.usuario_id, Matricula.curso_id == SesionClase.curso_id).exists()
+        attendances = db.scalars(select(Asistencia).join(SesionClase, SesionClase.id == Asistencia.sesion_id).where(SesionClase.curso_id.in_(course_ids), enrolled).order_by(Asistencia.fecha.desc(), Asistencia.hora.desc())).all()
+    else:
+        attendances = attendance_service.get_all(db)
 
     return {
         "count": len(attendances),

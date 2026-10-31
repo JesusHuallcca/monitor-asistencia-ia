@@ -1,13 +1,13 @@
 'use strict';
-window.monitorReady=(async()=>{
+window.monitorReady=window.monitorReady||(async()=>{
  if(typeof Auth==='undefined'||!Auth.token())return null;
  const api=async(path,options={})=>{
   const r=await Auth.fetchAutenticado(path,{...options,headers:{'Content-Type':'application/json',...options.headers}});
   const d=await r.json().catch(()=>({}));
-  if(!r.ok){if(r.status===401)Auth.limpiar();throw Error(typeof d.detail==='string'?d.detail:'No se pudo procesar la consulta.');}return d;
+  if(!r.ok){if(r.status===401)Auth.limpiar();const error=Error(typeof d.detail==='string'?d.detail:'No se pudo procesar la consulta.');error.status=r.status;throw error;}return d;
  };
  try{
-  const original=await api('/api/users/me');
+  const original=await api('/api/users/me');if(!['estudiante','profesor','admin','superadmin'].includes(original.rol))return null;
   if(!['estudiante','profesor','admin'].includes(original.rol))return null;
   const context=await api('/api/chatbot/context');
   const user={id_usuario:original.id,nombre:original.nombres+' '+original.apellidos,rol:({admin:'ADMIN',superadmin:'ADMIN',profesor:'PROFESOR',estudiante:'ESTUDIANTE'})[original.rol]};

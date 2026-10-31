@@ -11,7 +11,7 @@ from app.services.segmentacion_expresiones import (
     generate_counts, validate_optional_columns,
 )
 from app.services.segmentacion_service import process_csv, read_synthetic_csv
-from segmentacion.segmentacion_kmeans import DEFAULT_DATA, FEATURES, prepare_students
+from segmentacion.modelo_cuatro_variables import DEFAULT_DATA, FEATURES, prepare_students
 
 
 @pytest.fixture(scope='module')

@@ -17,6 +17,8 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 
 def create_access_token(user_id: int, rol: str, expires_minutes: int | None = None) -> str:
+    if not settings.JWT_SECRET_KEY:
+        raise RuntimeError("Configura JWT_SECRET_KEY antes de emitir sesiones.")
     minutes = expires_minutes or settings.JWT_EXPIRE_MINUTES
     expire = datetime.now(timezone.utc) + timedelta(minutes=minutes)
     payload = {"sub": str(user_id), "rol": rol, "exp": expire}
@@ -24,6 +26,8 @@ def create_access_token(user_id: int, rol: str, expires_minutes: int | None = No
 
 
 def decode_access_token(token: str) -> dict | None:
+    if not settings.JWT_SECRET_KEY:
+        return None
     try:
         return jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
     except JWTError:
