@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "scripts": {
     "start": "serve -s . -l $PORT",
-    "test:integration": "node tests/integracion-final.test.cjs"
+    "test:integration": "node tests/integracion-final.test.cjs",
+    "test:chatbot": "node tests/chatbot.voice.test.mjs && node tests/parte7.chrome.test.mjs",
+    "test:reports": "node tests/parte7.reports.chrome.test.mjs",
+    "test:ml": "node tests/parte7.ml.chrome.test.mjs",
+    "test:proactive": "node tests/parte7.proactive.chrome.test.mjs",
+    "test:workspace": "node tests/parte7.workspace.chrome.test.mjs"
   },
   "dependencies": {
     "serve": "^14.2.3"
   },
   "devDependencies": {
-    "playwright": "^1.56.0"
+    "playwright": "^1.56.0",
+    "happy-dom": "21.0.4"
   }
 }

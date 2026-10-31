@@ -18,29 +18,38 @@ const Panel = Object.assign(Object.create(Admin), {
   },
 
   menuDe(rol) {
-    const I = this.ICONOS;
-    const base = [
-      {
-        href: "cursos.html",
-        alias: ["curso.html"],
-        texto: "Cursos",
-        icono: I.libro,
-      },
+    const I=this.ICONOS;
+    if(rol==='estudiante')return [
+      {href:'cursos.html?inicio=1',texto:'Inicio',icono:I.libro},
+      {href:'cursos.html',alias:['curso.html'],texto:'Mis cursos',icono:I.libro},
+      {href:'calificaciones.html',texto:'Mis calificaciones',icono:I.notas},
+      {href:'asistencia.html',texto:'Mi asistencia',icono:I.notas},
+      {href:'emoscan.html',texto:'EmoScan',icono:I.ia},
+      {href:'perfil.html',texto:'Mi perfil',icono:I.perfil}
     ];
-    if (rol === "profesor") {
-      base.push({ href: "segmentacion.html", texto: "Segmentación IA", icono: I.ia });
-    }
-    if (rol === "estudiante") {
-      base.push({
-        href: "calificaciones.html",
-        texto: "Calificaciones",
-        icono: I.notas,
-      });
-      base.push({ href: "ia.html", texto: "Asistente IA", icono: I.ia });
-      base.push({ href: "emoscan.html", texto: "EmoScan", icono: I.ia });
-    }
-    base.push({ href: "perfil.html", texto: "Perfil", icono: I.perfil });
-    return base;
+    return [
+      {href:'cursos.html',alias:['curso.html'],texto:'Cursos',icono:I.libro},
+      {href:'segmentacion.html',texto:'Segmentación IA',icono:I.ia},
+      {texto:'Estadística Básica',icono:I.notas,pendiente:true},
+      {texto:'Predicción ML',icono:I.ia,pendiente:true},
+      {texto:'Clasificación ML',icono:I.ia,pendiente:true},
+      {texto:'Dashboard ML',icono:I.notas,pendiente:true},
+      {texto:'Red Neuronal IA',icono:I.ia,pendiente:true},
+      {href:'perfil.html',texto:'Perfil',icono:I.perfil}
+    ];
+  },
+
+  montarChatbot() {
+    if(!['estudiante','profesor'].includes(this.yo?.rol))return;
+    if(window.monitorChatBootstrap)return window.monitorChatBootstrap;
+    const load=src=>new Promise((resolve,reject)=>{
+      const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=reject;document.body.append(script);
+    });
+    window.monitorChatBootstrap=(async()=>{
+      if(!window.monitorReady)await load('../js/chatbot-init.js');
+      if(!document.getElementById('monitor-chat-root')&&!document.querySelector('script[src$="/components/chatbot.js"]'))await load('../components/chatbot.js');
+    })().catch(()=>console.warn('No se pudo cargar la interfaz del asistente.'));
+    return window.monitorChatBootstrap;
   },
 
   // Verifica la sesión y el rol. Si el rol no corresponde, manda al panel correcto.
@@ -62,6 +71,7 @@ const Panel = Object.assign(Object.create(Admin), {
     }
     this.yo = yo;
     this.montarMenu(rol);
+    this.montarChatbot();
     return yo;
   },
 
@@ -90,10 +100,11 @@ const Panel = Object.assign(Object.create(Admin), {
     nav.setAttribute("aria-label", "Menú principal");
     const ruta = window.location.pathname;
     for (const item of this.menuDe(rol)) {
-      const a = document.createElement("a");
-      a.href = item.href;
+      const a = document.createElement(item.pendiente ? "span" : "a");
+      if(item.pendiente){a.className='pronto';a.setAttribute('aria-disabled','true');a.title='Pendiente de integración en esta rama';}
+      else a.href=item.href;
       if (
-        [item.href, ...(item.alias || [])].some((h) => ruta.endsWith("/" + h))
+        !item.pendiente && (item.href.includes('?') ? location.search.includes('inicio=1') && ruta.endsWith('/cursos.html') : !location.search.includes('inicio=1') && [item.href, ...(item.alias || [])].some((h) => ruta.endsWith("/" + h)))
       )
         a.classList.add("activo");
       a.insertAdjacentHTML(
@@ -103,6 +114,7 @@ const Panel = Object.assign(Object.create(Admin), {
           "</svg>",
       );
       a.appendChild(document.createTextNode(item.texto));
+      if(item.pendiente){const small=this.el('small','','Pendiente de integración');a.append(small);}
       nav.appendChild(a);
     }
     aside.appendChild(nav);
@@ -124,6 +136,7 @@ const Panel = Object.assign(Object.create(Admin), {
     });
     pie.appendChild(salir);
     aside.appendChild(pie);
+    window.PanelNavigation?.mount();
   },
 
   parametro(nombre) {
@@ -209,3 +222,7 @@ const Panel = Object.assign(Object.create(Admin), {
     }
   },
 });
+
+(function(){
+ const script=document.createElement('script');script.src='../js/panel-navigation.js';document.body.append(script);
+})();

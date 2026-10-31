@@ -13,7 +13,7 @@
 
   </head>
 
-  <body class="admin-page" data-rol="estudiante">
+  <body class="admin-page chatbot-page" data-rol="estudiante">
     <div class="admin-layout">
       <aside class="admin-menu"></aside>
 
@@ -36,7 +36,8 @@
       >
         <div class="vacio-bloque">
           <strong>Asistente con IA</strong>
-          Usa el botón del asistente para comenzar una conversación.
+          Consulta cursos, tardanzas y registros por período, por texto o por voz.
+          <button type="button" data-open-chat class="btn-primario">Abrir asistente</button>
         </div>
       </section>
     </main>
@@ -58,6 +59,7 @@
 
 <script src="../js/chatbot-init.js"></script>
 <script src="../components/chatbot.js"></script>
+<script src="../components/proactive.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", () => {
