@@ -1,0 +1,8 @@
+
+# Parte 7: generated documents must never undergo newline conversion.
+docs/parte7/**/*.pdf binary
+docs/parte7/**/*.xlsx binary
+docs/parte7/**/*.docx binary
+docs/parte7/**/*.png binary
+# Unified patch context contains intentional trailing blank context lines.
+docs/parte7/revision/*.patch whitespace=-blank-at-eol

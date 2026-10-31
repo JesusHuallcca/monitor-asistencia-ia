@@ -1,0 +1,88 @@
+# PROPUESTA PARA REVISION: NO sincronizar ni desplegar.
+# No reemplaza render.yaml. Seguridad, TLS, arranque sin DDL e integracion con main pendientes.
+# Elegir planes con memoria medida en Linux; no se presupone que 512 MB sea suficiente.
+services:
+  - type: web
+    name: monitor-parte7-backend-propuesta
+    runtime: python
+    branch: parte-7-chatbot-inteligente
+    autoDeployTrigger: "off"
+    numInstances: 1
+    buildCommand: python -m pip install -r requirements.txt -r requirements-parte7-proactivo.txt
+    startCommand: PYTHONPATH=.:backend python -m uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port "$PORT" --workers 1
+    healthCheckPath: /api/attendance/health
+    envVars:
+      - key: PYTHON_VERSION
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: JWT_ALGORITHM
+        sync: false
+      - key: JWT_EXPIRE_MINUTES
+        sync: false
+      - key: FACE_ENCRYPTION_KEY
+        sync: false
+      - key: APP_TIMEZONE
+        sync: false
+      - key: CHATBOT_INSTITUTIONAL_READ_USER_IDS
+        sync: false
+      - key: CHATBOT_DEMO_MODE
+        value: "false"
+      # Gemini opcional: agregar key y modelo por servicio si se habilita.
+      # Conservar la politica EMOSCAN_* existente; no habilitarla desde este ejemplo.
+  - type: worker
+    name: monitor-parte7-worker-propuesta
+    runtime: python
+    branch: parte-7-chatbot-inteligente
+    autoDeployTrigger: "off"
+    numInstances: 1
+    buildCommand: python -m pip install -r requirements-parte7-proactivo.txt
+    startCommand: python backend/parte7_worker.py
+    envVars:
+      - key: PYTHON_VERSION
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: APP_TIMEZONE
+        sync: false
+      - key: CHATBOT_INSTITUTIONAL_READ_USER_IDS
+        sync: false
+      - key: CHATBOT_PROACTIVE_ENABLED
+        sync: false
+      - key: CHATBOT_PROACTIVE_MIGRATION_REVIEWED
+        sync: false
+      - key: CHATBOT_DEMO_MODE
+        value: "false"
+  - type: web
+    name: monitor-parte7-frontend-propuesta
+    runtime: node
+    branch: parte-7-chatbot-inteligente
+    autoDeployTrigger: "off"
+    rootDir: frontend
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        sync: false
+# No databases, disks, preDeployCommand, migraciones ni valores de credenciales.
+# No crear estos servicios ahora. Los nombres distintos evitan apuntar a servicios existentes.

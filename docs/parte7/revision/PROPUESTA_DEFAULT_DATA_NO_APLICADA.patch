@@ -1,0 +1,56 @@
+--- /dev/null
++++ b/segmentacion/modelo_cuatro_variables.py
+@@ -0,0 +1,9 @@
++"""Adaptador de contrato: reutiliza el modelo de cuatro variables sin cambiar cálculos."""
++from segmentacion.experimental_expresiones.segmentacion_expresiones import (
++    DEFAULT_DATA, FEATURES, fit_segments,
++    prepare_students as _prepare_students,
++)
++
++def prepare_students(raw, expression_seed=2026, samples=40):
++    result = _prepare_students(raw, expression_seed=expression_seed, samples=samples)
++    return result.assign(modalidad="principal_4_variables")
+--- a/backend/app/services/segmentacion_service.py
++++ b/backend/app/services/segmentacion_service.py
+@@ -11,7 +11,7 @@
+ from sklearn.metrics import silhouette_samples
+ from threadpoolctl import threadpool_limits
+ 
+-from segmentacion.segmentacion_kmeans import FEATURES, fit_segments, prepare_students
++from segmentacion.modelo_cuatro_variables import FEATURES, fit_segments, prepare_students
+ 
+ from app.services.segmentacion_expresiones import (OPTIONAL_COLUMNS, validate_optional_columns,
+     generate_counts, counts_from_csv, summarize_counts)
+--- a/backend/tests/integracion_final/test_segmentacion.py
++++ b/backend/tests/integracion_final/test_segmentacion.py
+@@ -7,7 +7,7 @@
+ import pytest
+ 
+ from app.services.segmentacion_service import MAX_BYTES, MODEL_SLOT, process_csv
+-from segmentacion.segmentacion_kmeans import DEFAULT_DATA, FEATURES, fit_segments, prepare_students
++from segmentacion.modelo_cuatro_variables import DEFAULT_DATA, FEATURES, fit_segments, prepare_students
+ 
+ HEADERS = {'Content-Type': 'text/csv', 'X-CSV-Filename': 'prueba.csv'}
+ 
+--- a/backend/tests/integracion_final/test_segmentacion_expresiones.py
++++ b/backend/tests/integracion_final/test_segmentacion_expresiones.py
+@@ -11,7 +11,7 @@
+     generate_counts, validate_optional_columns,
+ )
+ from app.services.segmentacion_service import process_csv, read_synthetic_csv
+-from segmentacion.segmentacion_kmeans import DEFAULT_DATA, FEATURES, prepare_students
++from segmentacion.modelo_cuatro_variables import DEFAULT_DATA, FEATURES, prepare_students
+ 
+ 
+ @pytest.fixture(scope='module')
+--- a/frontend/tests/preparar_segmentacion.py
++++ b/frontend/tests/preparar_segmentacion.py
+@@ -7,7 +7,7 @@
+ sys.path[:0] = [str(ROOT), str(ROOT / "backend")]
+ import pandas as pd
+ from app.services.segmentacion_service import process_csv
+-from segmentacion.segmentacion_kmeans import DEFAULT_DATA
++from segmentacion.modelo_cuatro_variables import DEFAULT_DATA
+ 
+ if __name__ == "__main__":
+     output = ROOT / "segmentacion" / ".cache"

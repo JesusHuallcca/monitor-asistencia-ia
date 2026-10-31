@@ -1,0 +1,26 @@
+# EJEMPLO PARA REVISION. No reemplaza render.yaml ni habilita automatizaciones.
+# Aplicar primero la migracion aditiva en desarrollo y revisar secretos/permisos.
+services:
+  - type: worker
+    name: monitor-parte7-worker-ejemplo
+    runtime: python
+    autoDeploy: false
+    buildCommand: pip install -r requirements-parte7-proactivo.txt
+    startCommand: python backend/parte7_worker.py
+    envVars:
+      - key: CHATBOT_PROACTIVE_ENABLED
+        sync: false
+      - key: CHATBOT_PROACTIVE_MIGRATION_REVIEWED
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: APP_TIMEZONE
+        sync: false

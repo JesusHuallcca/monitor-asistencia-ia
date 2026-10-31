@@ -1,0 +1,33 @@
+{
+  "original_features": [
+    "asistencia_ratio",
+    "tardanzas_ratio",
+    "promedio_notas"
+  ],
+  "original_failure": {
+    "type": "TypeError",
+    "cause": "wrong_prepare_students_signature"
+  },
+  "proposed_import": "segmentacion.experimental_expresiones.segmentacion_expresiones",
+  "proof_only_in_memory": true,
+  "production_files_modified": false,
+  "variables": [
+    "asistencia_ratio",
+    "tardanzas_ratio",
+    "promedio_notas",
+    "expresiones_positivas_ratio"
+  ],
+  "metrics": {
+    "perfiles": 150,
+    "sesiones": 6750,
+    "clusters": 3,
+    "silueta": 0.2373692496101911,
+    "k_mejor_global": 2,
+    "k_codo": 4,
+    "varianza_pca": [
+      0.483697290591978,
+      0.2543608187615086
+    ]
+  },
+  "labels_and_features_match_saved": true
+}

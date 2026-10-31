@@ -1,0 +1,111 @@
+{
+  "scope": "static_only_no_provider_access",
+  "sensitive_literal_findings": [
+    {
+      "path": "backend/app/core/config.py",
+      "line": 13,
+      "kind": "literal_sensitive_default",
+      "name": "_FALLBACK_DB_PASS",
+      "present_in_origin_main": true
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "line": 23,
+      "kind": "literal_sensitive_default",
+      "name": "JWT_SECRET_KEY",
+      "present_in_origin_main": true
+    },
+    {
+      "path": "backend/app/core/config.py",
+      "line": 28,
+      "kind": "literal_sensitive_default",
+      "name": "FACE_ENCRYPTION_KEY",
+      "present_in_origin_main": true
+    },
+    {
+      "path": "render.yaml",
+      "kind": "literal_sensitive_env",
+      "name": "FACE_ENCRYPTION_KEY",
+      "present_in_origin_main": true
+    },
+    {
+      "path": "render.yaml",
+      "kind": "literal_sensitive_env",
+      "name": "JWT_SECRET_KEY",
+      "present_in_origin_main": true
+    }
+  ],
+  "copies_of_detected_literals_in_pending_files": [],
+  "public_health_diagnostic_keys": [
+    "db_error",
+    "has_fallback",
+    "host",
+    "pass_len",
+    "pass_prefix",
+    "user"
+  ],
+  "public_health_keys_in_origin_main": [
+    "db_error",
+    "has_fallback",
+    "host",
+    "pass_len",
+    "pass_prefix",
+    "user"
+  ],
+  "ddl_new_tables": [
+    "chatbot_proactive_actions",
+    "chatbot_proactive_preferences",
+    "chatbot_proactive_notifications",
+    "chatbot_proactive_audit",
+    "chatbot_proactive_worker"
+  ],
+  "ddl_non_additive_statements": [],
+  "settings_local": [
+    "DB_HOST",
+    "DB_PORT",
+    "DB_NAME",
+    "DB_USER",
+    "DB_PASSWORD",
+    "JWT_SECRET_KEY",
+    "JWT_ALGORITHM",
+    "JWT_EXPIRE_MINUTES",
+    "FACE_ENCRYPTION_KEY",
+    "FACE_THRESHOLD",
+    "FACE_MODELS_DIR",
+    "EMOSCAN_ENABLED",
+    "EMOSCAN_MODEL_PATH",
+    "EMOSCAN_QUEUE_SIZE",
+    "EMOSCAN_JOB_TTL_SECONDS",
+    "EMOSCAN_RESULT_TTL_SECONDS",
+    "EMOSCAN_MAX_RESULTS",
+    "GEMINI_API_KEY",
+    "GEMINI_MODEL",
+    "APP_TIMEZONE"
+  ],
+  "settings_origin_main": [
+    "DB_HOST",
+    "DB_PORT",
+    "DB_NAME",
+    "DB_USER",
+    "DB_PASSWORD",
+    "JWT_SECRET_KEY",
+    "JWT_ALGORITHM",
+    "JWT_EXPIRE_MINUTES",
+    "FACE_ENCRYPTION_KEY",
+    "FACE_THRESHOLD",
+    "FACE_MODELS_DIR",
+    "EMOSCAN_ENABLED",
+    "EMOSCAN_MODEL_PATH",
+    "EMOSCAN_QUEUE_SIZE",
+    "EMOSCAN_JOB_TTL_SECONDS",
+    "EMOSCAN_RESULT_TTL_SECONDS",
+    "EMOSCAN_MAX_RESULTS",
+    "GEMINI_API_KEY",
+    "GEMINI_MODEL",
+    "APP_TIMEZONE"
+  ],
+  "production_keys_verified_live": false,
+  "secret_values_printed": false,
+  "targeted_token_pattern_findings": [],
+  "face_key_literal_valid_fernet_format": true
+}
