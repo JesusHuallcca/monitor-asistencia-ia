@@ -2,99 +2,266 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Senati | Calificaciones</title>
-    <link rel="stylesheet" href="../css/login.css" />
-    <link rel="stylesheet" href="../css/admin.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Virtual | Mis Calificaciones</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a56db'><path d='M12 2L1 7l11 5 9-4.09V17h2V7L12 2z'/></svg>" />
+    <!-- Estilos Unificados -->
+    <link rel="stylesheet" href="../css/estudiante-dashboard.css" />
   </head>
-  <body class="admin-page" data-rol="estudiante">
-    <div class="admin-layout">
-      <aside class="admin-menu"></aside>
+  <body class="dashboard-body">
+    <div class="dashboard-layout">
+      <!-- SIDEBAR LATERAL -->
+      <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">ASISTENCIA IA</span>
+            <span class="brand-subtitle">Campus Virtual</span>
+          </div>
+        </div>
 
-      <div class="admin-principal">
-        <header class="admin-cabecera">
-          <div>
-            <h1>Calificaciones</h1>
-            <p class="subtitulo-pagina">
-              Tu calificación actual en cada curso.
-            </p>
+        <div class="sidebar-section-title">Estudiante</div>
+
+        <nav class="sidebar-nav">
+          <a href="inicio.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Inicio</span>
+          </a>
+
+          <a href="cursos.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span>Mis cursos</span>
+          </a>
+
+          <a href="calificaciones.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M8 13h8M8 17h5"/>
+            </svg>
+            <span>Mis calificaciones</span>
+          </a>
+
+          <a href="asistencia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="9 12 12 15 16 10"/>
+            </svg>
+            <span>Mi asistencia</span>
+          </a>
+
+          <a href="ia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+              <rect x="4" y="8" width="16" height="12" rx="3"/>
+              <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+              <path d="M9 17h6"/>
+            </svg>
+            <span>Asistente IA</span>
+          </a>
+
+          <a href="emoscan.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            </svg>
+            <span>EmoScan</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-links">
+            <a href="perfil.html" class="sidebar-footer-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+              </svg>
+              <span>Mi perfil</span>
+            </a>
+            <button type="button" class="sidebar-footer-link" id="btn-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+
+          <div class="sidebar-campus-card">
+            <img src="../assets/img/campus_building.jpg" alt="Campus Moderno" />
+          </div>
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main class="dashboard-main">
+        <!-- BARRA SUPERIOR -->
+        <header class="dashboard-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" id="btn-hamburger" aria-label="Abrir menú">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+
+            <div class="topbar-search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" placeholder="Buscar curso o evaluación..." id="search-notas-input" />
+            </div>
+          </div>
+
+          <div class="topbar-right">
+            <button class="btn-icon-notify" aria-label="Notificaciones" onclick="window.location.href='inicio.html'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="notify-badge">4</span>
+            </button>
+
+            <div class="user-profile-widget" onclick="window.location.href='perfil.html'">
+              <img src="../assets/img/avatar_student.jpg" alt="Avatar del estudiante" class="user-avatar-img" />
+              <div class="user-meta">
+                <span class="user-meta-name" id="student-name">Ana Quispe</span>
+                <span class="user-meta-role" id="student-role">Estudiante</span>
+              </div>
+            </div>
           </div>
         </header>
 
-        <main class="admin-cuerpo">
-          <section
-            class="stats"
-            style="grid-template-columns: repeat(2, 1fr)"
-            aria-label="Resumen"
-          >
-            <div class="stat">
-              <span class="ico"
-                ><svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                  <path
-                    d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                  /></svg
-              ></span>
-              <span
-                ><span class="num" id="st-cursos">–</span
-                ><span class="rot">Cursos</span></span
-              >
+        <!-- CONTENIDO -->
+        <div class="dashboard-content">
+          <div class="dashboard-header-block">
+            <h1 class="dashboard-page-title">Mis calificaciones</h1>
+            <p class="dashboard-page-subtitle">Consulta de evaluaciones, ponderaciones y notas por curso.</p>
+          </div>
+
+          <!-- RESUMEN DE NOTAS -->
+          <section class="stats-cards-grid" aria-label="Resumen de calificaciones">
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-green">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Promedio Ponderado</span>
+                <div class="stat-value-row">
+                  <span class="stat-value" id="st-promedio-val" style="color: #15803d;">14.0</span>
+                  <span class="stat-star-icon">★</span>
+                </div>
+                <span style="font-size: 11px; font-weight: 700; color: #16a34a;">● Aprobado (>= 11.0)</span>
+              </div>
             </div>
-            <div class="stat teal">
-              <span class="ico"
-                ><svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></svg
-              ></span>
-              <span
-                ><span class="num" id="st-promedio">–</span
-                ><span class="rot">Promedio general</span></span
-              >
+
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-blue">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Cursos Evaluados</span>
+                <span class="stat-value" id="st-cursos-val">4</span>
+                <span style="font-size: 11px; color: var(--text-muted);">Periodo 2026-II</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Evaluaciones Calificadas</span>
+                <span class="stat-value" style="color: #9333ea;">2</span>
+                <span style="font-size: 11px; color: #9333ea; font-weight: 600;">Registradas en acta</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Evaluaciones Pendientes</span>
+                <span class="stat-value" style="color: #ea580c;">4</span>
+                <span style="font-size: 11px; color: #ea580c; font-weight: 600;">Próximas entregas</span>
+              </div>
             </div>
           </section>
 
-          <div class="tabla-caja">
-            <table class="tabla">
-              <thead>
-                <tr>
-                  <th>Curso</th>
-                  <th>Evaluaciones calificadas</th>
-                  <th>Calificación actual</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="tabla-cuerpo">
-                <tr>
-                  <td class="vacio" colspan="4">Cargando…</td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- TABLA RESUMEN DE CURSOS Y NOTAS -->
+          <div class="dash-card">
+            <div class="section-top-header" style="margin-bottom: 14px;">
+              <div class="section-title-wrap">
+                <h2>Acta de calificaciones por curso</h2>
+                <p>Resumen de tu rendimiento académico en cada materia.</p>
+              </div>
+
+              <div class="period-select-box">
+                <span>Periodo:</span>
+                <select id="select-calificaciones-periodo">
+                  <option value="2026-II" selected>2026-II</option>
+                  <option value="todos">Todos</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="dash-table-wrap">
+              <table class="dash-table">
+                <thead>
+                  <tr>
+                    <th>Curso y Código</th>
+                    <th>Evaluaciones</th>
+                    <th>Promedio Actual</th>
+                    <th>Condición</th>
+                    <th style="text-align: right;">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="calificaciones-tbody">
+                  <!-- Inyectado dinámicamente -->
+                </tbody>
+              </table>
+            </div>
           </div>
-        </main>
-      </div>
+
+          <!-- DETALLE DESPLEGABLE DE CADA EVALUACIÓN POR CURSO -->
+          <div id="detalle-evaluaciones-container" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Contenedores de evaluaciones detalladas por materia -->
+          </div>
+        </div>
+      </main>
     </div>
 
-    <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
-
+    <!-- Scripts -->
     <script src="../js/config.js"></script>
     <script src="../js/auth.js"></script>
-    <script src="../js/admin-comun.js"></script>
-    <script src="../js/panel-comun.js"></script>
-    <script src="../js/estudiante-calificaciones.js"></script>
-  </body>
+    <script src="../js/estudiante-calificaciones-full.js"></script>
+      <!-- Chatbot Asistente IA Flotante -->
+    <script src="../js/chatbot-init.js"></script>
+    <script src="../components/chatbot.js"></script>
+</body>
 </html>

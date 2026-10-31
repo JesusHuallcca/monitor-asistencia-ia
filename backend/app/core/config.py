@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     JWT_SECRET_KEY: str = "monitor-asistencia-default-secret-key-change-in-prod"
     JWT_ALGORITHM: str = "HS256"
-    JWT_EXPIRE_MINUTES: int = 60
+    JWT_EXPIRE_MINUTES: int = 720  # 12 horas para sesiones de clase y demostraciones continuas
 
     # Reconocimiento facial
     FACE_ENCRYPTION_KEY: str = "OXFoIeaqswHSonO5IatQAFj7vMs5rkJGMmOn6zDPm58="

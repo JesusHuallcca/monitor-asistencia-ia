@@ -167,6 +167,41 @@ app.include_router(analytics_router)
 # =========================
 
 app.include_router(predictions_router)
+
+# =========================
+# Estadística Básica (Parte 1)
+# =========================
+from app.api import estadistica
+app.include_router(estadistica.router)
+
+# =========================
+# Regresión Lineal (Parte 2)
+# =========================
+from app.api import regresion
+app.include_router(regresion.router)
+
+# =========================
+# Regresion Logistica (Parte 4)
+# =========================
+from app.api import logistica
+app.include_router(logistica.router)
+
+# =========================
+# Indicadores ML Dashboard (Parte 5)
+# =========================
+from app.api import indicadores_ml
+app.include_router(indicadores_ml.router)
+
+# =========================
+# Red Neuronal Artificial (Parte 6)
+# =========================
+from app.api.parte6_system import router as parte6_system_router
+from red_neuronal.api import create_router as create_parte6_synthetic_router
+from app.api.deps import get_current_user
+
+app.include_router(parte6_system_router)
+app.include_router(create_parte6_synthetic_router(get_current_user))
+
 # =========================
 # Rutas generales
 # =========================

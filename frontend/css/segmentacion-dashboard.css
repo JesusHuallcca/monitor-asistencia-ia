@@ -1,4 +1,4 @@
-/* Exclusivo del dashboard de Segmentación IA. */
+﻿/* Exclusivo del dashboard de Segmentación IA. */
 .seg-dashboard { --seg-blue:#1558b0; background:#eef2f7; }
 .seg-dashboard .admin-layout { grid-template-columns:224px minmax(0,1fr); }
 .seg-dashboard .admin-principal,.seg-dashboard .seg-page { min-width:0; }
@@ -38,10 +38,10 @@
 .seg-dashboard .seg-muted { font-size:.71rem; color:#52627b; line-height:1.5; }
 .seg-dashboard .seg-card { min-width:0; margin:0; border:1px solid #dbe4ef; border-radius:9px; padding:13px 15px; background:white; box-shadow:0 2px 5px #17365c05; }
 .seg-dashboard .seg-stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:0 0 14px; }
-.seg-dashboard .seg-stats article { border-top:3px solid #2e70c4; }
-.seg-dashboard .seg-stats article:nth-child(2) { border-top-color:#d97706; }
-.seg-dashboard .seg-stats article:nth-child(3) { border-top-color:#059669; }
-.seg-dashboard .seg-stats article:nth-child(4) { border-top-color:#9333ea; }
+.seg-dashboard .seg-stats article { border-top:3px solid #f97316; }
+.seg-dashboard .seg-stats article:nth-child(2) { border-top-color:#3b82f6; }
+.seg-dashboard .seg-stats article:nth-child(3) { border-top-color:#10b981; }
+.seg-dashboard .seg-stats article:nth-child(4) { border-top-color:#8b5cf6; }
 .seg-dashboard .seg-stats span { font-size:.73rem; color:#415673; }
 .seg-dashboard .seg-stats strong { display:block; font-size:1.8rem; color:#173c68; margin:3px 0; line-height:1.2; }
 .seg-dashboard .seg-stats small { font-size:.64rem; color:#63758b; display:block; }
@@ -141,13 +141,29 @@
 }
 
 /* Ocho tarjetas en cuatro filas; PCA destacado sin reducir sus análisis complementarios. */
-.seg-dashboard .seg-chart-grid { grid-template-columns:repeat(12,minmax(0,1fr)); }
-.seg-dashboard .seg-chart-grid > .seg-chart-card { grid-column:span 6; }
-.seg-dashboard .seg-chart-grid > [data-chart="seg-pca"] { grid-column:span 7; border-top:3px solid #1558b0; box-shadow:0 3px 14px #1558b012; }
+/* Grid limpio de 2 columnas con PCA a ancho completo */
+.seg-dashboard .seg-chart-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  align-items: stretch !important;
+}
+.seg-dashboard .seg-chart-grid > .seg-chart-card {
+  grid-column: span 1 !important;
+}
+.seg-dashboard .seg-chart-grid > [data-chart="seg-pca"] {
+  grid-column: 1 / -1 !important;
+  border-top: 3px solid #f97316;
+  box-shadow: 0 4px 16px rgba(21, 88, 176, 0.08);
+}
+.seg-dashboard #seg-pca {
+  height: 440px !important;
+  width: 100% !important;
+}
 .seg-dashboard .seg-chart-grid > [data-chart="seg-samples"] { grid-column:span 5; }
 .seg-dashboard .seg-primary-label { display:block; font-size:.6rem; font-weight:700; letter-spacing:.08em; color:#1558b0; margin-bottom:3px; }
 .seg-dashboard [data-chart="seg-pca"] h3 { font-size:1rem; color:#163d70; }
-.seg-dashboard #seg-pca { height:350px; }
+.seg-dashboard #seg-pca { height:420px; }
 .seg-dashboard .seg-chart-card[data-chart="seg-samples"] .seg-plot { height:330px; }
 .seg-dashboard .seg-complement .seg-plot { height:300px; }
 .seg-dashboard #seg-elbow,.seg-dashboard #seg-heatmap { height:270px; }
@@ -158,7 +174,7 @@
   .seg-dashboard .seg-chart-grid > .seg-chart-card,
   .seg-dashboard .seg-chart-grid > [data-chart="seg-pca"],
   .seg-dashboard .seg-chart-grid > [data-chart="seg-samples"] { grid-column:1; }
-  .seg-dashboard #seg-pca { height:350px; }
+  .seg-dashboard #seg-pca { height:420px; }
   .seg-dashboard .seg-complement .seg-plot { height:310px; }
   .seg-dashboard #seg-distribution { height:310px; }
 }
@@ -167,3 +183,439 @@
 .seg-dashboard .seg-expression-control { font-size:.75rem; display:flex; align-items:center; gap:8px; color:#415673; }
 .seg-dashboard #seg-expression-chart { height:350px; }
 @media(max-width:650px) { .seg-dashboard #seg-expression-chart { height:400px; } }
+/* ── Modal de carga CSV ── */
+.seg-modal-overlay {
+  display:none; position:fixed; inset:0; z-index:1000;
+  background:rgba(10,25,50,.55); backdrop-filter:blur(3px);
+  align-items:center; justify-content:center;
+}
+.seg-modal-overlay.open { display:flex; animation:segFadeIn .18s ease; }
+.seg-modal-box {
+  background:#fff; border-radius:14px; box-shadow:0 8px 40px #0a193280;
+  padding:26px 28px 22px; max-width:560px; width:94vw; max-height:88vh;
+  overflow-y:auto; position:relative;
+}
+.seg-modal-box h3 { margin:0 0 14px; font-size:1rem; color:#163d70; }
+.seg-modal-close {
+  position:absolute; top:14px; right:16px; background:none; border:none;
+  font-size:1.3rem; cursor:pointer; color:#52627b; line-height:1;
+  padding:4px 8px; border-radius:6px;
+}
+.seg-modal-close:hover { background:#f1f5fb; }
+.seg-modal-drop {
+  border:2px dashed #89a6c7; border-radius:10px; padding:22px 18px;
+  text-align:center; background:#f8fafd; cursor:pointer; transition:border-color .15s;
+}
+.seg-modal-drop.seg-drag { border-color:#1558b0; background:#eaf1fb; }
+.seg-modal-drop p { margin:8px 0 0; font-size:.78rem; color:#52627b; }
+.seg-modal-file-btn {
+  display:inline-block; margin-top:12px; padding:9px 18px;
+  background:#1558b0; color:#fff; border-radius:7px; font:600 .78rem 'Segoe UI',sans-serif;
+  cursor:pointer; border:none;
+}
+.seg-modal-info { font-size:.73rem; color:#415673; margin-top:12px; line-height:1.7; }
+.seg-modal-info code { background:#f0f4fa; padding:1px 4px; border-radius:3px; }
+.seg-modal-links { display:flex; gap:14px; margin-top:10px; font-size:.73rem; }
+.seg-modal-links a { color:#1558b0; }
+.seg-modal-validate { margin-top:10px; font-size:.75rem; padding:7px 10px; border-radius:6px; }
+.seg-modal-validate.ok  { background:#eaf5f1; color:#17664b; }
+.seg-modal-validate.err { background:#fef2f2; color:#991b1b; }
+.seg-modal-validate.idle { color:#52627b; }
+.seg-modal-actions { display:flex; gap:10px; margin-top:16px; justify-content:flex-end; }
+
+/* ── Lightbox de gráficos ── */
+.seg-lightbox-overlay {
+  display:none; position:fixed; inset:0; z-index:2000;
+  background:rgba(10,25,50,.72); backdrop-filter:blur(4px);
+  align-items:center; justify-content:center;
+}
+.seg-lightbox-overlay.open { display:flex; animation:segFadeIn .18s ease; }
+.seg-lightbox-box {
+  background:#fff; border-radius:14px; box-shadow:0 12px 50px #0a193260;
+  padding:20px 22px 16px; width:90vw; max-width:1100px;
+  max-height:92vh; overflow:hidden; display:flex; flex-direction:column;
+  position:relative;
+}
+.seg-lightbox-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px; }
+.seg-lightbox-title { font-size:.95rem; font-weight:700; color:#163d70; margin:0; }
+.seg-lightbox-close {
+  background:none; border:none; font-size:1.4rem; cursor:pointer;
+  color:#52627b; padding:4px 9px; border-radius:7px; line-height:1;
+}
+.seg-lightbox-close:hover { background:#f1f5fb; }
+#seg-lightbox-plot { flex:1; min-height:420px; max-height:72vh; }
+
+@keyframes segFadeIn { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
+
+/* Cursor pointer en tarjetas de gráfico para indicar que son clicables */
+.seg-chart-card { cursor:zoom-in; }
+.seg-chart-card .seg-chart-heading { cursor:default; }
+/* ==========================================================================
+   VENTANA FLOTANTE / LIGHTBOX PARA AMPLIAR GRÁFICOS (PLOTLY MODAL)
+   ========================================================================== */
+.seg-lightbox-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 25, 50, 0.76);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.seg-lightbox-overlay.open {
+  display: flex !important;
+  animation: segFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.seg-lightbox-box {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 24px 70px rgba(10, 25, 50, 0.4), 0 0 0 1px rgba(219, 227, 239, 0.8);
+  padding: 20px 24px 18px;
+  width: 94vw;
+  max-width: 1280px;
+  max-height: 94vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.seg-lightbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #edf1f7;
+  flex-shrink: 0;
+}
+.seg-lightbox-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #163d70;
+  margin: 0;
+}
+.seg-lightbox-close {
+  background: #f1f5fb;
+  border: 1px solid #dce5f1;
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #475569;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+.seg-lightbox-close:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+#seg-lightbox-plot-wrap {
+  flex: 1;
+  width: 100%;
+  min-height: 480px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+#seg-lightbox-plot {
+  width: 100%;
+  flex: 1;
+  min-height: 480px;
+  height: 60vh;
+}
+#seg-lightbox-footer {
+  padding-top: 10px;
+  border-top: 1px solid #edf1f7;
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+#seg-lightbox-note {
+  font-size: 0.78rem;
+  color: #52627b;
+  margin: 0;
+  line-height: 1.5;
+}
+.seg-chart-card {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.seg-chart-card:hover {
+  box-shadow: 0 6px 22px rgba(21, 88, 176, 0.12);
+}
+.seg-expand-btn {
+  background: #f0f5fc;
+  border: 1px solid #cfe0f5;
+  color: #1558b0;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  margin-left: 8px;
+}
+.seg-expand-btn:hover {
+  background: #1558b0;
+  color: #ffffff;
+  border-color: #1558b0;
+}
+
+/* ==========================================================================
+   ANIMACIONES FLUIDAS Y ESTÉTICA CÁLIDA ESTILO DASHBOARD MODERNO
+   ========================================================================== */
+@keyframes segCardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  60% {
+    opacity: 0.9;
+    transform: translateY(-2px) scale(1.003);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes segPulseHighlight {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.04); }
+}
+
+/* Entrada escalonada de las tarjetas de gráficos */
+.seg-dashboard .seg-chart-card,
+.seg-dashboard .seg-card,
+.seg-dashboard .seg-group {
+  animation: segCardEntrance 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.seg-dashboard .seg-chart-grid > :nth-child(1) { animation-delay: 0.05s; }
+.seg-dashboard .seg-chart-grid > :nth-child(2) { animation-delay: 0.12s; }
+.seg-dashboard .seg-chart-grid > :nth-child(3) { animation-delay: 0.19s; }
+.seg-dashboard .seg-chart-grid > :nth-child(4) { animation-delay: 0.26s; }
+.seg-dashboard .seg-chart-grid > :nth-child(5) { animation-delay: 0.33s; }
+.seg-dashboard #seg-expression-detail { animation-delay: 0.40s; }
+
+/* Transiciones interactivas en elementos SVG de Plotly */
+.seg-dashboard .plotly .point path,
+.seg-dashboard .plotly .bars path {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), 
+              opacity 0.2s ease, 
+              filter 0.2s ease;
+}
+
+.seg-dashboard .plotly .point path:hover,
+.seg-dashboard .plotly .bars path:hover {
+  filter: brightness(1.18) drop-shadow(0 3px 6px rgba(0, 0, 0, 0.2));
+  cursor: pointer;
+}
+
+/* Efecto hover cálido con elevación sutil en cada tarjeta */
+.seg-dashboard .seg-chart-card {
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+              box-shadow 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  border-radius: 12px !important;
+}
+
+.seg-dashboard .seg-chart-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(15, 28, 48, 0.09), 0 2px 8px rgba(249, 115, 22, 0.05) !important;
+}
+
+/* Insignias e indicadores con colores más cálidos */
+.seg-dashboard .seg-chart-index {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  border: 1px solid #ffedd5 !important;
+  font-weight: 700 !important;
+}
+
+.seg-expand-btn {
+  background: #fff7ed !important;
+  border: 1px solid #fed7aa !important;
+  color: #c2410c !important;
+}
+
+.seg-expand-btn:hover {
+  background: #f97316 !important;
+  border-color: #f97316 !important;
+  color: #ffffff !important;
+  transform: scale(1.05);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   DISEÑO ESTÉTICO MODERNO (PALETA SAAS PRO: ROSE / ÍNDIGO / MENTA)
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Acentos en tarjetas KPI de estadísticas */
+.seg-dashboard .seg-stats article:nth-child(1) { border-top: 3px solid #f43f5e !important; }
+.seg-dashboard .seg-stats article:nth-child(2) { border-top: 3px solid #6366f1 !important; }
+.seg-dashboard .seg-stats article:nth-child(3) { border-top: 3px solid #10b981 !important; }
+.seg-dashboard .seg-stats article:nth-child(4) { border-top: 3px solid #06b6d4 !important; }
+
+/* Badges de número de gráfico [01], [03], [07], [08] elegantes y sutiles */
+.seg-dashboard .seg-chart-index {
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 2px 7px !important;
+  border-radius: 6px !important;
+  letter-spacing: 0.5px;
+}
+
+/* Botón '🔍 Ampliar' moderno con hover índigo */
+.seg-expand-btn {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #4f46e5 !important;
+  font-size: 0.70rem !important;
+  font-weight: 600 !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  margin-left: 8px;
+}
+
+.seg-expand-btn:hover {
+  background: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25) !important;
+}
+
+/* Tarjetas de gráficos: fondo blanco puro, borde tenue y sombra premium */
+.seg-dashboard .seg-chart-card {
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 16px rgba(15, 23, 42, 0.02) !important;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease !important;
+}
+
+.seg-dashboard .seg-chart-card:hover {
+  transform: translateY(-2px) !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06), 0 2px 6px rgba(15, 23, 42, 0.03) !important;
+}
+
+/* Card 08 - Comparación de las cuatro variables: Mini-tarjetas estilizadas */
+.seg-dashboard .seg-four-means {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 12px 14px !important;
+  padding-top: 10px !important;
+}
+
+.seg-dashboard .seg-four-means section {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 10px !important;
+  padding: 8px 10px 4px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+.seg-dashboard .seg-four-means section:hover {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.seg-dashboard .seg-four-means h4 {
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  color: #1e293b !important;
+  margin: 0 0 4px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.seg-dashboard .seg-four-means section:nth-child(1) h4::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #6366f1;
+}
+.seg-dashboard .seg-four-means section:nth-child(2) h4::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f43f5e;
+}
+.seg-dashboard .seg-four-means section:nth-child(3) h4::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981;
+}
+.seg-dashboard .seg-four-means section:nth-child(4) h4::before {
+  content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #06b6d4;
+}
+
+.seg-dashboard .seg-four-means .seg-plot {
+  height: 175px !important;
+}
+
+/* Animación de crecimiento y redondeo para las barras de Plotly */
+.seg-plot .bars rect,
+.seg-plot .bars path {
+  rx: 6px !important;
+  ry: 6px !important;
+  transform-origin: bottom;
+  animation: segBarGrow 0.75s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  transition: filter 0.22s ease, opacity 0.22s ease;
+}
+
+.seg-plot .bars rect:hover,
+.seg-plot .bars path:hover {
+  filter: brightness(1.10) drop-shadow(0 4px 10px rgba(0, 0, 0, 0.15));
+  cursor: pointer;
+}
+
+@keyframes segBarGrow {
+  0% { transform: scaleY(0); opacity: 0; }
+  60% { opacity: 0.95; }
+  100% { transform: scaleY(1); opacity: 0.92; }
+}
+
+/* Animación pop-in suave para los puntos de scatter (PCA, comparaciones) */
+.seg-plot .scatterlayer .point {
+  animation: segDotPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.2s ease;
+}
+
+.seg-plot .scatterlayer .point:hover {
+  transform: scale(1.45);
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.25));
+  cursor: pointer;
+}
+
+@keyframes segDotPop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 0.88; }
+}
+
+/* Resaltado de rombos de centroides */
+.seg-plot .scatterlayer path.point[d*="M0,"] {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25));
+  transition: transform 0.2s ease;
+}
+
+.seg-plot .scatterlayer path.point[d*="M0,"]:hover {
+  transform: scale(1.25);
+  cursor: pointer;
+}

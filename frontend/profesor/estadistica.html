@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Senati | Estadística Básica — KPIs y Reportes</title>
+  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <style>
+    .stats-dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    @media (max-width: 1100px) {
+      .stats-dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .stats-card-box {
+      background: var(--tarjeta, #ffffff);
+      border: 1px solid var(--linea, #e5e7eb);
+      border-radius: 12px;
+      padding: 20px 24px;
+      box-shadow: var(--sombra-suave, 0 1px 3px rgba(0,0,0,0.05));
+    }
+    .stats-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--linea, #f1f5f9);
+    }
+    .stats-card-header h2, .stats-card-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--tinta, #0f172a);
+    }
+    .stats-badge-tag {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 600;
+      border-radius: 6px;
+    }
+    .img-grafico-contenedor {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .img-grafico-contenedor img {
+      width: 100%;
+      height: auto;
+      max-height: 520px;
+      object-fit: contain;
+      border-radius: 6px;
+      display: none;
+    }
+    .estado-banner {
+      font-size: 0.85rem;
+      color: var(--tinta-suave, #64748b);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="admin-page" data-rol="profesor">
+<div class="admin-layout">
+  <aside class="admin-menu"></aside>
+  <div class="admin-principal">
+    <header class="admin-cabecera">
+      <div>
+        <span class="seg-eyebrow" style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #2563eb; text-transform: uppercase;">PANEL DEL PROFESOR / MÉTRICAS Y ANÁLISIS</span>
+        <h1 style="margin: 4px 0 6px; font-size: 1.6rem; font-weight: 800; color: #0f172a;">Estadística Básica — KPIs y Distribución</h1>
+        <p class="seg-intro" style="margin: 0; color: #64748b; font-size: 0.9rem;">
+          Métricas descriptivas y probabilidades empíricas calculadas sobre registros de asistencia y expresiones faciales (Parte 1).
+        </p>
+        <div id="kpi-ultima-actualizacion" class="estado-banner">Cargando estado...</div>
+      </div>
+      <div>
+        <button id="btn-actualizar-stats" class="btn-nuevo" type="button" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; font-weight: 600; cursor: pointer;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          Actualizar estadísticas en vivo
+        </button>
+        <div id="estado-actualizacion" style="font-size: 0.8rem; color: #2563eb; text-align: right; margin-top: 4px;"></div>
+      </div>
+    </header>
+
+    <main class="admin-cuerpo">
+      <!-- Fila de 4 KPIs -->
+      <section class="stats" aria-label="Indicadores principales de asistencia y emociones">
+        <div class="stat teal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-prob-asistencia" class="num">—%</strong>
+            <span class="rot">Prob. Asistencia Empírica</span>
+          </div>
+        </div>
+
+        <div class="stat rojo">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="15" y1="9" x2="9" y2="15"/>
+              <line x1="9" y1="9" x2="15" y2="15"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-prob-inasistencia" class="num">—%</strong>
+            <span class="rot">Prob. Inasistencia</span>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-total-registros" class="num">—</strong>
+            <span class="rot">Registros de Asistencia</span>
+          </div>
+        </div>
+
+        <div class="stat violeta">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-total-emociones" class="num">—</strong>
+            <span class="rot">Observaciones Faciales</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cuadrícula Principal: Gráfico Estadístico + Tabla de Emociones -->
+      <section class="stats-dashboard-grid">
+        <!-- Gráficos Generados -->
+        <article class="stats-card-box">
+          <div class="stats-card-header">
+            <div>
+              <h2>Gráficos Estadísticos Multivariable</h2>
+              <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">
+                Distribución de asistencia, probabilidades y análisis comparativo por sesión
+              </p>
+            </div>
+            <span class="stats-badge-tag">Matplotlib / Seaborn</span>
+          </div>
+          <div class="img-grafico-contenedor">
+            <img id="img-grafico-estadistico" alt="Gráficos estadísticos generados por stats_empresa.py" />
+          </div>
+        </article>
+
+        <!-- Tabla Desglose Emociones -->
+        <article class="stats-card-box">
+          <div class="stats-card-header">
+            <div>
+              <h3>Expresiones y Emociones Analizadas</h3>
+              <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">
+                Puntajes normalizados sobre detecciones faciales efectivas
+              </p>
+            </div>
+            <span class="stats-badge-tag">Media & Desviación</span>
+          </div>
+          <div class="tabla-caja" style="margin: 0; box-shadow: none; border: none;">
+            <table class="tabla" style="font-size: 0.85rem;">
+              <thead>
+                <tr>
+                  <th>Expresión</th>
+                  <th>Media (Score)</th>
+                  <th>Desv. Est.</th>
+                  <th>Muestras (N)</th>
+                  <th>Intensidad Relativa</th>
+                </tr>
+              </thead>
+              <tbody id="contenedor-emociones-tabla">
+                <tr>
+                  <td colspan="5" class="vacio">Cargando métricas de emociones...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin-comun.js"></script>
+<script src="../js/panel-comun.js"></script>
+<script src="../js/profesor-estadistica.js"></script>
+</body>
+</html>
+

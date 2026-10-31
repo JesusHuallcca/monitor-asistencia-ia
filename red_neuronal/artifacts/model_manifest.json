@@ -1,0 +1,21 @@
+{
+  "version": "parte6-dense-9x32x16x1-v1",
+  "training_origin": "sintetico",
+  "feature_schema": [
+    "asistencia_30d",
+    "tardanzas_30d",
+    "asistencia_ultimas5",
+    "sesiones_previas",
+    "promedio_previo",
+    "sin_notas",
+    "dia_sin",
+    "dia_cos",
+    "hora"
+  ],
+  "files": {
+    "best.keras": "ad61611421683ab28d86311341f12bcd1087668b6a3f6d9e80de0339b841f024",
+    "scaler.joblib": "49ec3b170848349f1d849d2db6b260d66c0d82251015c7a43586aa1ef66fb1b8",
+    "logistic.joblib": "da000ec751273e449109201ef5f89e7bffa44339b52cd2751a167a80b75e0687"
+  },
+  "report_canonical_sha256": "75fc4c3920cfaa4a1ca225e8046d586d14d48d4b1a4b1609c31f47d65e8a6d73"
+}

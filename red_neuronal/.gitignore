@@ -1,0 +1,6 @@
+artifacts/*.keras
+artifacts/*.joblib
+!artifacts/best.keras
+!artifacts/scaler.joblib
+!artifacts/logistic.joblib
+.cache/

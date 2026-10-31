@@ -17,7 +17,13 @@
  document.body.append(host);
  const $=id=>host.querySelector('#'+id);const panel=$('chat-panel'),input=$('chat-input'),status=$('chat-status'),feed=$('chat-feed'),messages=$('chat-messages'),mic=$('chat-mic');
  $('chat-provider').textContent=({ADMIN:'Administrador',PROFESOR:'Profesor',ESTUDIANTE:'Estudiante'})[user.rol]||'Mi cuenta';$('chat-greeting').textContent='Hola, '+user.nombre.split(' ')[0];
- if(user.rol!=='ESTUDIANTE'){const prompts=['Dame un resumen de asistencia','¿Cuántos faltaron hoy?','Ver historial de tardanzas','Muéstrame mis cursos','¿Cuál es mi próxima clase?'];host.querySelectorAll('.suggestion').forEach((b,i)=>{b.dataset.question=prompts[i];b.lastChild.textContent=' '+prompts[i];});}
+ const rolePrompts={
+  ADMIN:['Métricas de los modelos','Resumen de asistencia general','¿Quiénes faltaron hoy?','Muéstrame los cursos','¿Quiénes llegaron tarde?'],
+  PROFESOR:['Resumen de asistencia','¿Quiénes faltaron hoy?','¿Quiénes llegaron tarde?','Muéstrame mis cursos','¿Cuál es mi próxima clase?'],
+  ESTUDIANTE:['¿Cuál es mi porcentaje de asistencia?','¿Cuántas faltas tengo?','¿Cuántas tardanzas tengo?','Muéstrame mis cursos','¿Cuál es mi próxima clase?']
+};
+const prompts = rolePrompts[user.rol] || rolePrompts.ESTUDIANTE;
+host.querySelectorAll('.suggestion').forEach((b,i)=>{if(prompts[i]){b.dataset.question=prompts[i];b.lastChild.textContent=' '+prompts[i];}});
  for(const [select,items] of [[$('chat-course'),context.courses],[$('chat-student'),context.students]])for(const item of items){const o=document.createElement('option');o.value=item.id;o.textContent=item.nombre;select.append(o);}
  if(user.rol==='ESTUDIANTE'){$('chat-student').hidden=true;$('chat-course').style.width='100%';}
  let backgroundStates=[];
@@ -38,7 +44,9 @@
    busy=true;controls();add('user',text,source==='voice'?'Transcrito desde tu voz':'');input.value='';status.textContent='Consultando tus datos…';const pending=add('assistant','Consultando…');
    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),30000);
    try{const data=await api('/api/chatbot/message',{method:'POST',signal:controller.signal,body:JSON.stringify({message:text,source,course_id:$('chat-course').value?Number($('chat-course').value):null,student_id:$('chat-student').value?Number($('chat-student').value):null})});pending.remove();add('assistant',data.reply,data.demo?'Datos ficticios · '+data.provider:'Consulta · '+data.provider);status.textContent=data.notice||'';}
-   catch(e){pending.remove();add('assistant',e.name==='AbortError'?'La consulta tardó demasiado. Puedes volver a intentarlo.':e.message);input.value=text;status.textContent='Puedes revisar la pregunta y volver a enviarla.';}
+   catch(e){pending.remove();const isAuthErr = e.message && (e.message.includes('Token') || e.message.includes('vencid') || e.message.includes('expirad') || e.message.includes('autenticad') || e.message.includes('401'));
+   const errorMsg = e.name === 'AbortError' ? 'La consulta tardó demasiado. Puedes volver a intentarlo.' : isAuthErr ? '⚠️ Tu sesión ha expirado por inactividad. Por favor, cierra sesión y vuelve a ingresar para consultar tus datos actualizados.' : e.message;
+   add('assistant', errorMsg);input.value=text;status.textContent='Puedes revisar la pregunta y volver a enviarla.';}
    finally{clearTimeout(timer);busy=false;controls();input.focus();}
  }
  $('chat-form').onsubmit=e=>{e.preventDefault();send();};input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send();}});

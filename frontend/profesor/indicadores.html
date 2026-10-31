@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Senati | Dashboard Ejecutivo — Indicadores ML</title>
+  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <!-- Chart.js para los gráficos interactivos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    .ind-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .ind-kpi-card {
+      background: var(--tarjeta, #ffffff);
+      border: 1px solid var(--linea, #e2e8f0);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .ind-kpi-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+    .kpi-media::before { background: #10b981; }
+    .kpi-pred::before { background: #2563eb; }
+    .kpi-seg::before { background: #f59e0b; }
+    .kpi-ses::before { background: #8b5cf6; }
+
+    .ind-kpi-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      background: #f8fafc;
+    }
+    .ind-kpi-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.1;
+    }
+    .ind-kpi-lbl {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Grid de contenido */
+    .ind-grid-2col {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 1050px) {
+      .ind-grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ind-card {
+      background: var(--tarjeta, #ffffff);
+      border: 1px solid var(--linea, #e2e8f0);
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+      margin-bottom: 20px;
+    }
+    .ind-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .ind-card-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .tag-pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: #eff6ff;
+      color: #f97316;
+      font-weight: 700;
+      border-radius: 6px;
+    }
+
+    /* Segmentos Barras */
+    .seg-barra-item {
+      margin-bottom: 14px;
+    }
+    .seg-barra-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .seg-barra-track {
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .seg-barra-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+
+    /* Contenedor Gráficos */
+    .chart-box {
+      position: relative;
+      height: 240px;
+      width: 100%;
+    }
+
+    /* Info Banner */
+    .ind-banner {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+      gap: 14px;
+    }
+    .ind-banner-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .ind-banner-sub {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-top: 3px;
+    }
+    .badge-estado-live {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16,185,129,0.15);
+      color: #34d399;
+      border: 1px solid rgba(16,185,129,0.3);
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .dot-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+  </style>
+</head>
+<body class="admin-page" data-rol="profesor">
+<div class="admin-layout">
+  <aside class="admin-menu"></aside>
+  <div class="admin-principal">
+    <header class="admin-cabecera">
+      <div>
+        <span class="seg-eyebrow" style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #f97316; text-transform: uppercase;">
+          PANEL DEL PROFESOR / MACHINE LEARNING
+        </span>
+        <h1 style="margin: 4px 0 6px; font-size: 1.6rem; font-weight: 800; color: #0f172a;">
+          Dashboard Ejecutivo — Indicadores ML
+        </h1>
+        <p class="seg-intro" style="margin: 0; color: #64748b; font-size: 0.9rem;">
+          Consolidación de las 4 etapas de IA: Estadística Descriptiva, Regresión Lineal, Segmentación K-Means y Clasificación Logística.
+        </p>
+      </div>
+      <div>
+        <span class="tag-pill" id="badge-fecha-consulta" style="font-size: 0.85rem; padding: 8px 14px;">
+          Ciclo 2026-I · Datos en Vivo
+        </span>
+      </div>
+    </header>
+
+    <main class="admin-cuerpo">
+      <!-- Banner Ejecutivo Superior -->
+      <div class="ind-banner">
+        <div>
+          <div class="ind-banner-title">Sistema de Monitoreo Inteligente de Asistencia</div>
+          <div class="ind-banner-sub" id="txt-periodo-empresa">
+            SENATI · Procesamiento local consolidado
+          </div>
+        </div>
+        <div>
+          <span class="badge-estado-live">
+            <span class="dot-pulse"></span>
+            MODELOS SINCRONIZADOS
+          </span>
+        </div>
+      </div>
+
+      <!-- Fila de 4 KPIs Rápidos -->
+      <section class="ind-kpi-grid" id="contenedor-kpis-rapidos">
+        <div class="ind-kpi-card kpi-media">
+          <div class="ind-kpi-icon">😊</div>
+          <div>
+            <div class="ind-kpi-val" id="kpi-media-val">—%</div>
+            <div class="ind-kpi-lbl">Media Clima Emocional</div>
+          </div>
+        </div>
+
+        <div class="ind-kpi-card kpi-pred">
+          <div class="ind-kpi-icon">📈</div>
+          <div>
+            <div class="ind-kpi-val" id="kpi-pred-val">—%</div>
+            <div class="ind-kpi-lbl">Predicción Asistencia</div>
+          </div>
+        </div>
+
+        <div class="ind-kpi-card kpi-seg">
+          <div class="ind-kpi-icon">🎯</div>
+          <div>
+            <div class="ind-kpi-val" id="kpi-seg-val">S2 · Regular</div>
+            <div class="ind-kpi-lbl">Segmento Mayoritario</div>
+          </div>
+        </div>
+
+        <div class="ind-kpi-card kpi-ses">
+          <div class="ind-kpi-icon">📊</div>
+          <div>
+            <div class="ind-kpi-val" id="kpi-ses-val">—</div>
+            <div class="ind-kpi-lbl">Registros Analizados</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bloque 2 Columnas: Gráficos de Tendencia y EmoScan -->
+      <div class="ind-grid-2col">
+        <!-- Gráfico 1: Tendencia Semanal -->
+        <article class="ind-card">
+          <div class="ind-card-header">
+            <div>
+              <h3>Tendencia Semanal (Asistencia vs Clima Emocional)</h3>
+              <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+                Correlación diaria de asistencia efectiva y emoción positiva observada.
+              </p>
+            </div>
+            <span class="tag-pill" style="background: #f0fdf4; color: #15803d;">Chart.js</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-tendencia-semanal"></canvas>
+          </div>
+        </article>
+
+        <!-- Gráfico 2: Histograma EmoScan -->
+        <article class="ind-card">
+          <div class="ind-card-header">
+            <div>
+              <h3>Distribución de Expresiones Faciales (EmoScan)</h3>
+              <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+                Frecuencias dominantes clasificadas por FERPlus ONNX en clase.
+              </p>
+            </div>
+            <span class="tag-pill" style="background: #fdf2f8; color: #be185d;">OpenCV + ONNX</span>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-emoscan-dist"></canvas>
+          </div>
+        </article>
+      </div>
+
+      <!-- Bloque 2 Columnas: Predicción Supervisada + Segmentos K-Means -->
+      <div class="ind-grid-2col">
+        <!-- Predicción Supervisada (Regresión) -->
+        <article class="ind-card">
+          <div class="ind-card-header">
+            <div>
+              <h3>Modelo Supervisado de Predicción (Regresión Lineal)</h3>
+              <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+                Estimación de asistencia a partir de puntualidad y biometría facial.
+              </p>
+            </div>
+            <span class="tag-pill" id="badge-r2-modelo">R² = 77.9%</span>
+          </div>
+
+          <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+            <div>
+              <span style="font-size: 0.85rem; color: #64748b;">Puntaje Predicho:</span>
+              <div style="font-size: 2.2rem; font-weight: 800; color: #f97316;" id="txt-pred-score">81%</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.8rem; color: #64748b;">Intervalo Confianza:</span>
+              <div style="font-size: 1rem; font-weight: 700; color: #0f172a;" id="txt-pred-intervalo">75% – 87%</div>
+            </div>
+          </div>
+
+          <p id="txt-pred-interpretacion" style="font-size: 0.85rem; color: #334155; line-height: 1.5; margin-bottom: 16px;">
+            El modelo proyecta una alta probabilidad de asistencia en base a los registros históricos y puntualidad.
+          </p>
+
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase;">
+              VARIABLES PREDICTORAS PRINCIPALES:
+            </span>
+            <div id="contenedor-features-tags" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+              <!-- Tags dinámicos -->
+            </div>
+          </div>
+        </article>
+
+        <!-- Segmentación K-Means -->
+        <article class="ind-card">
+          <div class="ind-card-header">
+            <div>
+              <h3>Perfiles de Estudiantes (Clustering K-Means)</h3>
+              <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+                Segmentación no supervisada k=3 basada en asistencia y notas.
+              </p>
+            </div>
+            <span class="tag-pill" style="background:#fef3c7; color:#b45309;">K-Means k=3</span>
+          </div>
+
+          <div id="contenedor-segmentos-barras">
+            <!-- Barras generadas dinámicamente -->
+          </div>
+
+          <p id="txt-segmento-desc" style="font-size: 0.85rem; color: #64748b; line-height: 1.4; margin-top: 14px; border-top: 1px solid #f1f5f9; padding-top: 10px;">
+            Segmento actual: <strong>S2 · Asistencia Regular</strong>. El 46.7% mantiene asistencia estable.
+          </p>
+        </article>
+      </div>
+
+      <!-- Tabla de Estadística Descriptiva (Parte 1) -->
+      <article class="ind-card">
+        <div class="ind-card-header">
+          <div>
+            <h3>Estadística Descriptiva de la Empresa (NumPy / SciPy)</h3>
+            <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+              Métricas paramétricas y no paramétricas calculadas sobre 6,750 observaciones.
+            </p>
+          </div>
+          <span class="tag-pill">6,750 Muestras</span>
+        </div>
+
+        <div class="tabla-contenedor">
+          <table class="tabla" style="font-size: 0.88rem;">
+            <thead>
+              <tr>
+                <th>Métrica / Indicador</th>
+                <th style="text-align: right;">Valor Calculado</th>
+                <th>Descripción e Interpretación</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-estadistica-cuerpo">
+              <tr><td colspan="3" class="vacio">Cargando métricas estadísticas...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </main>
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin-comun.js"></script>
+<script src="../js/panel-comun.js"></script>
+<script src="../js/profesor-indicadores.js"></script>
+</body>
+</html>
+

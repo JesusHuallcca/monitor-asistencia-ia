@@ -1,0 +1,5 @@
+artifacts/*.keras binary
+artifacts/*.joblib binary
+*.py text eol=lf
+*.md text eol=lf
+artifacts/*.json text eol=lf

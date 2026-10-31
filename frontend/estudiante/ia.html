@@ -1,70 +1,241 @@
 <!doctype html>
-
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Senati | Asistente IA</title>
-
-
-<link rel="stylesheet" href="../css/login.css" />
-<link rel="stylesheet" href="../css/admin.css" />
-
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Virtual | Asistente IA</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a56db'><path d='M12 2L1 7l11 5 9-4.09V17h2V7L12 2z'/></svg>" />
+    <!-- Estilos Unificados -->
+    <link rel="stylesheet" href="../css/estudiante-dashboard.css" />
+    <link rel="stylesheet" href="../css/chatbot.css" />
   </head>
-
-  <body class="admin-page" data-rol="estudiante">
-    <div class="admin-layout">
-      <aside class="admin-menu"></aside>
-
-
-  <div class="admin-principal">
-    <header class="admin-cabecera">
-      <div>
-        <h1>Asistente IA</h1>
-        <p class="subtitulo-pagina">
-          Consulta tus datos con lenguaje natural.
-        </p>
-      </div>
-    </header>
-
-    <main class="admin-cuerpo">
-      <section
-        id="zona-chatbot"
-        class="panel-card zona-integracion"
-        data-integracion="chatbot"
-      >
-        <div class="vacio-bloque">
-          <strong>Asistente con IA</strong>
-          Usa el botón del asistente para comenzar una conversación.
+  <body class="dashboard-body">
+    <div class="dashboard-layout">
+      <!-- SIDEBAR LATERAL -->
+      <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">ASISTENCIA IA</span>
+            <span class="brand-subtitle">Campus Virtual</span>
+          </div>
         </div>
-      </section>
-    </main>
-  </div>
-</div>
 
-<div
-  id="aviso"
-  class="aviso"
-  role="status"
-  aria-live="polite"
-  hidden
-></div>
+        <div class="sidebar-section-title">Estudiante</div>
 
-<script src="../js/config.js"></script>
-<script src="../js/auth.js"></script>
-<script src="../js/admin-comun.js"></script>
-<script src="../js/panel-comun.js"></script>
+        <nav class="sidebar-nav">
+          <a href="inicio.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Inicio</span>
+          </a>
 
-<script src="../js/chatbot-init.js"></script>
-<script src="../components/chatbot.js"></script>
+          <a href="cursos.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span>Mis cursos</span>
+          </a>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    Panel.iniciar(document.body.dataset.rol);
-  });
-</script>
+          <a href="calificaciones.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M8 13h8M8 17h5"/>
+            </svg>
+            <span>Mis calificaciones</span>
+          </a>
 
+          <a href="asistencia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="9 12 12 15 16 10"/>
+            </svg>
+            <span>Mi asistencia</span>
+          </a>
 
+          <a href="ia.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+              <rect x="4" y="8" width="16" height="12" rx="3"/>
+              <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+              <path d="M9 17h6"/>
+            </svg>
+            <span>Asistente IA</span>
+          </a>
+
+          <a href="emoscan.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            </svg>
+            <span>EmoScan</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-links">
+            <a href="perfil.html" class="sidebar-footer-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+              </svg>
+              <span>Mi perfil</span>
+            </a>
+            <button type="button" class="sidebar-footer-link" id="btn-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+
+          <div class="sidebar-campus-card">
+            <img src="../assets/img/campus_building.jpg" alt="Campus Moderno" />
+          </div>
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main class="dashboard-main">
+        <!-- BARRA SUPERIOR -->
+        <header class="dashboard-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" id="btn-hamburger" aria-label="Abrir menú">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+
+            <div class="topbar-search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" placeholder="Pregúntale a la IA sobre cursos, asistencias o notas..." id="input-chat-query" />
+            </div>
+          </div>
+
+          <div class="topbar-right">
+            <button class="btn-icon-notify" aria-label="Notificaciones" onclick="window.location.href='inicio.html'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="notify-badge">4</span>
+            </button>
+
+            <div class="user-profile-widget" onclick="window.location.href='perfil.html'">
+              <img src="../assets/img/avatar_student.jpg" alt="Avatar del estudiante" class="user-avatar-img" />
+              <div class="user-meta">
+                <span class="user-meta-name" id="student-name">Ana Quispe</span>
+                <span class="user-meta-role" id="student-role">Estudiante</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- CONTENIDO -->
+        <div class="dashboard-content">
+          <div class="dashboard-header-block">
+            <h1 class="dashboard-page-title">Asistente Virtual IA</h1>
+            <p class="dashboard-page-subtitle">Tutor inteligente y consultas en lenguaje natural sobre tu vida académica.</p>
+          </div>
+
+          <!-- TARJETA DEL CHATBOT -->
+          <div class="dash-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; min-height: 580px;">
+            <div style="padding: 16px 22px; border-bottom: 1px solid var(--border-color); background-color: #f8fafc; display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 34px; height: 34px; border-radius: 8px; background-color: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                    <rect x="4" y="8" width="16" height="12" rx="3"/>
+                  </svg>
+                </div>
+                <div>
+                  <strong style="color: #0f172a; font-size: 14px;">Asistente Campus Virtual</strong><br/>
+                  <small style="color: #16a34a; font-weight: 600;">● En línea · Modelo Académico</small>
+                </div>
+              </div>
+
+              <div>
+                <span class="badge-status badge-status-active">Tutor 24/7</span>
+              </div>
+            </div>
+
+            <!-- Zona de Integración del Chatbot -->
+            <div id="zona-chatbot" class="zona-integracion" data-integracion="chatbot" style="flex: 1; padding: 20px; display: flex; flex-direction: column;">
+              <div class="vacio-bloque" style="text-align: center; margin: auto; max-width: 460px; color: #64748b;">
+                <img src="../assets/img/senati.png" alt="Senati" style="height: 36px; object-fit: contain; margin-bottom: 14px;" />
+                <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 6px;">¿En qué puedo ayudarte hoy?</h3>
+                <p style="font-size: 13px; line-height: 1.5; margin-bottom: 18px;">
+                  Pregúntame sobre tus notas, sesiones de asistencia facial, cursos matriculados o próximas evaluaciones.
+                </p>
+
+                <!-- Sugerencias de preguntas rápidas -->
+                <div style="display: flex; flex-direction: column; gap: 8px; text-align: left;">
+                  <button type="button" class="btn-secundario prompt-sug" style="border-radius: 8px; font-size: 12px; text-align: left;">
+                    💬 "¿Cuál es mi promedio general actual en este ciclo?"
+                  </button>
+                  <button type="button" class="btn-secundario prompt-sug" style="border-radius: 8px; font-size: 12px; text-align: left;">
+                    💬 "¿Tengo alguna sesión activa para registrar mi asistencia hoy?"
+                  </button>
+                  <button type="button" class="btn-secundario prompt-sug" style="border-radius: 8px; font-size: 12px; text-align: left;">
+                    💬 "¿Cuáles son mis próximas evaluaciones pendientes?"
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-comun.js"></script>
+    <script src="../js/panel-comun.js"></script>
+    <script src="../js/chatbot-init.js"></script>
+    <script src="../components/chatbot.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        if (typeof Auth !== "undefined" && Auth.token()) {
+          try {
+            const resp = await Auth.fetchAutenticado("/api/users/me");
+            if (resp && resp.ok) {
+              const u = await resp.json();
+              document.getElementById("student-name").textContent = `${u.nombres} ${u.apellidos}`;
+            }
+          } catch(e) {}
+        }
+        document.getElementById("btn-logout").addEventListener("click", () => {
+          if (typeof Auth !== "undefined") Auth.limpiar();
+          window.location.href = "../login.html";
+        });
+        document.querySelectorAll(".prompt-sug").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const txt = btn.textContent.replace('💬 "', '').replace('"', '').trim();
+            const input = document.querySelector("#chatbot-input, input[type='text']");
+            if (input) {
+              input.value = txt;
+              input.focus();
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

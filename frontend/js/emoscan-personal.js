@@ -9,9 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   function message(text) { $('emo-status').textContent = text; }
   function error(text = '') { $('emo-error').textContent = text; $('emo-error').hidden = !text; }
   function buttons() {
+    const hasResult = !$('emo-result').hidden;
     $('emo-start').disabled = !enabled || !accepted || !!stream || starting || busy;
     $('emo-analyze').disabled = !enabled || !accepted || !stream || busy;
-    $('emo-repeat').disabled = !enabled || !accepted || !stream || busy;
+    $('emo-repeat').disabled = !enabled || !accepted || (!stream && !hasResult) || busy;
     $('emo-stop').disabled = !stream && !starting;
   }
   async function api(path, options = {}) {
@@ -26,14 +27,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     discarding = api('/jobs', { method: 'DELETE', keepalive: true }).catch(() => {});
     return discarding;
   }
-  function clear() {
+  function clearResults() {
     generation++; clearTimeout(pollTimer); clearTimeout(expiryTimer); controller?.abort(); controller = null;
     busy = false; $('emo-result').hidden = true; $('emo-label').textContent = ''; $('emo-scores').replaceChildren();
   }
-  function stop() {
-    clear(); starting = false;
+  function stopCamera() {
+    starting = false;
     stream?.getTracks().forEach((track) => track.stop()); stream = null; $('emo-video').srcObject = null;
-    discard(); buttons();
+    buttons();
+    // Restaurar último resultado si existe y el consentimiento está activo
+    if (accepted && $('emo-result').hidden) {
+      try {
+        const saved = sessionStorage.getItem('emoscan_last_result');
+        if (saved) {
+          const { data } = JSON.parse(saved);
+          if (data && data.scores) {
+            showResult(data, generation);
+            message('Último análisis conservado. Puedes activar la cámara para repetir cuando quieras.');
+          }
+        }
+      } catch(_) {}
+    }
+  }
+  function stopAll() {
+    clearResults();
+    stopCamera();
+    discard();
   }
   async function loadConsent() {
     try {
@@ -45,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     buttons();
   }
   async function updateConsent(value) {
-    stop(); error(); accepted = false; buttons(); $('emo-consent').disabled = true; $('emo-revoke').disabled = true;
+    clearResults(); sessionStorage.removeItem('emoscan_last_result'); stopCamera(); discard(); error(); accepted = false; buttons(); $('emo-consent').disabled = true; $('emo-revoke').disabled = true;
     try {
       const data = await api('/consent', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accepted: value, text_version: version }) });
       accepted = data.accepted; $('emo-consent').checked = accepted;
@@ -57,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   $('emo-consent').addEventListener('change', () => void updateConsent($('emo-consent').checked));
   $('emo-revoke').addEventListener('click', () => void updateConsent(false));
-  $('emo-start').addEventListener('click', async () => {
+  async function startCamera() {
     if (!accepted || !enabled || starting || stream) return;
     error(); starting = true; buttons(); const current = generation;
     try {
@@ -66,10 +85,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (current !== generation || !accepted || document.hidden) { media.getTracks().forEach((t) => t.stop()); return; }
       stream = media; $('emo-video').srcObject = stream; await $('emo-video').play();
       if (current === generation) message('Cámara activa. Pulsa Analizar expresión cuando estés listo.');
-    } catch (e) { if (current === generation) { stop(); error(e.name === 'NotAllowedError' ? 'Permiso de cámara denegado. Puedes habilitarlo en el navegador e intentarlo de nuevo.' : e.message); } }
+    } catch (e) { if (current === generation) { stopCamera(); error(e.name === 'NotAllowedError' ? 'Permiso de cámara denegado. Puedes habilitarlo en el navegador e intentarlo de nuevo.' : e.message); } }
     finally { if (current === generation) starting = false; buttons(); }
+  }
+  $('emo-start').addEventListener('click', () => void startCamera());
+  $('emo-stop').addEventListener('click', () => {
+    stopCamera();
+    message('Cámara desactivada. Las métricas se mantienen visibles hasta un nuevo análisis.');
   });
-  $('emo-stop').addEventListener('click', () => { stop(); message('Cámara desactivada.'); });
   function showResult(data, current) {
     if (current !== generation || !accepted) return;
     $('emo-label').textContent = 'Expresión estimada: ' + (labels[data.estimated_expression] || 'No disponible');
@@ -82,11 +105,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       const value = document.createElement('span'); value.textContent = (score * 100).toFixed(1) + ' %'; row.append(text, bar, value); $('emo-scores').appendChild(row);
     }
     $('emo-result').hidden = false; message('Análisis completado. Puedes repetirlo voluntariamente.');
-    expiryTimer = setTimeout(() => { clear(); discard(); buttons(); message('El resultado temporal ha caducado. Puedes repetir el análisis.'); }, Math.max(0, Math.min(data.expires_in ?? 30, 30)) * 1000);
+    try { sessionStorage.setItem('emoscan_last_result', JSON.stringify({ data, time: Date.now() })); } catch(_) {}
+    // No se eliminan los resultados visuales por expiración. Se conservan en pantalla.
+    // El servidor limpia su memoria temporal pero el frontend mantiene las métricas visibles.
   }
   async function analyze() {
     if (!stream || !accepted || busy) return;
-    clear(); error(); busy = true; buttons(); const current = generation;
+    clearResults(); error(); busy = true; buttons(); const current = generation;
     let polling = false;
     controller = new AbortController(); message('Capturando un fotograma y estimando la expresión…');
     try {
@@ -127,11 +152,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     finally { if (current === generation && !polling) { busy = false; buttons(); } }
   }
   $('emo-analyze').addEventListener('click', () => void analyze());
-  $('emo-repeat').addEventListener('click', () => void analyze());
-  window.addEventListener('pagehide', stop);
-  window.addEventListener('beforeunload', stop);
-  document.addEventListener('visibilitychange', () => { if (document.hidden) { stop(); message('Cámara detenida al salir de la sección.'); } });
-  if (channel) channel.onmessage = () => { stop(); void loadConsent(); };
+  $('emo-repeat').addEventListener('click', async () => {
+    if (!stream && accepted && enabled && !busy && !starting) {
+      await startCamera();
+    }
+    if (stream) void analyze();
+  });
+  // Solo apagar hardware de cámara al salir o cambiar de pestaña (conservando métricas)
+  window.addEventListener('pagehide', stopCamera);
+  window.addEventListener('beforeunload', stopCamera);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && stream) {
+      stopCamera();
+      message('Cámara en pausa por cambio de pestaña. Los resultados se conservan.');
+    }
+  });
+  if (channel) channel.onmessage = () => { stopCamera(); void loadConsent(); };
   try { if (!await Panel.iniciar('estudiante')) return; await loadConsent(); }
   catch { error('No se pudo verificar tu sesión. Revisa la conexión con el servidor.'); }
 });

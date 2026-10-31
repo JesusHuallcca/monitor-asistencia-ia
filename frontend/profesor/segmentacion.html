@@ -1,139 +1,247 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Senati | Segmentación IA — K-Means</title>
-  <link rel="stylesheet" href="../css/login.css" /><link rel="stylesheet" href="../css/admin.css" />
-  <link rel="stylesheet" href="../css/segmentacion.css" /><link rel="stylesheet" href="../css/segmentacion-dashboard.css" />
+  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/segmentacion.css" />
+  <link rel="stylesheet" href="../css/segmentacion-dashboard.css" />
 </head>
 <body class="admin-page seg-dashboard" data-rol="profesor">
-<div class="admin-layout"><aside class="admin-menu"></aside><div class="admin-principal">
-  <header class="admin-cabecera">
-    <div><span class="seg-eyebrow">PANEL DEL PROFESOR / CENTRO DE ANÁLISIS</span><h1>Segmentación IA — Aprendizaje No Supervisado con K-Means</h1><p class="seg-intro">Análisis de perfiles sintéticos mediante aprendizaje no supervisado para identificar grupos con características similares</p></div>
-    <span class="seg-badge">Demostración académica con datos sintéticos.</span>
-  </header>
-  <main class="admin-cuerpo seg-page">
-    <section class="seg-command" aria-label="Controles del análisis">
-      <div class="seg-actions">
-        <button id="seg-demo" class="seg-btn" type="button" disabled>Ver demostración</button>
-        <button id="seg-open-upload" class="seg-outline" type="button" aria-controls="seg-upload" aria-expanded="false">Cargar CSV</button>
-        <button id="seg-process" class="seg-btn" type="submit" form="seg-form" disabled>Procesar segmentación</button>
-        <button id="seg-download" class="seg-outline" type="button" disabled>Descargar resultados</button>
+<div class="admin-layout">
+  <aside class="admin-menu"></aside>
+  <div class="admin-principal">
+    <header class="admin-cabecera">
+      <div>
+        <span class="seg-eyebrow">PANEL DEL PROFESOR / CENTRO DE ANÁLISIS</span>
+        <h1>Segmentación IA — Aprendizaje No Supervisado con K-Means</h1>
+        <p class="seg-intro">Análisis de perfiles sintéticos mediante aprendizaje no supervisado para identificar grupos con características similares</p>
       </div>
-      <div class="seg-toolbar">
-        <label for="seg-filter">Cluster <select id="seg-filter" disabled><option value="">Todos</option></select></label>
-        <button id="seg-reset" class="seg-link-button" type="button">Restablecer filtros</button>
-        <span id="seg-visible" role="status" aria-live="polite"></span>
-      </div>
-    </section>
-    <details id="seg-upload">
-      <summary>Archivo CSV sintético · requisitos y carga</summary>
-      <form id="seg-form">
-        <div id="seg-drop" class="seg-upload-zone" tabindex="0" aria-label="Arrastrar un único CSV sintético">
-          <label class="seg-file" for="seg-file">Selecciona o arrastra tu archivo CSV
-            <input id="seg-file" type="file" accept=".csv,text/csv" required aria-describedby="seg-schema" />
-          </label>
-          <p id="seg-file-info">Ningún archivo seleccionado.</p>
-          <p id="seg-schema">UTF-8, separado por comas. Columnas: <code>usuario_id, sesion, estado, promedio_notas, origen_datos</code>.
-            Puedes usar <code>sesion_id</code> en lugar de <code>sesion</code>.</p>
-          <p>Origen <code>sintetico</code> en cada fila. Notas 0–20; estados PRESENTE, TARDANZA o AUSENTE.
-            Máximo 2 MiB, 10 000 sesiones y entre 4 y 500 perfiles. Las expresiones se generan en el servidor:
-            no incluyas ratios externos, fotos ni datos faciales. Las categorías son opcionales y exclusivamente sintéticas.</p>
-          <a class="seg-link" href="../ejemplos/segmentacion_sintetica.csv" download>CSV de ejemplo clásico</a>
-          · <a class="seg-link" href="../ejemplos/segmentacion_sintetica_categorias.csv" download>CSV con categorías sintéticas</a>
-          <p>Detalle opcional por perfil: <code>exp_sint_neutral, exp_sint_alegria, exp_sint_sorpresa, exp_sint_tristeza, exp_sint_enojo, exp_sint_disgusto, exp_sint_miedo, exp_sint_desprecio, exp_sint_total, exp_sint_origen</code>.
-          Deben estar las diez columnas, sumar 40 observaciones y repetir los mismos conteos en todas las sesiones del perfil. Origen <code>sintetico</code>; alegría conserva el conteo positivo generado por el modelo. El ejemplo extendido muestra el formato.</p>
+      <span class="seg-badge">Demostración académica con datos sintéticos.</span>
+    </header>
+
+    <main class="admin-cuerpo seg-page">
+      <!-- Barra de Acciones y Controles -->
+      <section class="seg-command" aria-label="Controles del análisis">
+        <div class="seg-actions">
+          <button id="seg-demo" class="seg-btn" type="button">Ver demostración</button>
+          <button id="seg-open-upload" class="seg-outline" type="button" aria-controls="seg-upload" aria-expanded="false">Cargar CSV</button>
+          <button id="seg-process" class="seg-btn" type="submit" form="seg-form" disabled>Procesar segmentación</button>
+          <button id="seg-download" class="seg-outline" type="button" disabled>Descargar resultados</button>
         </div>
-      </form>
-    </details>
-    <div class="seg-feedback"><p id="seg-status" role="status" aria-live="polite">Verificando tu sesión de profesor…</p>
-      <p id="seg-error" class="seg-error" role="alert" hidden></p></div>
-    <p class="seg-safety"><strong>Solo perfiles ficticios.</strong> Las expresiones positivas son sintéticas, no proceden de EmoScan ni representan emociones reales.
-      Los CSV se procesan en memoria.</p>
-    <section id="seg-empty" class="seg-empty"><span class="seg-eyebrow">EXPLORACIÓN DE CUATRO VARIABLES</span>
-      <h2>Tu centro de monitoreo de simulaciones</h2>
-      <p>Pulsa «Ver demostración» para explorar 150 perfiles sintéticos o carga un CSV. Los indicadores, las comparaciones y la evaluación aparecerán juntos en esta página.</p>
-    </section>
-    <section id="seg-results" hidden aria-label="Dashboard de segmentación">
-      <div class="seg-analysis-heading"><h2 id="seg-dataset">Resultados</h2><span class="seg-muted">Modelo de cuatro variables · filtros compartidos</span></div>
-      <div class="seg-stats">
-        <article class="seg-card"><span>Total de perfiles analizados</span><strong id="seg-count">—</strong><small>Dataset completo</small></article>
-        <article class="seg-card"><span>Número de clusters</span><strong id="seg-k">—</strong><small>Selección por silueta, K ≥ 3</small></article>
-        <article class="seg-card"><span>Coeficiente de silueta</span><strong id="seg-score">—</strong><small>Separación, no exactitud</small></article>
-        <article class="seg-card"><span>Número de variables utilizadas</span><strong id="seg-variables">—</strong><small>Estandarizadas con StandardScaler</small></article>
-      </div>
-      <section class="seg-group-overview" aria-label="Leyenda descriptiva de los clusters">
-        <div class="seg-analysis-heading"><h2>¿Qué caracteriza a cada grupo?</h2><span class="seg-muted">Descripciones relativas a esta muestra; pulsa un grupo para filtrar.</span></div>
-        <div id="seg-groups"></div>
+        <div class="seg-toolbar">
+          <label for="seg-filter">Cluster <select id="seg-filter" disabled><option value="">Todos</option></select></label>
+          <button id="seg-reset" class="seg-link-button" type="button">Restablecer filtros</button>
+          <span id="seg-visible" role="status" aria-live="polite">150 de 150 perfiles en grupos visibles</span>
+        </div>
       </section>
-      <div class="seg-chart-grid">
-        <article class="seg-card seg-chart-card" data-chart="seg-pca">
-          <div class="seg-chart-heading"><div><span class="seg-primary-label">VISTA PRINCIPAL · CUATRO VARIABLES</span><h3>PCA con clusters y centroides</h3></div><span class="seg-chart-index">01</span></div>
-          <div id="seg-pca" class="seg-plot" aria-label="PCA de cuatro variables con perfiles y centroides"></div>
-          <p id="seg-pca-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card" data-chart="seg-samples">
-          <div class="seg-chart-heading"><h3>Silueta por perfil</h3><span class="seg-chart-index">02</span></div>
-          <div id="seg-samples" class="seg-plot seg-plot-tall" aria-label="Coeficientes de silueta individuales agrupados por cluster"></div>
-          <p id="seg-samples-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card seg-complement" data-chart="seg-comparison">
-          <div class="seg-chart-heading"><h3>Asistencia vs. promedio de notas</h3><span class="seg-chart-index">03</span></div>
-          <div id="seg-comparison" class="seg-plot" aria-label="Dispersión de asistencia porcentual y promedio de notas de cero a veinte"></div>
-          <p id="seg-comparison-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card seg-complement" data-chart="seg-expresiones-scatter">
-          <div class="seg-chart-heading"><h3>Asistencia vs. expresiones positivas sintéticas</h3><span class="seg-chart-index">04</span></div>
-          <div id="seg-expresiones-scatter" class="seg-plot" aria-label="Dispersión de asistencia y expresiones positivas sintéticas, ambas porcentuales"></div>
-          <p id="seg-expresiones-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card" data-chart="seg-elbow">
-          <div class="seg-chart-heading"><h3>Método del codo</h3><span class="seg-chart-index">05</span></div>
-          <div id="seg-elbow" class="seg-plot" aria-label="Inercia según número de clusters"></div>
-          <p id="seg-elbow-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card" data-chart="seg-heatmap">
-          <div class="seg-chart-heading"><h3>Mapa de calor de centroides</h3><span class="seg-chart-index">06</span></div>
-          <div id="seg-heatmap" class="seg-plot" aria-label="Centroides de las cuatro variables estandarizadas"></div>
-          <p id="seg-heatmap-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card" data-chart="seg-distribution">
-          <div class="seg-chart-heading"><h3>Distribución de perfiles por cluster</h3><span class="seg-chart-index">07</span></div>
-          <div id="seg-distribution" class="seg-plot seg-plot-tall" aria-label="Cantidad de perfiles por cluster"></div>
-          <p id="seg-distribution-note" class="seg-chart-note"></p>
-        </article>
-        <article class="seg-card seg-chart-card" data-chart="seg-means">
-          <div class="seg-chart-heading"><h3>Comparación de las cuatro variables</h3><span class="seg-chart-index">08</span></div>
-          <div class="seg-four-means">
-            <section><h4>Asistencia (%)</h4><div id="seg-bar-asistencia" class="seg-plot seg-plot-mini"></div></section>
-            <section><h4>Tardanzas (%)</h4><div id="seg-bar-tardanzas" class="seg-plot seg-plot-mini"></div></section>
-            <section><h4>Nota media (0–20)</h4><div id="seg-bar-notas" class="seg-plot seg-plot-mini"></div></section>
-            <section><h4>Expresiones sintéticas (%)</h4><div id="seg-bar-expresiones" class="seg-plot seg-plot-mini"></div></section>
+
+      <!-- Zona de Carga CSV Desplegable -->
+      <details id="seg-upload" style="display:none;" aria-hidden="true">
+        <summary>Archivo CSV sintético · requisitos y carga</summary>
+        <form id="seg-form">
+          <div id="seg-drop" class="seg-upload-zone" tabindex="0" aria-label="Arrastrar un único CSV sintético">
+            <label class="seg-file" for="seg-file">Selecciona o arrastra tu archivo CSV
+              <input id="seg-file" type="file" accept=".csv,text/csv" required aria-describedby="seg-schema" />
+            </label>
+            <p id="seg-file-info">Ningún archivo seleccionado.</p>
+            <p id="seg-schema">UTF-8, separado por comas. Columnas: <code>usuario_id, sesion, estado, promedio_notas, origen_datos</code>.
+              Puedes usar <code>sesion_id</code> en lugar de <code>sesion</code>.</p>
+            <p>Origen <code>sintetico</code> en cada fila. Notas 0–20; estados PRESENTE, TARDANZA o AUSENTE.
+              Máximo 2 MiB, 10 000 sesiones y entre 4 y 500 perfiles. Las expresiones se generan en el servidor:
+              no incluyas ratios externos, fotos ni datos faciales. Las categorías son opcionales y exclusivamente sintéticas.</p>
+            <a class="seg-link" href="../ejemplos/segmentacion_sintetica.csv" download>CSV de ejemplo clásico</a>
+            · <a class="seg-link" href="../ejemplos/segmentacion_sintetica_categorias.csv" download>CSV con categorías sintéticas</a>
+            · <a class="seg-link" href="../ejemplos/segmentacion_sintetica_180_perfiles.csv" download>CSV 180 perfiles</a>
+            · <a class="seg-link" href="../ejemplos/segmentacion_sintetica_250_perfiles.csv" download>CSV 250 perfiles</a>
+            · <a class="seg-link" href="../ejemplos/segmentacion_sintetica_400_perfiles.csv" download>CSV 400 perfiles</a>
+            <p>Detalle opcional por perfil: <code>exp_sint_neutral, exp_sint_alegria, exp_sint_sorpresa, exp_sint_tristeza, exp_sint_enojo, exp_sint_disgusto, exp_sint_miedo, exp_sint_desprecio, exp_sint_total, exp_sint_origen</code>.</p>
           </div>
-          <p class="seg-chart-note">Cada barra muestra la media de un grupo. Los colores son los mismos del PCA; cada variable conserva su propia escala. Las expresiones son exclusivamente simuladas.</p>
-        </article>
+        </form>
+      </details>
+
+      <!-- Feedback y Alertas -->
+      <div class="seg-feedback">
+        <p id="seg-status" role="status" aria-live="polite">Cargando demostración de segmentación...</p>
+        <p id="seg-error" class="seg-error" role="alert" hidden></p>
       </div>
-      <section id="seg-expression-detail" class="seg-card seg-expression-detail" hidden aria-label="Detalle de categorías de expresiones sintéticas">
-        <div class="seg-chart-heading"><h3>Distribución de expresiones sintéticas</h3>
-          <label class="seg-expression-control">Vista <select id="seg-expression-scope"><option value="general">General</option><option value="cluster">Por cluster</option></select></label></div>
-        <p id="seg-expression-total" class="seg-muted" role="status"></p>
-        <div id="seg-expression-chart" class="seg-plot" aria-label="Cantidades y porcentajes de observaciones categóricas simuladas"></div>
-        <p id="seg-expression-note" class="seg-chart-note"></p>
+      <p class="seg-safety">
+        <strong>Solo perfiles ficticios.</strong> Las expresiones positivas son sintéticas, no proceden de EmoScan ni representan emociones reales. Los CSV se procesan en memoria.
+      </p>
+
+      <!-- Estado Vacío (Oculto al cargar demo) -->
+      <section id="seg-empty" class="seg-empty" hidden>
+        <span class="seg-eyebrow">EXPLORACIÓN DE CUATRO VARIABLES</span>
+        <h2>Tu centro de monitoreo de simulaciones</h2>
+        <p>Pulsa «Ver demostración» para explorar 150 perfiles sintéticos o carga un CSV. Los indicadores, las comparaciones y la evaluación aparecerán juntos en esta página.</p>
       </section>
-      <div class="seg-eval-callout"><h4 id="seg-choice-title"></h4><p id="seg-choice-note"></p></div>
-      <p class="seg-muted">La evaluación y las siluetas se calculan con las cuatro variables y el dataset completo. Filtrar u ocultar grupos solo cambia la vista.
-        Son descripciones de una simulación, no diagnósticos individuales ni predicciones de rendimiento.</p>
-      <aside id="seg-selection" class="seg-selection" hidden aria-label="Perfiles seleccionados">
-        <div class="seg-chart-heading"><h3 id="seg-selection-count"></h3><button id="seg-clear-selection" class="seg-link-button" type="button">Quitar selección</button></div>
-        <div class="seg-table-wrap"><table><caption>Hasta 12 perfiles seleccionados; todos los valores son sintéticos.</caption>
-          <thead><tr><th>Perfil</th><th>Cluster</th><th>Asistencia</th><th>Tardanzas</th><th>Nota</th><th>Expresiones sintéticas</th></tr></thead><tbody id="seg-selection-body"></tbody></table></div>
-      </aside>
-    </section>
-  </main>
-</div></div>
-<script src="../js/config.js"></script><script src="../js/auth.js"></script>
-<script src="../js/admin-comun.js"></script><script src="../js/panel-comun.js"></script>
-<script src="../vendor/plotly-cartesian-2.35.2.min.js"></script><script src="../vendor/plotly-locale-es-2.35.2.js"></script>
+
+      <!-- RESULTADOS COMPLETOS INTEGRADOS EN UNA SOLA PÁGINA -->
+      <section id="seg-results" aria-label="Dashboard de segmentación">
+        <div class="seg-analysis-heading">
+          <h2 id="seg-dataset">Demostración de Parte 3</h2>
+          <span class="seg-muted">Modelo de cuatro variables · filtros compartidos</span>
+        </div>
+
+        <!-- 4 KPIs del Modelo -->
+        <div class="seg-stats">
+          <article class="seg-card">
+            <span>Total de perfiles analizados</span>
+            <strong id="seg-count">150</strong>
+            <small>Dataset completo</small>
+          </article>
+          <article class="seg-card">
+            <span>Número de clusters</span>
+            <strong id="seg-k">3</strong>
+            <small>Selección por silueta, K ≥ 3</small>
+          </article>
+          <article class="seg-card">
+            <span>Coeficiente de silueta</span>
+            <strong id="seg-score">0.237369</strong>
+            <small>Separación, no exactitud</small>
+          </article>
+          <article class="seg-card">
+            <span>Número de variables utilizadas</span>
+            <strong id="seg-variables">4</strong>
+            <small>Estandarizadas con StandardScaler</small>
+          </article>
+        </div>
+
+        <!-- Perfiles / Grupos Interactivos -->
+        <section class="seg-group-overview" aria-label="Leyenda descriptiva de los clusters">
+          <div class="seg-analysis-heading">
+            <h2>¿Qué caracteriza a cada grupo?</h2>
+            <span class="seg-muted">Descripciones relativas a esta muestra; pulsa un grupo para filtrar.</span>
+          </div>
+          <div id="seg-groups"></div>
+        </section>
+
+        <!-- Cuadrícula de Gráficos Interactivos de Plotly (01 a 08) -->
+        <div class="seg-chart-grid">
+          <!-- Gráfico 01: PCA con clusters y centroides -->
+          <article class="seg-card seg-chart-card" data-chart="seg-pca">
+            <div class="seg-chart-heading">
+              <div>
+                <span class="seg-primary-label">VISTA PRINCIPAL · CUATRO VARIABLES</span>
+                <h3>PCA con clusters y centroides</h3>
+              </div>
+              <span class="seg-chart-index">01</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-pca" title="Ampliar gráfico en ventana flotante">🔍 Ampliar</button>
+            </div>
+            <div id="seg-pca" class="seg-plot" aria-label="PCA de cuatro variables con perfiles y centroides"></div>
+            <p id="seg-pca-note" class="seg-chart-note"></p>
+          </article>
+
+          <!-- Gráfico 03: Asistencia vs Promedio de Notas -->
+          <article class="seg-card seg-chart-card seg-complement" data-chart="seg-comparison">
+            <div class="seg-chart-heading">
+              <h3>Asistencia vs. promedio de notas</h3>
+              <span class="seg-chart-index">03</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-comparison" title="Ampliar gráfico en ventana flotante">🔍 Ampliar</button>
+            </div>
+            <div id="seg-comparison" class="seg-plot" aria-label="Dispersión de asistencia porcentual y promedio de notas de cero a veinte"></div>
+            <p id="seg-comparison-note" class="seg-chart-note"></p>
+          </article>
+
+          <!-- Gráfico 04: Asistencia vs Expresiones Sintéticas -->
+          <article class="seg-card seg-chart-card seg-complement" data-chart="seg-expresiones-scatter">
+            <div class="seg-chart-heading">
+              <h3>Asistencia vs. expresiones positivas sintéticas</h3>
+              <span class="seg-chart-index">04</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-expresiones-scatter" title="Ampliar gráfico en ventana flotante">🔍 Ampliar</button>
+            </div>
+            <div id="seg-expresiones-scatter" class="seg-plot" aria-label="Dispersión de asistencia y expresiones positivas sintéticas, ambas porcentuales"></div>
+            <p id="seg-expresiones-note" class="seg-chart-note"></p>
+          </article>
+
+          <!-- Gráfico 07: Distribución de perfiles por cluster -->
+          <article class="seg-card seg-chart-card" data-chart="seg-distribution">
+            <div class="seg-chart-heading">
+              <h3>Distribución de perfiles por cluster</h3>
+              <span class="seg-chart-index">07</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-distribution" title="Ampliar gráfico en ventana flotante">🔍 Ampliar</button>
+            </div>
+            <div id="seg-distribution" class="seg-plot seg-plot-tall" aria-label="Cantidad de perfiles por cluster"></div>
+            <p id="seg-distribution-note" class="seg-chart-note"></p>
+          </article>
+
+          <!-- Gráfico 08: Comparación de las cuatro variables -->
+          <article class="seg-card seg-chart-card" data-chart="seg-means">
+            <div class="seg-chart-heading">
+              <h3>Comparación de las cuatro variables</h3>
+              <span class="seg-chart-index">08</span> <button type="button" class="seg-expand-btn" data-target-chart="seg-means" title="Ampliar gráfico en ventana flotante">🔍 Ampliar</button>
+            </div>
+            <div class="seg-four-means">
+              <section><h4>Asistencia (%)</h4><div id="seg-bar-asistencia" class="seg-plot seg-plot-mini"></div></section>
+              <section><h4>Tardanzas (%)</h4><div id="seg-bar-tardanzas" class="seg-plot seg-plot-mini"></div></section>
+              <section><h4>Nota media (0–20)</h4><div id="seg-bar-notas" class="seg-plot seg-plot-mini"></div></section>
+              <section><h4>Expresiones sintéticas (%)</h4><div id="seg-bar-expresiones" class="seg-plot seg-plot-mini"></div></section>
+            </div>
+            <p class="seg-chart-note">Cada barra muestra la media de un grupo. Los colores son los mismos del PCA; cada variable conserva su propia escala. Las expresiones son exclusivamente simuladas.</p>
+          </article>
+        </div>
+
+        <!-- Detalle de Expresiones Sintéticas -->
+        <section id="seg-expression-detail" class="seg-card seg-expression-detail" hidden aria-label="Detalle de categorías de expresiones sintéticas">
+          <div class="seg-chart-heading">
+            <h3>Distribución de expresiones sintéticas</h3> <button type="button" class="seg-expand-btn" data-target-chart="seg-expression-chart" title="Ampliar gráfico en ventana flotante">🔍 Ampliar</button>
+            <label class="seg-expression-control">Vista <select id="seg-expression-scope"><option value="general">General</option><option value="cluster">Por cluster</option></select></label>
+          </div>
+          <p id="seg-expression-total" class="seg-muted" role="status"></p>
+          <div id="seg-expression-chart" class="seg-plot" aria-label="Cantidades y porcentajes de observaciones categóricas simuladas"></div>
+          <p id="seg-expression-note" class="seg-chart-note"></p>
+        </section>
+
+        <div class="seg-eval-callout">
+          <h4 id="seg-choice-title"></h4>
+          <p id="seg-choice-note"></p>
+        </div>
+
+        <p class="seg-muted">La evaluación y las siluetas se calculan con las cuatro variables y el dataset completo. Filtrar u ocultar grupos solo cambia la vista.
+          Son descripciones de una simulación, no diagnósticos individuales ni predicciones de rendimiento.</p>
+
+        <!-- Tabla de Perfiles Seleccionados -->
+        <aside id="seg-selection" class="seg-selection" hidden aria-label="Perfiles seleccionados">
+          <div class="seg-chart-heading">
+            <h3 id="seg-selection-count"></h3>
+            <button id="seg-clear-selection" class="seg-link-button" type="button">Quitar selección</button>
+          </div>
+          <div class="seg-table-wrap">
+            <table>
+              <caption>Hasta 12 perfiles seleccionados; todos los valores son sintéticos.</caption>
+              <thead><tr><th>Perfil</th><th>Cluster</th><th>Asistencia</th><th>Tardanzas</th><th>Nota</th><th>Expresiones sintéticas</th></tr></thead>
+              <tbody id="seg-selection-body"></tbody>
+            </table>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+</div>
+
+
+<!-- Ventana flotante (Lightbox) para gráficos interactivos ampliados -->
+<div id="seg-chart-modal" class="seg-lightbox-overlay" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="seg-lightbox-box">
+    <div class="seg-lightbox-header">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span id="seg-lightbox-badge" class="seg-chart-index">01</span>
+        <h3 id="seg-lightbox-title" class="seg-lightbox-title">Gráfico ampliado</h3>
+      </div>
+      <button id="seg-lightbox-close" class="seg-lightbox-close" type="button" title="Cerrar ventana flotante (Esc)" aria-label="Cerrar ventana">✕</button>
+    </div>
+    <div id="seg-lightbox-plot-wrap">
+      <div id="seg-lightbox-plot"></div>
+    </div>
+    <div id="seg-lightbox-footer">
+      <p id="seg-lightbox-note" class="seg-chart-note"></p>
+    </div>
+  </div>
+</div>
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin-comun.js"></script>
+<script src="../js/panel-comun.js"></script>
+<script src="../vendor/plotly-cartesian-2.35.2.min.js"></script>
+<script src="../vendor/plotly-locale-es-2.35.2.js"></script>
 <script src="../js/segmentacion.js"></script>
 </body>
 </html>

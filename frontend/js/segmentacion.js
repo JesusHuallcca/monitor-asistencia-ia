@@ -1,15 +1,17 @@
-/* Plotly local. Solo datos de la API sintética; sin cambios al ajuste K-Means. */
+﻿/* Plotly local. Solo datos de la API sintética; sin cambios al ajuste K-Means. */
 document.addEventListener('DOMContentLoaded', async () => {
   const $ = (id) => document.getElementById(id);
   const features = ['asistencia_ratio','tardanzas_ratio','promedio_notas','expresiones_positivas_ratio'];
   const labels = ['Asistencia','Tardanzas','Promedio de notas','Expresiones positivas sintéticas'];
-  const colors = ['#2563eb','#d97706','#059669','#9333ea','#dc2626','#0891b2','#be185d','#4d7c0f'];
+  const colors = ['#f43f5e','#6366f1','#10b981','#06b6d4','#f59e0b','#8b5cf6','#ec4899','#38bdf8'];
   const categoryIds = ['neutral','alegria','sorpresa','tristeza','enojo','disgusto','miedo','desprecio'];
   const categoryColumns = [...categoryIds.map(id => 'exp_sint_'+id),'exp_sint_total','exp_sint_origen'];
   const required = ['usuario_id','estado','promedio_notas','origen_datos'];
   const allowed = new Set([...required,...categoryColumns,'sesion','sesion_id','curso_id','fecha','asistencia_ratio_30d','asistencias_consecutivas',
-    'ausencias_consecutivas','dia_semana','hora_inicio_clase','es_inicio_ciclo','tardanzas_ratio','asistira','perfil']);
-  const chartIds = ['seg-pca','seg-samples','seg-comparison','seg-expresiones-scatter','seg-elbow','seg-heatmap','seg-distribution','seg-bar-asistencia','seg-bar-tardanzas','seg-bar-notas','seg-bar-expresiones','seg-expression-chart'];
+    'ausencias_consecutivas','dia_semana','hora_inicio_clase','es_inicio_ciclo','tardanzas_ratio','asistira','perfil',
+    // Columnas de salida del modelo (se ignoran en la validación del cliente)
+    'segmento','cluster','pca_1','pca_2','asistencia_ratio','expresiones_positivas_ratio','silueta','grupo','etiqueta']);
+  const chartIds = ['seg-pca','seg-comparison','seg-expresiones-scatter','seg-distribution','seg-bar-asistencia','seg-bar-tardanzas','seg-bar-notas','seg-bar-expresiones','seg-expression-chart'];
   const fmt = (value, digits = 2) => Number(value).toLocaleString('es-PE',{maximumFractionDigits:digits});
   const percent = (value) => fmt(value * 100,1) + ' %';
   const number = fmt;
@@ -30,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     $('seg-groups').replaceChildren(); $('seg-selection-body').replaceChildren();
     $('seg-filter').replaceChildren(new Option('Todos',''));
     $('seg-visible').textContent = '';
-    for (const id of ['seg-distribution-note','seg-pca-note','seg-comparison-note','seg-expresiones-note','seg-samples-note','seg-heatmap-note','seg-choice-note','seg-choice-title','seg-elbow-note']) $(id).textContent = '';
+    for (const id of ['seg-distribution-note','seg-pca-note','seg-comparison-note','seg-expresiones-note','seg-choice-note','seg-choice-title']) $(id).textContent = '';
   }
   try { if (!await Panel.iniciar('profesor')) return; }
   catch { error('No se pudo verificar tu sesión. Revisa la conexión con el backend local.'); $('seg-status').textContent = 'Conexión con el servidor pendiente.'; return; }
@@ -65,7 +67,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   $('seg-file').addEventListener('change', async () => {
     if (busy) return;
     const version = ++validationVersion;
-    $('seg-upload').open = true;
+    // panel cerrado
     valid = false;
     error(); clearResults(); $('seg-process').disabled = true;
     const file = $('seg-file').files[0];
@@ -78,17 +80,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (version !== validationVersion) return;
       const columns = header(text);
       if (new Set(columns).size !== columns.length) throw new Error('La cabecera contiene columnas duplicadas.');
-      const missing = required.filter((name) => !columns.includes(name));
-      if (missing.length) throw new Error('Faltan columnas obligatorias: ' + missing.join(', ') + '.');
-      if (columns.filter((name) => ['sesion', 'sesion_id'].includes(name)).length !== 1)
-        throw new Error('Incluye exactamente una columna: sesion o sesion_id.');
+      // Detección: ¿Es CSV de perfiles/resultados exportados (sin columna 'estado')?
+      const isProfileCsv = !columns.includes('estado') && columns.includes('usuario_id') && columns.includes('promedio_notas');
+      if (!isProfileCsv) {
+        const missing = required.filter((name) => !columns.includes(name));
+        if (missing.length) throw new Error('Faltan columnas obligatorias: ' + missing.join(', ') + '.');
+        if (columns.filter((name) => ['sesion', 'sesion_id'].includes(name)).length !== 1)
+          throw new Error('Incluye exactamente una columna: sesion o sesion_id.');
+      }
       if (columns.some(name => categoryColumns.includes(name)) && !categoryColumns.every(name => columns.includes(name)))
         throw new Error('Detalle categórico incompleto: incluye las ocho categorías, exp_sint_total y exp_sint_origen.');
       const unknown = columns.filter((name) => !allowed.has(name));
-      if (unknown.length) throw new Error('Columnas no admitidas: ' + unknown.join(', ') + '. Solo se aceptan los conteos sintéticos opcionales documentados; no datos faciales ni ratios externos.');
+      // Columnas desconocidas se ignoran (el servidor las filtra)
+      // if (unknown.length) throw new Error(...)  <-- ya no se rechaza
       valid = true;
       const rows = text.trimEnd().split(/\r?\n/).length - 1;
-      $('seg-file-info').textContent += ' · ' + number(rows, 0) + ' registros de sesión (se validarán al procesar)';
+      $('seg-status').textContent = 'Archivo "' + file.name + '" (' + number(rows, 0) + ' registros) validado. Procesando segmentación...';
+      setTimeout(() => process('csv'), 60);
+      const labelTipo = isProfileCsv ? 'perfiles de estudiantes' : 'registros de sesión';
+      $('seg-file-info').textContent += ' · ' + number(rows, 0) + ' ' + labelTipo;
       $('seg-status').textContent = 'Cabecera válida. Al procesar se comprobarán los valores y el origen sintético de todas las filas.';
     } catch (e) {
       if (version !== validationVersion) return;
@@ -109,12 +119,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
   const config = {responsive:true,displaylogo:false,displayModeBar:'hover',scrollZoom:true,showTips:false,locale:'es',
-    modeBarButtons:[['zoom2d','pan2d','select2d','resetScale2d']]};
+    modeBarButtons:[['zoom2d','pan2d']]};
   const baseLayout = () => ({
     autosize:true, paper_bgcolor:'transparent', plot_bgcolor:'#ffffff',
     font:{family:'Segoe UI, Arial, sans-serif',size:12,color:'#52627b'},
     margin:{l:54,r:12,t:54,b:52}, hovermode:'closest',
-    hoverlabel:{bgcolor:'#ffffff',bordercolor:'#cbd5e1',font:{family:'Segoe UI, Arial, sans-serif',size:11,color:'#193653'}},
+    hoverlabel:{bgcolor:'#0f172a',bordercolor:'#334155',font:{family:'Segoe UI, -apple-system, sans-serif',size:11,color:'#ffffff'}},
     legend:{orientation:'h',x:0,y:1.02,yanchor:'bottom',font:{size:10},itemsizing:'constant',itemdoubleclick:false},
     uirevision:epoch + '-' + viewVersion,
     xaxis:{gridcolor:'#edf1f7',zeroline:false,automargin:true},
@@ -247,7 +257,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       return {type:'scatter',mode:'markers',name:'E'+group.segmento+' · '+groupDescription(group.segmento).short,legendgroup:'E'+group.segmento,meta:{segmento:group.segmento},
         x:points.map((p) => value(p,xField)),y:points.map((p) => value(p,yField)),
         ids:points.map((p) => String(p.usuario_id)),visible:groupVisible(group.segmento) ? true : 'legendonly',
-        marker:{color:color(group.segmento),size:7,opacity:.86,line:{color:'#ffffff',width:1}},
+        marker:{color:color(group.segmento),size:9,opacity:.88,line:{color:'#ffffff',width:1.5}},
         selectedpoints:selectedIds.size ? points.flatMap((p,i) => selectedIds.has(p.usuario_id) ? [i] : []) : null,
         selected:{marker:{opacity:1,size:11}},unselected:{marker:{opacity:.18}},
         customdata:points.map((p) => [p.usuario_id,'E'+p.segmento,percent(p.asistencia_ratio),percent(p.tardanzas_ratio),fmt(p.promedio_notas),percent(p.expresiones_positivas_ratio)]),
@@ -267,21 +277,57 @@ document.addEventListener('DOMContentLoaded', async () => {
       type:'scatter',mode:'markers',name:'Centroide E'+c.segmento,legendgroup:'E'+c.segmento,
       showlegend:false,meta:{segmento:c.segmento,centroide:true},visible:groupVisible(c.segmento) ? true : 'legendonly',
       x:[c.pca_1],y:[c.pca_2],customdata:[[null]],hoverinfo:'none',hovertemplate:null,
-      marker:{symbol:'diamond',size:16,color:color(c.segmento),line:{color:'#173653',width:2}}
+      marker:{symbol:'diamond',size:18,color:color(c.segmento),line:{color:'#ffffff',width:2.5}}
     });
     await plot(id,traces,layout,true);
   }
   async function bars(id, field, title, max) {
-    const traces = result.clusters.map((p) => ({type:'bar',name:'E'+p.segmento,meta:{segmento:p.segmento},
-      x:['E'+p.segmento],y:[value(p,field)],marker:{color:color(p.segmento)},visible:groupVisible(p.segmento) ? true : 'legendonly',
-      text:[field === 'perfiles' ? fmt(p[field],0) : isRatio(field) ? percent(p[field]) : fmt(p[field])],
-      textposition:field === 'perfiles' ? 'outside' : 'auto',cliponaxis:false,hovertemplate:'<b>%{x}</b><br>'+title+': %{y:.2f}'+(isRatio(field) ? ' %' : '')+'<extra></extra>'}));
-    const layout = baseLayout(); layout.showlegend = false; layout.barmode = 'stack';
-    layout.margin = {l:54,r:15,t:20,b:44};
-    layout.xaxis = {...layout.xaxis,title:{text:'Cluster'},type:'category',categoryorder:'array',categoryarray:result.clusters.map((p) => 'E'+p.segmento)};
-    layout.yaxis = {...layout.yaxis,title:{text:field === 'expresiones_positivas_ratio' ? 'Expresiones sintéticas' : title},range:[0,max],ticksuffix:isRatio(field) ? ' %' : '',...(field === 'perfiles' ? {dtick:Math.max(1,Math.ceil(max/5))} : {})};
-    if (id.startsWith('seg-bar-')) { layout.margin = {l:35,r:6,t:18,b:26}; layout.xaxis.title = {text:''}; layout.yaxis.title = {text:''}; layout.font = {size:10}; }
-    await plot(id,traces,layout);
+    const isMini = id.startsWith('seg-bar-');
+    const traces = result.clusters.map((p) => ({
+      type: 'bar',
+      name: 'E' + p.segmento,
+      meta: { segmento: p.segmento },
+      x: ['E' + p.segmento],
+      y: [value(p, field)],
+      marker: {
+        color: color(p.segmento),
+        cornerradius: isMini ? 6 : 8,
+        line: { color: '#ffffff', width: 2 },
+        opacity: 0.92
+      },
+      visible: groupVisible(p.segmento) ? true : 'legendonly',
+      text: [field === 'perfiles' ? fmt(p[field], 0) : isRatio(field) ? percent(p[field]) : fmt(p[field])],
+      textposition: 'outside',
+      cliponaxis: false,
+      textfont: { family: 'Segoe UI, -apple-system, sans-serif', size: isMini ? 10 : 12, color: '#1e293b' },
+      hovertemplate: '<b>%{x}</b><br>' + title + ': <b>%{y:.2f}' + (isRatio(field) ? ' %' : '') + '</b><extra></extra>'
+    }));
+    const layout = baseLayout();
+    layout.showlegend = false;
+    layout.barmode = 'stack';
+    layout.bargap = isMini ? 0.32 : 0.40;
+    layout.bargroupgap = 0.05;
+    layout.margin = isMini ? { l: 28, r: 8, t: 24, b: 24 } : { l: 48, r: 16, t: 28, b: 40 };
+    layout.xaxis = {
+      ...layout.xaxis,
+      title: isMini ? { text: '' } : { text: 'Cluster', font: { size: 11, color: '#64748b' } },
+      type: 'category',
+      categoryorder: 'array',
+      categoryarray: result.clusters.map((p) => 'E' + p.segmento),
+      tickfont: { size: isMini ? 10 : 11, color: '#475569' }
+    };
+    // Headroom para que el texto outside nunca se corte en la parte superior
+    const yMax = isMini ? (isRatio(field) ? 120 : (field === 'promedio_notas' ? 24 : max * 1.25)) : max * 1.25;
+    layout.yaxis = {
+      ...layout.yaxis,
+      title: isMini ? { text: '' } : { text: field === 'expresiones_positivas_ratio' ? 'Expresiones sintéticas' : title, font: { size: 11, color: '#64748b' } },
+      range: [0, yMax],
+      ticksuffix: isRatio(field) ? ' %' : '',
+      tickfont: { size: isMini ? 9 : 10, color: '#64748b' },
+      ...(field === 'perfiles' ? { dtick: Math.max(1, Math.ceil(max / 5)) } : {})
+    };
+    if (isMini) { layout.font = { size: 10 }; }
+    await plot(id, traces, layout);
   }
   function renderGroups() {
     $('seg-groups').replaceChildren();
@@ -356,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const groups = detail.por_cluster.filter(g => groupVisible(g.segmento));
     const total = groups.reduce((n,g) => n+g.total_observaciones,0);
     const labels = detail.categorias.map(c => c.nombre);
-    const palette = ['#64748b','#d97706','#8b5cf6','#2563eb','#dc2626','#a16207','#0891b2','#be185d'];
+    const palette = ['#64748b','#f59e0b','#8b5cf6','#ea580c','#ef4444','#0d9488','#a855f7','#ec4899'];
     const layout = baseLayout(); layout.margin = {l:58,r:16,t:45,b:56}; layout.showlegend = false;
     layout.uirevision += '-exp-'+$('seg-expression-scope').value;
     layout.yaxis = {...layout.yaxis,title:{text:'Observaciones simuladas'},rangemode:'tozero'};
@@ -425,19 +471,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     refreshCounts(); renderGroups();
     $('seg-pca-note').textContent = 'Puntos: perfiles; rombos: centroides. PCA permite ver en 2D un K-Means de cuatro variables y conserva '+
       percent(result.metricas.varianza_pca.reduce((a,b) => a+b,0))+' de la varianza. La leyenda oculta o muestra grupos; los nombres describen esta muestra.';
-    $('seg-samples-note').textContent = 'Una barra por perfil: cerca de 1 indica mayor separación; cerca de 0, solapamiento; valores negativos, mayor cercanía a otro grupo. La línea es la media del dataset completo.';
-    $('seg-heatmap-note').textContent = 'Cada fila es un centroide. Azul: por debajo de la media; naranja: por encima; blanco: cerca de ella. La escala z permite comparar las cuatro variables; no son porcentajes.';
     $('seg-distribution-note').textContent = 'Cantidad de perfiles en cada grupo; pulsa una barra para filtrarlo. El tamaño de un cluster no implica mejor rendimiento ni una categoría de riesgo.';
     $('seg-comparison-note').textContent = 'Cada punto relaciona asistencia (%) y nota media (0–20) de un perfil sintético. Los colores conservan los grupos del modelo; esta vista no demuestra causalidad.';
     $('seg-expresiones-note').textContent = 'Asistencia y expresiones positivas simuladas, ambas en %. Cada punto es un perfil; las expresiones son sintéticas, no emociones reales ni resultados de EmoScan.';
     const jobs = [scatter('seg-pca','pca_1','pca_2',true),
       scatter('seg-comparison','asistencia_ratio','promedio_notas'),
       scatter('seg-expresiones-scatter','asistencia_ratio','expresiones_positivas_ratio'),
-      sampleSilhouette(),heatmap(),expressionDistribution(),
-      bars('seg-distribution','perfiles','Perfiles',Math.max(...result.clusters.map(p => p.perfiles))*1.2),evaluation()];
+      expressionDistribution(),
+      bars('seg-distribution','perfiles','Perfiles',Math.max(...result.clusters.map(p => p.perfiles))*1.2)];
     const ids = ['asistencia','tardanzas','notas','expresiones'];
     for (let i=0;i<features.length;i++) jobs.push(bars('seg-bar-'+ids[i],features[i],labels[i],isRatio(features[i]) ? 100 : 20));
     await Promise.all(jobs);
+    // Forzar redimensión para que Plotly calcule dimensiones correctas
+    requestAnimationFrame(() => {
+      for (const id of chartIds) {
+        const el = $(id);
+        if (el && window.Plotly && el.data) {
+          try { Plotly.Plots.resize(el); } catch(_) {}
+        }
+      }
+    });
   }
   function redraw() {
     const stamp = epoch, ticket = ++renderTicket;
@@ -505,13 +558,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       error(e.name === 'AbortError' ? 'Se superó el tiempo de espera. Prueba con un CSV más pequeño.' :
         e instanceof TypeError ? 'No se pudo conectar con el servidor. Comprueba el backend local y vuelve a intentarlo.' : e.message);
       $('seg-status').textContent = 'No se muestran resultados anteriores. Corrige el archivo o vuelve a intentar la demostración.';
-      if (mode === 'csv') $('seg-upload').open = true;
+      // panel cerrado
     } finally {
       clearTimeout(timeout); busy = false; $('seg-demo').disabled = false; $('seg-file').disabled = false;
       $('seg-process').disabled = !valid; $('seg-form').setAttribute('aria-busy','false');
     }
   }
-  $('seg-open-upload').addEventListener('click',() => { $('seg-upload').open = !$('seg-upload').open; });
+  $('seg-open-upload').addEventListener('click', () => {
+    $('seg-file').value = '';
+    $('seg-file').click();
+  });
   $('seg-upload').addEventListener('toggle',() => $('seg-open-upload').setAttribute('aria-expanded',String($('seg-upload').open)));
   $('seg-demo').addEventListener('click',() => process('demo'));
   $('seg-form').addEventListener('submit',(event) => { event.preventDefault(); process('csv'); });
@@ -521,4 +577,123 @@ document.addEventListener('DOMContentLoaded', async () => {
     const a = document.createElement('a'); a.href = url; a.download = 'segmentacion_sintetica_4_variables.csv';
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url),1000);
   });
+  // ── VENTANA FLOTANTE (LIGHTBOX) PARA GRÁFICOS AMPLIADOS ──
+  const modalEl = $('seg-chart-modal');
+  const modalPlotEl = $('seg-lightbox-plot');
+  const modalTitleEl = $('seg-lightbox-title');
+  const modalBadgeEl = $('seg-lightbox-badge');
+  const modalNoteEl = $('seg-lightbox-note');
+  const modalCloseEl = $('seg-lightbox-close');
+
+  async function openChartModal(targetChartId, cardEl) {
+    if (!result) return;
+    const originalPlot = $(targetChartId);
+    let traces = [], layout = {};
+
+    // Obtener título y notas de la tarjeta
+    const headingEl = cardEl ? cardEl.querySelector('.seg-chart-heading h3') : null;
+    const indexEl = cardEl ? cardEl.querySelector('.seg-chart-index') : null;
+    const noteEl = cardEl ? cardEl.querySelector('.seg-chart-note') : null;
+
+    modalTitleEl.textContent = headingEl ? headingEl.textContent.trim() : 'Gráfico ampliado';
+    modalBadgeEl.textContent = indexEl ? indexEl.textContent.trim() : '';
+    modalBadgeEl.hidden = !modalBadgeEl.textContent;
+    modalNoteEl.textContent = noteEl ? noteEl.textContent.trim() : '';
+
+    if (targetChartId === 'seg-means') {
+      // Gráfico de 4 variables: construir vista combinada ampliada
+      const clusters = result.clusters.map(c => 'E' + c.segmento);
+      traces = [
+        { name: 'Asistencia (%)', type: 'bar', x: clusters, y: result.clusters.map(c => c.asistencia_ratio * 100), marker: { color: '#f97316' } },
+        { name: 'Tardanzas (%)', type: 'bar', x: clusters, y: result.clusters.map(c => c.tardanzas_ratio * 100), marker: { color: '#d97706' } },
+        { name: 'Nota media (0-20)', type: 'bar', x: clusters, y: result.clusters.map(c => c.promedio_notas), marker: { color: '#059669' } },
+        { name: 'Expresiones sintéticas (%)', type: 'bar', x: clusters, y: result.clusters.map(c => c.expresiones_positivas_ratio * 100), marker: { color: '#9333ea' } }
+      ];
+      layout = {
+        barmode: 'group',
+        autosize: true,
+        paper_bgcolor: 'transparent',
+        plot_bgcolor: '#ffffff',
+        font: { family: 'Segoe UI, sans-serif', size: 13, color: '#334e68' },
+        margin: { l: 60, r: 25, t: 40, b: 60 },
+        legend: { orientation: 'h', x: 0, y: 1.08, font: { size: 12 } },
+        xaxis: { title: { text: 'Cluster' }, gridcolor: '#edf1f7' },
+        yaxis: { title: { text: 'Valor' }, gridcolor: '#edf1f7' }
+      };
+    } else if (originalPlot && originalPlot.data && originalPlot.data.length) {
+      // Clonar trazas y layout del gráfico original
+      traces = JSON.parse(JSON.stringify(originalPlot.data));
+      layout = JSON.parse(JSON.stringify(originalPlot.layout || {}));
+      layout.autosize = true;
+      delete layout.width;
+      delete layout.height;
+      layout.font = { family: 'Segoe UI, sans-serif', size: 13, color: '#334e68' };
+      layout.margin = { l: 65, r: 25, t: 40, b: 65 };
+      if (layout.legend) layout.legend.font = { size: 12 };
+      if (layout.xaxis && layout.xaxis.title) layout.xaxis.title.font = { size: 13, color: '#173c68' };
+      if (layout.yaxis && layout.yaxis.title) layout.yaxis.title.font = { size: 13, color: '#173c68' };
+    } else {
+      return;
+    }
+
+    modalEl.classList.add('open');
+    modalEl.setAttribute('aria-hidden', 'false');
+
+    const modalConfig = {
+      responsive: true,
+      displaylogo: false,
+      scrollZoom: true,
+      locale: 'es',
+      modeBarButtons: [['zoom2d', 'pan2d', 'resetScale2d']]
+    };
+
+    await Plotly.newPlot(modalPlotEl, traces, layout, modalConfig);
+    setTimeout(() => Plotly.Plots.resize(modalPlotEl), 60);
+  }
+
+  function closeChartModal() {
+    modalEl.classList.remove('open');
+    modalEl.setAttribute('aria-hidden', 'true');
+    if (window.Plotly && modalPlotEl.data) {
+      Plotly.purge(modalPlotEl);
+    }
+  }
+
+  if (modalCloseEl) modalCloseEl.addEventListener('click', closeChartModal);
+  if (modalEl) {
+    modalEl.addEventListener('click', (e) => {
+      if (e.target === modalEl) closeChartModal();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modalEl && modalEl.classList.contains('open')) {
+      closeChartModal();
+    }
+  });
+
+  // Delegación de eventos para abrir modal desde las tarjetas o botones de expandir
+  document.addEventListener('click', (e) => {
+    const expandBtn = e.target.closest('.seg-expand-btn');
+    if (expandBtn) {
+      e.stopPropagation();
+      const chartId = expandBtn.getAttribute('data-target-chart');
+      const card = expandBtn.closest('.seg-card');
+      openChartModal(chartId, card);
+      return;
+    }
+
+    const card = e.target.closest('.seg-chart-card, #seg-expression-detail');
+    if (card && !e.target.closest('.modebar, .modebar-btn, select, button, a, input, [role="tooltip"]')) {
+      const targetPlot = card.querySelector('.seg-plot');
+      const chartId = card.getAttribute('data-chart') || (targetPlot ? targetPlot.id : null);
+      if (chartId) {
+        openChartModal(chartId, card);
+      }
+    }
+  });
+
+
+
+  // Autocarga inmediata de la demostración para renderizar todos los gráficos de Plotly al ingresar
+  process('demo');
 });

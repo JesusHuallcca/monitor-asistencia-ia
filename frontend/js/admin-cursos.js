@@ -324,5 +324,77 @@ document.addEventListener("DOMContentLoaded", async () => {
     .getElementById("btn-cerrar-curso")
     .addEventListener("click", () => modal.close());
 
+
+  // ---------- Resumen de Distribución Docente y Aulas ----------
+  const statTotalProfesores = document.getElementById("stat-total-profesores");
+  const statTotalEstudiantes = document.getElementById("stat-total-estudiantes");
+  const tablaDocenteTbody = document.getElementById("tabla-resumen-docente-tbody");
+
+  async function cargarDistribucionDocente() {
+    if (!tablaDocenteTbody) return;
+    try {
+      const r = await Admin.api("/api/cursos/resumen/distribucion-docente");
+      if (!r.ok) {
+        tablaDocenteTbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#ef4444;padding:16px;">No se pudo cargar la distribución docente.</td></tr>`;
+        return;
+      }
+      const data = await r.json();
+      if (statTotalProfesores) statTotalProfesores.textContent = data.total_profesores;
+      if (statTotalEstudiantes) statTotalEstudiantes.textContent = data.total_estudiantes_sistema;
+
+      tablaDocenteTbody.replaceChildren();
+      if (!data.profesores || data.profesores.length === 0) {
+        tablaDocenteTbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#64748b;padding:16px;">No hay profesores asignados actualmente.</td></tr>`;
+        return;
+      }
+
+      data.profesores.forEach(p => {
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid #f1f5f9";
+
+        // Cursos con badges y horarios
+        const cursosHtml = p.cursos.map(c => `
+          <div style="margin-bottom: 6px;">
+            <strong style="color:#0f172a;font-size:12.5px;">${c.nombre} (${c.codigo})</strong>
+            <span style="display:inline-block;background:#eff6ff;color:#2563eb;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:600;margin-left:4px;">
+              ${c.dias} · ${c.horario}
+            </span>
+            <small style="color:#64748b;display:block;">Aula: <strong>${c.aula}</strong> | Inscritos: <strong>${c.estudiantes_en_curso} estudiantes</strong></small>
+          </div>
+        `).join("") || '<span style="color:#94a3b8;font-style:italic;">Sin cursos asignados</span>';
+
+        const aulasHtml = p.aulas.map(a => `
+          <span style="display:inline-block;background:#f8fafc;border:1px solid #cbd5e1;color:#334155;padding:2px 8px;border-radius:6px;font-size:11.5px;font-weight:600;margin:2px;">
+            ${a}
+          </span>
+        `).join("") || '—';
+
+        tr.innerHTML = `
+          <td style="padding: 12px 14px; vertical-align: top;">
+            <strong style="color: #0f172a; font-size: 13.5px; display: block;">${p.nombre_completo}</strong>
+            <span style="font-size: 12px; color: #2563eb; font-weight: 600;">${p.especialidad}</span>
+            <small style="display: block; color: #64748b;">${p.email}</small>
+          </td>
+          <td style="padding: 12px 14px; vertical-align: top;">
+            ${cursosHtml}
+          </td>
+          <td style="padding: 12px 14px; vertical-align: top; text-align: center;">
+            ${aulasHtml}
+          </td>
+          <td style="padding: 12px 14px; vertical-align: top; text-align: center;">
+            <span style="display: inline-block; background: #ecfdf5; color: #15803d; border: 1px solid #bbf7d0; font-size: 14px; font-weight: 800; padding: 4px 12px; border-radius: 9999px;">
+              ${p.total_estudiantes_a_cargo} alumnos
+            </span>
+          </td>
+        `;
+        tablaDocenteTbody.appendChild(tr);
+      });
+    } catch (err) {
+      console.warn("Error cargando resumen docente:", err);
+    }
+  }
+
   await cargar();
+  await cargarDistribucionDocente();
 });
+

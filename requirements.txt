@@ -23,3 +23,5 @@ onnxruntime
 pillow
 matplotlib
 threadpoolctl
+tensorflow-cpu
+keras

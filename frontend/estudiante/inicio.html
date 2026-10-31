@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Virtual | Panel de Estudiante</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a56db'><path d='M12 2L1 7l11 5 9-4.09V17h2V7L12 2z'/></svg>" />
+    <!-- Estilos del Dashboard -->
+    <link rel="stylesheet" href="../css/estudiante-dashboard.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-layout">
+      <!-- SIDEBAR LATERAL CON DISEÑO OFICIAL Y MÓDULOS REALES -->
+      <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <!-- Logo / Marca -->
+        <div class="sidebar-brand">
+          <div class="brand-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">ASISTENCIA IA</span>
+            <span class="brand-subtitle">Campus Virtual</span>
+          </div>
+        </div>
+
+        <!-- Rol del estudiante -->
+        <div class="sidebar-section-title">Estudiante</div>
+
+        <!-- Navegación con los módulos reales disponibles en el sistema -->
+        <nav class="sidebar-nav">
+          <a href="inicio.html" class="nav-link active">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Inicio</span>
+          </a>
+
+          <a href="cursos.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span>Mis cursos</span>
+          </a>
+
+          <a href="calificaciones.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M8 13h8M8 17h5"/>
+            </svg>
+            <span>Mis calificaciones</span>
+          </a>
+
+          <a href="asistencia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="9 12 12 15 16 10"/>
+            </svg>
+            <span>Mi asistencia</span>
+          </a>
+
+          <a href="ia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+              <rect x="4" y="8" width="16" height="12" rx="3"/>
+              <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+              <path d="M9 17h6"/>
+            </svg>
+            <span>Asistente IA</span>
+          </a>
+
+          <a href="emoscan.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+              <line x1="9" y1="9" x2="9.01" y2="9"/>
+              <line x1="15" y1="9" x2="15.01" y2="9"/>
+            </svg>
+            <span>EmoScan</span>
+          </a>
+        </nav>
+
+        <!-- Pie de barra lateral -->
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-links">
+            <a href="perfil.html" class="sidebar-footer-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M20 21a8 8 0 1 0-16 0"/>
+              </svg>
+              <span>Mi perfil</span>
+            </a>
+            <button type="button" class="sidebar-footer-link" id="btn-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+
+          <!-- Imagen del campus moderno -->
+          <div class="sidebar-campus-card">
+            <img src="../assets/img/campus_building.jpg" alt="Campus Moderno Senati Asistencia IA" />
+          </div>
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main class="dashboard-main">
+        <!-- BARRA SUPERIOR -->
+        <header class="dashboard-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" id="btn-hamburger" aria-label="Abrir menú">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+
+            <!-- Buscador global -->
+            <div class="topbar-search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" placeholder="Buscar cursos, evaluaciones o contenidos..." id="input-global-search" />
+            </div>
+          </div>
+
+          <!-- Perfil y Notificaciones -->
+          <div class="topbar-right">
+            <button class="btn-icon-notify" id="btn-notify" aria-label="Notificaciones">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="notify-badge" id="badge-notify-count">4</span>
+            </button>
+
+            <div class="user-profile-widget" onclick="window.location.href='perfil.html'">
+              <img src="../assets/img/avatar_student.jpg" alt="Avatar del estudiante" class="user-avatar-img" />
+              <div class="user-meta">
+                <span class="user-meta-name" id="student-name">Ana Quispe</span>
+                <span class="user-meta-role" id="student-role">Estudiante</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- CONTENIDO PRINCIPAL DEL DASHBOARD -->
+        <div class="dashboard-content">
+          <!-- Título y bienvenida -->
+          <div class="dashboard-header-block">
+            <h1 class="dashboard-page-title">Panel de Estudiante</h1>
+            <p class="dashboard-page-subtitle">Gestiona tus cursos matriculados, calificaciones y asistencia desde un solo lugar.</p>
+          </div>
+
+          <!-- 4 TARJETAS DE INDICADORES (KPIS REALES) -->
+          <section class="stats-cards-grid" aria-label="Indicadores del estudiante">
+            <!-- 1. Cursos inscritos -->
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-blue">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Cursos inscritos</span>
+                <span class="stat-value" id="stat-cursos-count">4</span>
+                <a href="cursos.html" class="stat-link link-blue">Ver cursos →</a>
+              </div>
+            </div>
+
+            <!-- 2. Promedio general -->
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-green">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 3s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Promedio general</span>
+                <div class="stat-value-row">
+                  <span class="stat-value" id="stat-promedio-val">14.0</span>
+                  <span class="stat-star-icon">★</span>
+                </div>
+                <a href="calificaciones.html" class="stat-link link-green">Ver notas →</a>
+              </div>
+            </div>
+
+            <!-- 3. Evaluaciones pendientes (datos reales) -->
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-purple">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                  <line x1="16" y1="2" x2="16" y2="6"/>
+                  <line x1="8" y1="2" x2="8" y2="6"/>
+                  <line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Evaluaciones pendientes</span>
+                <div class="stat-value-row">
+                  <span class="stat-value" id="stat-tareas-count">4</span>
+                  <span class="stat-pill-badge" style="background-color: #3b82f6;">4</span>
+                </div>
+                <a href="calificaciones.html" class="stat-link link-purple">Ver evaluaciones →</a>
+              </div>
+            </div>
+
+            <!-- 4. Asistencias -->
+            <div class="stat-card">
+              <div class="stat-icon-box stat-icon-orange">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polyline points="9 12 12 15 16 10"/>
+                </svg>
+              </div>
+              <div class="stat-details">
+                <span class="stat-label">Asistencia Facial</span>
+                <span class="stat-value" id="stat-asistencias-val">100%</span>
+                <a href="asistencia.html" class="stat-link link-orange">Marcar asistencia →</a>
+              </div>
+            </div>
+          </section>
+
+          <!-- GRID DE CONTENIDO PRINCIPAL: COLUMNA IZQUIERDA Y DERECHA -->
+          <div class="dashboard-grid-content">
+            <!-- COLUMNA PRINCIPAL (IZQUIERDA) -->
+            <div class="main-column-stack">
+              <!-- SECCIÓN: MIS CURSOS -->
+              <section class="courses-section-container">
+                <div class="section-top-header">
+                  <div class="section-title-wrap">
+                    <h2>Mis cursos</h2>
+                    <p>Gestiona tu contenido, asistencia y evaluaciones de este periodo.</p>
+                  </div>
+
+                  <div class="section-filters-row">
+                    <div class="period-select-box">
+                      <span>Periodo académico:</span>
+                      <select id="select-periodo" aria-label="Seleccionar periodo académico">
+                        <option value="2026-II" selected>2026-II</option>
+                        <option value="todos">Todos</option>
+                      </select>
+                    </div>
+
+                    <div class="course-search-mini">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      </svg>
+                      <input type="text" placeholder="Buscar curso..." id="input-search-course" />
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 4 TARJETAS DE CURSOS REALES -->
+                <div class="courses-grid-cards" id="courses-grid">
+                  <!-- Inyectado dinámicamente con los cursos reales del estudiante -->
+                </div>
+              </section>
+
+              <!-- FILA INFERIOR: RESUMEN DE CALIFICACIONES Y SESIONES DE CLASE -->
+              <div class="lower-dashboard-row">
+                <!-- Tarjeta: Resumen de calificaciones -->
+                <section class="dashboard-subcard">
+                  <div class="subcard-header">
+                    <div class="subcard-header-titles">
+                      <h3>Resumen de calificaciones</h3>
+                      <p>Notas actuales por curso matriculado (Escala 0 - 20)</p>
+                    </div>
+                    <div class="period-select-box" style="padding: 2px 8px;">
+                      <select aria-label="Periodo de resumen">
+                        <option>2026-II</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Gráfico de barras -->
+                  <div class="bar-chart-container">
+                    <div class="chart-grid-area">
+                      <div class="chart-y-axis">
+                        <span>20</span>
+                        <span>15</span>
+                        <span>10</span>
+                        <span>05</span>
+                        <span>00</span>
+                      </div>
+                      <div class="chart-bars-wrap">
+                        <!-- Barra 1: Python -->
+                        <div class="bar-col">
+                          <span class="bar-pill-value">14.0</span>
+                          <div class="bar-fill bar-blue" style="height: 70%;"></div>
+                        </div>
+                        <!-- Barra 2: HTML y CSS -->
+                        <div class="bar-col">
+                          <span class="bar-pill-value">14.0</span>
+                          <div class="bar-fill bar-green" style="height: 70%;"></div>
+                        </div>
+                        <!-- Barra 3: JavaScript -->
+                        <div class="bar-col">
+                          <span class="bar-pill-value">15.0</span>
+                          <div class="bar-fill bar-purple" style="height: 75%;"></div>
+                        </div>
+                        <!-- Barra 4: MySQL -->
+                        <div class="bar-col">
+                          <span class="bar-pill-value">14.0</span>
+                          <div class="bar-fill bar-orange" style="height: 70%;"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="chart-x-labels">
+                      <span class="chart-x-label">Fundamentos Python</span>
+                      <span class="chart-x-label">HTML y CSS</span>
+                      <span class="chart-x-label">JavaScript</span>
+                      <span class="chart-x-label">Bases de Datos MySQL</span>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Tarjeta: Sesiones y Clases Activas -->
+                <section class="dashboard-subcard">
+                  <div class="subcard-header">
+                    <div class="subcard-header-titles">
+                      <h3>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/>
+                          <line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        Sesiones de clase
+                      </h3>
+                      <p>Horarios y registro de asistencia facial en vivo</p>
+                    </div>
+                    <a href="asistencia.html" class="subcard-header-action">Marcar asistencia</a>
+                  </div>
+
+                  <div class="schedule-items-list" id="schedule-items-list">
+                    <!-- Sesión 1: Bases de Datos -->
+                    <div class="schedule-row-item">
+                      <div class="schedule-date-badge">
+                        <span class="badge-sup">HOY</span>
+                        <span class="badge-sub">ACTIVA</span>
+                      </div>
+                      <div class="schedule-info-center">
+                        <span class="schedule-title">Bases de Datos con MySQL</span>
+                        <div class="schedule-meta-row">
+                          <span>07:00 - 22:00</span>
+                          <span>Aula 301 · Laboratorio</span>
+                        </div>
+                      </div>
+                      <a href="asistencia.html?curso=4" class="btn-schedule-action">Asistir</a>
+                    </div>
+
+                    <!-- Sesión 2: Python -->
+                    <div class="schedule-row-item">
+                      <div class="schedule-date-badge">
+                        <span class="badge-sup">HOY</span>
+                        <span class="badge-sub">ACTIVA</span>
+                      </div>
+                      <div class="schedule-info-center">
+                        <span class="schedule-title">Fundamentos de Programación con Python</span>
+                        <div class="schedule-meta-row">
+                          <span>07:00 - 22:00</span>
+                          <span>Aula 205 · Principal</span>
+                        </div>
+                      </div>
+                      <a href="asistencia.html?curso=1" class="btn-schedule-action">Asistir</a>
+                    </div>
+
+                    <!-- Sesión 3: HTML y CSS -->
+                    <div class="schedule-row-item">
+                      <div class="schedule-date-badge">
+                        <span class="badge-sup">HOY</span>
+                        <span class="badge-sub">ACTIVA</span>
+                      </div>
+                      <div class="schedule-info-center">
+                        <span class="schedule-title">HTML y CSS</span>
+                        <div class="schedule-meta-row">
+                          <span>07:00 - 22:00</span>
+                          <span>Aula 102 · Multimedia</span>
+                        </div>
+                      </div>
+                      <a href="asistencia.html?curso=2" class="btn-schedule-action">Asistir</a>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+
+            <!-- COLUMNA LATERAL DERECHA (WIDGETS REALES) -->
+            <aside class="dashboard-right-sidebar">
+              <!-- Widget 1: Sesiones activas hoy -->
+              <div class="widget-card">
+                <div class="widget-header">
+                  <div class="widget-title-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                    </svg>
+                    <h3>Sesiones de hoy</h3>
+                  </div>
+                  <a href="asistencia.html" class="widget-link-all">Marcar</a>
+                </div>
+
+                <div class="widget-list">
+                  <div class="widget-item">
+                    <div class="item-tech-icon">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <span class="badge-sup" style="color: #2563eb; font-weight: 800;">EN CURSO</span>
+                      <strong class="item-heading">Bases de Datos con MySQL</strong>
+                      <span class="item-subtext">Aula 301 · Registro facial</span>
+                    </div>
+                    <a href="asistencia.html?curso=4" class="btn-schedule-action">Unirse</a>
+                  </div>
+
+                  <div class="widget-item">
+                    <div class="item-tech-icon" style="background-color: #eff6ff; color: #2563eb;">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M11.9 2c-3.7 0-4.7 1.6-4.7 3.5v2.3h4.9v.8H5.2c-2 0-3.2 1.3-3.2 4.4 0 3.3 1.5 4.4 3.7 4.4h1.7v-2.3c0-2.3 2-4.3 4.5-4.3h4.7v-.9c0-2-1.4-4-4.7-4z"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <span class="badge-sup" style="color: #2563eb; font-weight: 800;">EN CURSO</span>
+                      <strong class="item-heading">Programación con Python</strong>
+                      <span class="item-subtext">Aula 205 · Registro facial</span>
+                    </div>
+                    <a href="asistencia.html?curso=1" class="btn-schedule-action">Unirse</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Widget 2: Evaluaciones pendientes (datos reales de la BD) -->
+              <div class="widget-card">
+                <div class="widget-header">
+                  <div class="widget-title-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 11l3 3L22 4"/>
+                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                    <h3>Evaluaciones pendientes</h3>
+                  </div>
+                  <a href="calificaciones.html" class="widget-link-all">Ver todas</a>
+                </div>
+
+                <div class="widget-list">
+                  <div class="widget-item">
+                    <div class="item-tech-icon" style="background-color: #faf5ff; color: #9333ea;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <strong class="item-heading">Práctica calificada 1</strong>
+                      <span class="item-subtext">Fundamentos de Programación</span>
+                    </div>
+                    <span class="badge-danger-soft">Pendiente</span>
+                  </div>
+
+                  <div class="widget-item">
+                    <div class="item-tech-icon" style="background-color: #ecfdf5; color: #059669;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <strong class="item-heading">Examen de HTML y CSS</strong>
+                      <span class="item-subtext">HTML y CSS</span>
+                    </div>
+                    <span class="badge-danger-soft">Pendiente</span>
+                  </div>
+
+                  <div class="widget-item">
+                    <div class="item-tech-icon" style="background-color: #fff7ed; color: #ea580c;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <strong class="item-heading">Diseño entidad-relación</strong>
+                      <span class="item-subtext">Bases de Datos con MySQL</span>
+                    </div>
+                    <span class="badge-danger-soft">Pendiente</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Widget 3: Herramientas IA disponibles para el estudiante -->
+              <div class="widget-card">
+                <div class="widget-header">
+                  <div class="widget-title-wrap">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+                      <rect x="4" y="8" width="16" height="12" rx="3"/>
+                      <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+                      <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+                      <path d="M9 17h6"/>
+                    </svg>
+                    <h3>Herramientas IA</h3>
+                  </div>
+                  <a href="ia.html" class="widget-link-all">Acceder</a>
+                </div>
+
+                <div class="widget-list">
+                  <div class="widget-item" style="cursor: pointer;" onclick="window.location.href='ia.html'">
+                    <div class="item-tech-icon" style="background-color: #eff6ff; color: #2563eb;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <strong class="item-heading">Asistente Virtual IA</strong>
+                      <span class="item-subtext">Tutoría y consultas académicas</span>
+                    </div>
+                    <span class="item-subtext" style="font-size: 11px; font-weight: 700; color: #2563eb;">Abrir ›</span>
+                  </div>
+
+                  <div class="widget-item" style="cursor: pointer;" onclick="window.location.href='emoscan.html'">
+                    <div class="item-tech-icon" style="background-color: #fdf2f8; color: #db2777;">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                      </svg>
+                    </div>
+                    <div class="item-info-col">
+                      <strong class="item-heading">EmoScan Personal</strong>
+                      <span class="item-subtext">Análisis de estado emocional</span>
+                    </div>
+                    <span class="item-subtext" style="font-size: 11px; font-weight: 700; color: #db2777;">Escanear ›</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Scripts del sistema -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/estudiante-dashboard.js"></script>
+      <!-- Chatbot Asistente IA Flotante -->
+    <script src="../js/chatbot-init.js"></script>
+    <script src="../components/chatbot.js"></script>
+</body>
+</html>

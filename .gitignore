@@ -44,4 +44,6 @@ test_aiven.py
 .coverage
 htmlcov/
 playwright-report/
-test-results/
+test-results/
+.keras/
+*.bak*

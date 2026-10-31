@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Senati | Clasificación ML — Regresión Logística</title>
+  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <style>
+    .pred-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 22px;
+      margin-top: 20px;
+    }
+    @media (max-width: 1100px) {
+      .pred-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pred-card {
+      background: var(--tarjeta, #ffffff);
+      border: 1px solid var(--linea, #e5e7eb);
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: var(--sombra-suave, 0 1px 3px rgba(0,0,0,0.05));
+      margin-bottom: 20px;
+    }
+    .pred-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--linea, #f1f5f9);
+    }
+    .pred-card-header h2, .pred-card-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--tinta, #0f172a);
+    }
+    .tag-modelo {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+    .formula-banner {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      border: 1px solid #1e293b;
+      margin-bottom: 16px;
+    }
+    .form-grupo {
+      margin-bottom: 14px;
+    }
+    .form-grupo label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+    .form-grupo select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: #ffffff;
+      box-sizing: border-box;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: #2563eb;
+    }
+    .slider-val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2563eb;
+      min-width: 48px;
+      text-align: right;
+    }
+    .resultado-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-top: 18px;
+    }
+    .res-score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .res-score-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+    }
+    .res-score-max {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #64748b;
+    }
+    .res-barra-track {
+      position: relative;
+      width: 100%;
+      height: 14px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .res-barra-progreso {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      border-radius: 99px;
+      transition: width 0.4s ease, background 0.4s ease;
+    }
+    .res-umbral-marcador {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      background: #0f172a;
+      opacity: 0.6;
+    }
+    .prob-marcas {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #64748b;
+      margin-bottom: 12px;
+    }
+    .res-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      border-radius: 99px;
+      border: 1px solid transparent;
+      letter-spacing: 0.04em;
+    }
+    .badge-asiste {
+      background: #dcfce7;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+    .badge-noasiste {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+    .badge-positivo {
+      background: #dcfce7;
+      color: #15803d;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .badge-negativo {
+      background: #fee2e2;
+      color: #b91c1c;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .info-callout {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      padding: 12px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: #166534;
+      line-height: 1.5;
+      margin-top: 14px;
+    }
+  </style>
+</head>
+<body class="admin-page" data-rol="profesor">
+<div class="admin-layout">
+  <aside class="admin-menu"></aside>
+  <div class="admin-principal">
+    <header class="admin-cabecera">
+      <div>
+        <span class="seg-eyebrow" style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #2563eb; text-transform: uppercase;">
+          PANEL DEL PROFESOR / MACHINE LEARNING
+        </span>
+        <h1 style="margin: 4px 0 6px; font-size: 1.6rem; font-weight: 800; color: #0f172a;">
+          Clasificación de Asistencia — Regresión Logística
+        </h1>
+        <p class="seg-intro" style="margin: 0; color: #64748b; font-size: 0.9rem;">
+          Modelo de Aprendizaje Supervisado (Parte 4) para predecir si un alumno asistirá o no a la próxima clase a partir de su historial y contexto.
+        </p>
+      </div>
+      <div>
+        <span class="tag-modelo" style="font-size: 0.85rem; padding: 8px 14px;">Scikit-Learn · Accuracy = 67.5%</span>
+      </div>
+    </header>
+
+    <main class="admin-cuerpo">
+      <!-- Fila de 4 KPIs del Modelo -->
+      <section class="stats" aria-label="Métricas del modelo logístico">
+        <div class="stat teal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20v-6M6 20V10M18 20V4"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-accuracy" class="num">—%</strong>
+            <span class="rot">Exactitud (Accuracy)</span>
+          </div>
+        </div>
+
+        <div class="stat ambar">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-f1" class="num">—%</strong>
+            <span class="rot">F1-Score Ponderado</span>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-roc" class="num">—%</strong>
+            <span class="rot">Área Bajo la Curva (ROC-AUC)</span>
+          </div>
+        </div>
+
+        <div class="stat morado">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-ntrain" class="num">—</strong>
+            <span class="rot">Muestras de Entrenamiento</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Grid Principal: Simulador a la Izquierda, Coeficientes y Ecuación a la Derecha -->
+      <section class="pred-grid">
+        <!-- Columna 1: Simulador Interactivo -->
+        <div class="pred-col">
+          <article class="pred-card">
+            <div class="pred-card-header">
+              <div>
+                <h3>Simulador de Inferencia en Tiempo Real</h3>
+                <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+                  Modifica los parámetros para predecir si el alumno asistirá.
+                </p>
+              </div>
+              <span class="tag-modelo" style="background:#e0f2fe; color:#0369a1;">Clasificador</span>
+            </div>
+
+            <form id="form-simulador-logistica" onsubmit="return false;">
+              <!-- Ratio Asistencia 30d -->
+              <div class="form-grupo">
+                <label>
+                  <span>Ratio Asistencia últimos 30 días</span>
+                  <span id="lbl-ratio" class="slider-val">75%</span>
+                </label>
+                <div class="slider-row">
+                  <input type="range" id="sim-ratio" min="0" max="1" step="0.01" value="0.75" />
+                </div>
+              </div>
+
+              <!-- Asistencias y Ausencias Consecutivas en 2 columnas -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="form-grupo">
+                  <label>
+                    <span>Asist. Consecutivas</span>
+                    <span id="lbl-asist" class="slider-val">3</span>
+                  </label>
+                  <div class="slider-row">
+                    <input type="range" id="sim-asist" min="0" max="15" step="1" value="3" />
+                  </div>
+                </div>
+                <div class="form-grupo">
+                  <label>
+                    <span>Ausencias Consecutivas</span>
+                    <span id="lbl-aus" class="slider-val">1</span>
+                  </label>
+                  <div class="slider-row">
+                    <input type="range" id="sim-aus" min="0" max="15" step="1" value="1" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Promedio de Notas -->
+              <div class="form-grupo">
+                <label>
+                  <span>Promedio de Notas (Escala 0–20)</span>
+                  <span id="lbl-notas" class="slider-val">14.0 pts</span>
+                </label>
+                <div class="slider-row">
+                  <input type="range" id="sim-notas" min="0" max="20" step="0.5" value="14" />
+                </div>
+              </div>
+
+              <!-- Ratio Tardanzas -->
+              <div class="form-grupo">
+                <label>
+                  <span>Ratio de Tardanzas</span>
+                  <span id="lbl-tard" class="slider-val">5%</span>
+                </label>
+                <div class="slider-row">
+                  <input type="range" id="sim-tard" min="0" max="0.5" step="0.01" value="0.05" />
+                </div>
+              </div>
+
+              <!-- Día de la semana y Hora de Inicio -->
+              <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 14px;">
+                <div class="form-grupo">
+                  <label><span>Día de la Semana</span></label>
+                  <select id="sim-dia">
+                    <option value="0">Lunes</option>
+                    <option value="1" selected>Martes</option>
+                    <option value="2">Miércoles</option>
+                    <option value="3">Jueves</option>
+                    <option value="4">Viernes</option>
+                    <option value="5">Sábado</option>
+                    <option value="6">Domingo</option>
+                  </select>
+                </div>
+                <div class="form-grupo">
+                  <label>
+                    <span>Hora Inicio</span>
+                    <span id="lbl-hora" class="slider-val">10:00</span>
+                  </label>
+                  <div class="slider-row" style="margin-top: 8px;">
+                    <input type="range" id="sim-hora" min="6" max="21" step="1" value="10" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Umbral de Decisión -->
+              <div class="form-grupo">
+                <label>
+                  <span>Umbral de Decisión (Sensibilidad vs Especificidad)</span>
+                  <span id="lbl-umbral" class="slider-val">0.50 (50%)</span>
+                </label>
+                <div class="slider-row">
+                  <input type="range" id="sim-umbral" min="0" max="1" step="0.01" value="0.50" />
+                </div>
+              </div>
+
+              <button type="button" id="btn-predecir-logistica" class="btn-primario" style="width: 100%; margin-top: 10px; padding: 12px;">
+                Predecir Probabilidad de Asistencia
+              </button>
+            </form>
+
+            <!-- Card de Resultado -->
+            <div id="resultado-logistica-card" class="resultado-box" style="display: none;">
+              <div class="res-score-row">
+                <div>
+                  <span style="font-size: 0.8rem; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                    PROBABILIDAD ESTIMADA
+                  </span>
+                  <div class="res-score-val" id="res-prob-val">0.0%</div>
+                </div>
+                <div style="text-align: right;">
+                  <span id="res-badge-etiqueta" class="res-badge badge-asiste">ASISTIRÁ</span>
+                  <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">
+                    Confianza: <strong id="res-confianza-val" style="color: #0f172a;">Alta</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Barra de Progreso de Probabilidad -->
+              <div class="res-barra-track">
+                <div id="res-barra-fill" class="res-barra-progreso"></div>
+                <div id="res-barra-umbral" class="res-umbral-marcador" title="Umbral de corte"></div>
+              </div>
+              <div class="prob-marcas">
+                <span>0% (Ausencia segura)</span>
+                <span id="txt-umbral-marcador">50% (Umbral)</span>
+                <span>100% (Asistencia segura)</span>
+              </div>
+
+              <p id="res-mensaje-log" style="font-size: 0.85rem; color: #334155; margin: 0; line-height: 1.4;">
+                <!-- Dinámico -->
+              </p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Columna 2: Ecuación y Coeficientes -->
+        <div class="pred-col">
+          <!-- Ecuación Sigmoide -->
+          <article class="pred-card">
+            <div class="pred-card-header">
+              <h3>Función de Decisión Logística (Sigmoide)</h3>
+              <span class="tag-modelo" style="background:#fdf2f8; color:#be185d;">σ(z) = 1 / (1 + e⁻ᶻ)</span>
+            </div>
+            <div id="ecuacion-logit-box" class="formula-banner">
+logit(z) = β₀ + Σ(βᵢ · Xᵢ)
+Calculando parámetros del modelo...
+            </div>
+            <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.5;">
+              La regresión logística transforma la combinación lineal de variables a través de la función logística <em>sigmoide</em>, garantizando una probabilidad acotada exactamente entre 0 y 1.
+            </p>
+          </article>
+
+          <!-- Tabla de Coeficientes -->
+          <article class="pred-card">
+            <div class="pred-card-header">
+              <div>
+                <h3>Pesos e Impacto de las Variables (β)</h3>
+                <p style="margin: 3px 0 0; font-size: 0.8rem; color: #64748b;">
+                  Ordenados por orden de magnitud de impacto sobre la asistencia.
+                </p>
+              </div>
+              <span style="font-size: 0.8rem; font-weight: 700; color: #2563eb;" id="txt-intercepto">
+                β₀ = +0.0805
+              </span>
+            </div>
+
+            <div class="tabla-contenedor" style="margin-top: 10px;">
+              <table class="tabla" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Variable (Feature)</th>
+                    <th style="text-align: right;">Coeficiente (β)</th>
+                    <th>Impacto</th>
+                  </tr>
+                </thead>
+                <tbody id="contenedor-coef-tabla">
+                  <tr>
+                    <td colspan="3" class="vacio">Cargando coeficientes...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="info-callout">
+              <strong>💡 Interpretación Académica:</strong> El <em>asistencia_ratio_30d</em> (+0.5440) es el predictor positivo más fuerte: alumnos con hábito constante tienen alta probabilidad de volver. Por el contrario, las <em>ausencias_consecutivas</em> (-0.2447) reducen fuertemente la probabilidad, encendiendo alarmas de deserción temprana.
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin-comun.js"></script>
+<script src="../js/panel-comun.js"></script>
+<script src="../js/profesor-logistica.js"></script>
+</body>
+</html>

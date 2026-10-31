@@ -3,161 +3,375 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Senati | Mi perfil</title>
-    <link rel="stylesheet" href="../css/login.css" />
+    <title>Campus Virtual | Mi Perfil</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%231a56db'><path d='M12 2L1 7l11 5 9-4.09V17h2V7L12 2z'/></svg>" />
+    <!-- Estilos Unificados -->
+    <link rel="stylesheet" href="../css/estudiante-dashboard.css" />
     <link rel="stylesheet" href="../css/admin.css" />
+    <style>
+      .perfil-grid-unified {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 22px;
+        align-items: start;
+      }
+      @media (max-width: 900px) {
+        .perfil-grid-unified {
+          grid-template-columns: 1fr;
+        }
+      }
+      .perfil-card-user {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 20px;
+      }
+      .avatar-grande {
+        width: 84px;
+        height: 84px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #eff6ff;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);
+        margin-bottom: 14px;
+      }
+      .datos-dl {
+        width: 100%;
+        margin-top: 20px;
+        text-align: left;
+        border-top: 1px solid var(--border-color);
+        padding-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .datos-dl dt {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--text-muted);
+      }
+      .datos-dl dd {
+        font-size: 13.5px;
+        color: var(--text-main);
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+    </style>
   </head>
-  <body class="admin-page" data-rol="estudiante">
-    <div class="admin-layout">
-      <aside class="admin-menu"></aside>
+  <body class="dashboard-body admin-page" data-rol="estudiante">
+    <div class="dashboard-layout">
+      <!-- SIDEBAR LATERAL -->
+      <aside class="dashboard-sidebar" id="dashboard-sidebar">
+        <div class="sidebar-brand">
+          <div class="brand-icon-wrap">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">ASISTENCIA IA</span>
+            <span class="brand-subtitle">Campus Virtual</span>
+          </div>
+        </div>
 
-      <div class="admin-principal">
-        <header class="admin-cabecera">
-          <div>
-            <h1>Mi perfil</h1>
-            <p class="subtitulo-pagina">
-              Tus datos, tu contraseña y tu acceso con rostro.
-            </p>
+        <div class="sidebar-section-title">Estudiante</div>
+
+        <nav class="sidebar-nav">
+          <a href="inicio.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            <span>Inicio</span>
+          </a>
+
+          <a href="cursos.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            <span>Mis cursos</span>
+          </a>
+
+          <a href="calificaciones.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <path d="M8 13h8M8 17h5"/>
+            </svg>
+            <span>Mis calificaciones</span>
+          </a>
+
+          <a href="asistencia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="9 12 12 15 16 10"/>
+            </svg>
+            <span>Mi asistencia</span>
+          </a>
+
+          <a href="ia.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+              <rect x="4" y="8" width="16" height="12" rx="3"/>
+              <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+              <circle cx="15" cy="13" r="1.5" fill="currentColor"/>
+              <path d="M9 17h6"/>
+            </svg>
+            <span>Asistente IA</span>
+          </a>
+
+          <a href="emoscan.html" class="nav-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            </svg>
+            <span>EmoScan</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="sidebar-footer-links">
+            <a href="perfil.html" class="sidebar-footer-link" style="color: #ffffff; background: var(--bg-sidebar-hover); font-weight: 600;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/>
+              </svg>
+              <span>Mi perfil</span>
+            </a>
+            <button type="button" class="sidebar-footer-link" id="btn-logout">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              <span>Cerrar sesión</span>
+            </button>
+          </div>
+
+          <div class="sidebar-campus-card">
+            <img src="../assets/img/campus_building.jpg" alt="Campus Moderno" />
+          </div>
+        </div>
+      </aside>
+
+      <!-- ÁREA PRINCIPAL -->
+      <main class="dashboard-main">
+        <!-- BARRA SUPERIOR -->
+        <header class="dashboard-topbar">
+          <div class="topbar-left">
+            <button class="btn-hamburger" id="btn-hamburger" aria-label="Abrir menú">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+
+            <div class="topbar-search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" placeholder="Buscar perfil o credenciales..." id="input-global-search" />
+            </div>
+          </div>
+
+          <div class="topbar-right">
+            <button class="btn-icon-notify" aria-label="Notificaciones" onclick="window.location.href='inicio.html'">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+              </svg>
+              <span class="notify-badge">4</span>
+            </button>
+
+            <div class="user-profile-widget" onclick="window.location.href='perfil.html'">
+              <img src="../assets/img/avatar_student.jpg" alt="Avatar del estudiante" class="user-avatar-img" />
+              <div class="user-meta">
+                <span class="user-meta-name" id="student-name">Ana Quispe</span>
+                <span class="user-meta-role" id="student-role">Estudiante</span>
+              </div>
+            </div>
           </div>
         </header>
 
-        <main class="admin-cuerpo">
-          <div class="perfil-grid">
-            <section class="panel-card perfil-resumen" aria-label="Resumen">
-              <div id="perfil-avatar"></div>
-              <h2 id="p-nombre"></h2>
-              <span class="badge" id="p-rol"></span>
-              <dl class="datos" id="p-datos"></dl>
-            </section>
+        <!-- CONTENIDO -->
+        <div class="dashboard-content">
+          <div class="dashboard-header-block">
+            <h1 class="dashboard-page-title">Mi perfil</h1>
+            <p class="dashboard-page-subtitle">Información académica, datos personales y reconocimiento facial biométrico.</p>
+          </div>
 
-            <div>
-              <section class="panel-card">
-                <h3>Datos personales</h3>
+          <div class="perfil-grid-unified">
+            <!-- TARJETA LATERAL DE RESUMEN DEL ALUMNO -->
+            <div class="dash-card perfil-card-user">
+              <div id="perfil-avatar">
+                <img src="../assets/img/avatar_student.jpg" alt="Avatar" class="avatar-grande" />
+              </div>
+              <h2 id="p-nombre" style="font-size: 18px; font-weight: 800; color: #0f172a;">Ana Quispe</h2>
+              <span class="badge-status badge-status-active" id="p-rol" style="margin-top: 6px;">Estudiante</span>
+
+              <div style="margin-top: 14px; width: 100%; padding: 10px; background-color: #f8fafc; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+                <span style="font-size: 12px; font-weight: 600; color: #334155;">Acceso con rostro:</span>
+                <span id="estado-facial" class="badge-status badge-status-present">Activado</span>
+              </div>
+
+              <dl class="datos-dl" id="p-datos">
+                <!-- Inyectado por panel-perfil.js -->
+              </dl>
+            </div>
+
+            <!-- FORMULARIOS DE ACTUALIZACIÓN -->
+            <div style="display: flex; flex-direction: column; gap: 22px;">
+              <!-- Formulario de Datos Personales -->
+              <div class="dash-card">
+                <div class="section-top-header" style="margin-bottom: 16px;">
+                  <div class="section-title-wrap">
+                    <h3>Datos personales</h3>
+                    <p>Información de contacto registrada en el sistema académico.</p>
+                  </div>
+                </div>
+
                 <form id="form-datos" novalidate>
-                  <p id="msg-datos" class="mensaje-error" role="alert"></p>
-                  <div class="fila">
-                    <div class="campo">
-                      <label for="d-nombres">Nombres</label
-                      ><input type="text" id="d-nombres" maxlength="100" />
-                    </div>
-                    <div class="campo">
-                      <label for="d-apellidos">Apellidos</label
-                      ><input type="text" id="d-apellidos" maxlength="100" />
-                    </div>
-                  </div>
-                  <div class="fila">
-                    <div class="campo">
-                      <label for="d-email">Correo electrónico</label
-                      ><input
-                        type="text"
-                        id="d-email"
-                        inputmode="email"
-                        maxlength="120"
-                      />
-                    </div>
-                    <div class="campo">
-                      <label for="d-telefono">Teléfono</label
-                      ><input
-                        type="text"
-                        id="d-telefono"
-                        inputmode="tel"
-                        maxlength="20"
-                      />
-                    </div>
-                  </div>
-                  <div class="campo" id="campo-especialidad" hidden>
-                    <label for="d-especialidad">Especialidad</label
-                    ><input type="text" id="d-especialidad" maxlength="120" />
-                  </div>
-                  <p id="aviso-nombres" class="fuerza-texto" hidden>
-                    Tu nombre y apellidos solo los puede cambiar la
-                    administración.
+                  <p id="msg-datos" class="mensaje-error" role="alert" style="color: #b91c1c; font-size: 12px; margin-bottom: 10px;"></p>
+                  <p id="aviso-nombres" style="font-size: 11.5px; color: #64748b; margin-bottom: 12px;" hidden>
+                    Para modificar tus nombres y apellidos consulta con Secretaría Académica.
                   </p>
-                  <button
-                    type="submit"
-                    id="btn-datos"
-                    class="btn-principal btn-nuevo"
-                  >
-                    Guardar cambios
-                  </button>
-                </form>
-              </section>
 
-              <section class="panel-card">
-                <h3>Acceso con rostro</h3>
-                <p>
-                  Estado:
-                  <span id="estado-facial" class="estado inactivo">—</span>
-                </p>
-                <a
-                  class="btn-principal btn-nuevo enlace-boton"
-                  href="../rostro.html"
-                  >Configurar login facial</a
-                >
-              </section>
-
-              <section class="panel-card">
-                <h3>Cambiar contraseña</h3>
-                <form id="form-clave" novalidate>
-                  <p id="msg-clave" class="mensaje-error" role="alert"></p>
-                  <div class="campo">
-                    <label for="c-actual">Contraseña actual</label
-                    ><input
-                      type="password"
-                      id="c-actual"
-                      autocomplete="current-password"
-                      maxlength="128"
-                    />
+                  <div class="dash-form-grid" style="margin-bottom: 14px;">
+                    <div class="dash-form-group">
+                      <label for="d-nombres" class="dash-form-label">Nombres</label>
+                      <input type="text" id="d-nombres" class="dash-form-input" maxlength="100" />
+                    </div>
+                    <div class="dash-form-group">
+                      <label for="d-apellidos" class="dash-form-label">Apellidos</label>
+                      <input type="text" id="d-apellidos" class="dash-form-input" maxlength="100" />
+                    </div>
                   </div>
-                  <div class="fila">
-                    <div class="campo">
-                      <label for="c-nueva">Nueva contraseña</label>
-                      <input
-                        type="password"
-                        id="c-nueva"
-                        autocomplete="new-password"
-                        maxlength="128"
-                      />
-                      <div class="fuerza"><span id="fuerza-barra"></span></div>
-                      <p class="fuerza-texto" id="fuerza-texto">
+
+                  <div class="dash-form-grid" style="margin-bottom: 14px;">
+                    <div class="dash-form-group">
+                      <label for="d-email" class="dash-form-label">Correo institucional</label>
+                      <input type="text" id="d-email" class="dash-form-input" inputmode="email" maxlength="120" />
+                    </div>
+                    <div class="dash-form-group">
+                      <label for="d-telefono" class="dash-form-label">Teléfono de contacto</label>
+                      <input type="tel" id="d-telefono" class="dash-form-input" maxlength="20" placeholder="+51 900 000 000" />
+                    </div>
+                  </div>
+
+                  <div class="dash-form-group" id="campo-especialidad" hidden style="margin-bottom: 14px;">
+                    <label for="d-especialidad" class="dash-form-label">Especialidad</label>
+                    <input type="text" id="d-especialidad" class="dash-form-input" maxlength="120" />
+                  </div>
+
+                  <div style="display: flex; justify-content: flex-end;">
+                    <button type="submit" id="btn-datos" class="btn-mark-attendance">
+                      Guardar cambios
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Formulario de Cambio de Contraseña -->
+              <div class="dash-card">
+                <div class="section-top-header" style="margin-bottom: 16px;">
+                  <div class="section-title-wrap">
+                    <h3>Seguridad y Contraseña</h3>
+                    <p>Actualiza tu contraseña para mantener protegida tu cuenta.</p>
+                  </div>
+                </div>
+
+                <form id="form-clave" novalidate>
+                  <p id="msg-clave" class="mensaje-error" role="alert" style="color: #b91c1c; font-size: 12px; margin-bottom: 10px;"></p>
+
+                  <div class="dash-form-group" style="margin-bottom: 14px;">
+                    <label for="c-actual" class="dash-form-label">Contraseña actual</label>
+                    <input type="password" id="c-actual" class="dash-form-input" autocomplete="current-password" maxlength="128" />
+                  </div>
+
+                  <div class="dash-form-grid" style="margin-bottom: 14px;">
+                    <div class="dash-form-group">
+                      <label for="c-nueva" class="dash-form-label">Nueva contraseña</label>
+                      <input type="password" id="c-nueva" class="dash-form-input" autocomplete="new-password" maxlength="128" />
+                      <div class="fuerza" style="margin-top: 6px;"><span id="fuerza-barra"></span></div>
+                      <p class="fuerza-texto" id="fuerza-texto" style="font-size: 11px; color: #64748b; margin-top: 4px;">
                         Mínimo 8 caracteres, con letras y números.
                       </p>
                     </div>
-                    <div class="campo">
-                      <label for="c-repetir">Repite la nueva</label
-                      ><input
-                        type="password"
-                        id="c-repetir"
-                        autocomplete="new-password"
-                        maxlength="128"
-                      />
+                    <div class="dash-form-group">
+                      <label for="c-repetir" class="dash-form-label">Repite la nueva contraseña</label>
+                      <input type="password" id="c-repetir" class="dash-form-input" autocomplete="new-password" maxlength="128" />
                     </div>
                   </div>
-                  <label class="mostrar-claves"
-                    ><input type="checkbox" id="c-mostrar" /> Mostrar
-                    contraseñas</label
-                  >
-                  <button
-                    type="submit"
-                    id="btn-clave"
-                    class="btn-principal btn-nuevo"
-                  >
-                    Actualizar contraseña
-                  </button>
+
+                  <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px;">
+                    <label class="mostrar-claves" style="font-size: 12.5px; color: #334155; cursor: pointer;">
+                      <input type="checkbox" id="c-mostrar" /> Mostrar contraseñas
+                    </label>
+
+                    <button type="submit" id="btn-clave" class="btn-mark-attendance">
+                      Actualizar contraseña
+                    </button>
+                  </div>
                 </form>
-              </section>
+              </div>
+
+              <!-- Registro Facial Biométrico -->
+              <div class="dash-card">
+                <div class="section-top-header" style="margin-bottom: 12px;">
+                  <div class="section-title-wrap">
+                    <h3>Reconocimiento Facial de Asistencia</h3>
+                    <p>Gestiona tu patrón biométrico facial registrado para el control de asistencia.</p>
+                  </div>
+                  <div>
+                    <button type="button" id="btn-cambiar-rostro" class="btn-secundario" style="font-weight: 700; color: #2563eb;">
+                      📷 Actualizar mi rostro
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
+
+    <!-- Modal para registro de rostro -->
+    <dialog id="modal-rostro" class="modal" aria-labelledby="titulo-rostro">
+      <div class="modal-contenido dash-modal-card" style="padding: 24px;">
+        <h2 id="titulo-rostro" style="font-size: 18px; font-weight: 800; color: #0f172a;">Registro Facial</h2>
+        <p class="subtitulo" style="font-size: 13px; color: #64748b; margin-top: 4px; margin-bottom: 16px;">
+          Encuadra tu rostro en el centro del marco.
+        </p>
+
+        <div id="caja-video" class="caja-video camera-feed-box" style="margin-bottom: 14px;">
+          <span class="vacio" style="color: #94a3b8; display: flex; align-items: center; justify-content: center; height: 100%;">Cámara apagada</span>
+          <video id="video-rostro" autoplay playsinline muted></video>
+          <div class="marcador camera-scanner-frame"><span></span></div>
+        </div>
+
+        <p id="estado-rostro" class="estado-camara" role="status" style="font-size: 13px; text-align: center; margin-bottom: 16px;"></p>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+          <button type="button" id="btn-cerrar-modal" class="btn-secundario">Cerrar</button>
+          <button type="button" id="btn-capturar-rostro" class="btn-mark-attendance">Capturar rostro</button>
+        </div>
+      </div>
+    </dialog>
 
     <div id="aviso" class="aviso" role="status" aria-live="polite" hidden></div>
 
+    <!-- Scripts -->
     <script src="../js/config.js"></script>
     <script src="../js/auth.js"></script>
     <script src="../js/admin-comun.js"></script>
     <script src="../js/panel-comun.js"></script>
     <script src="../js/panel-perfil.js"></script>
-  </body>
+      <!-- Chatbot Asistente IA Flotante -->
+    <script src="../js/chatbot-init.js"></script>
+    <script src="../components/chatbot.js"></script>
+</body>
 </html>

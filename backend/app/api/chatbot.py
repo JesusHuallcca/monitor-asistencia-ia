@@ -31,9 +31,21 @@ router = APIRouter(
 # CONTEXTO
 # =========================================================
 
+from fastapi import HTTPException
+
+def require_chatbot_role(user=Depends(get_current_user)):
+    role = str(user.rol).lower()
+    if role not in ("estudiante", "profesor", "admin"):
+        raise HTTPException(
+            status_code=403,
+            detail="El chatbot solo está disponible para Estudiante, Profesor y Admin."
+        )
+    return user
+
+
 @router.get("/context")
 def context(
-    user=Depends(get_current_user),
+    user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
     courses = courses_for(db, user)
@@ -105,7 +117,7 @@ def context(
 @router.post("/message")
 async def message(
     body: ChatMessage,
-    user=Depends(get_current_user),
+    user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
     result = answer(db, user, body)
@@ -211,7 +223,7 @@ async def message(
 
 @router.get("/history")
 def history(
-    user=Depends(get_current_user),
+    user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
     rows = list(
@@ -238,7 +250,7 @@ def history(
 
 @router.delete("/history")
 def clear(
-    user=Depends(get_current_user),
+    user=Depends(require_chatbot_role),
     db=Depends(get_db),
 ):
     db.execute(

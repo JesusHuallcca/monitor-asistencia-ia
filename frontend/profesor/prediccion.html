@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Senati | Predicción ML — Regresión Lineal</title>
+  <link rel="stylesheet" href="../css/login.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <style>
+    .pred-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 22px;
+      margin-top: 20px;
+    }
+    @media (max-width: 1100px) {
+      .pred-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .pred-card {
+      background: var(--tarjeta, #ffffff);
+      border: 1px solid var(--linea, #e5e7eb);
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: var(--sombra-suave, 0 1px 3px rgba(0,0,0,0.05));
+      margin-bottom: 20px;
+    }
+    .pred-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--linea, #f1f5f9);
+    }
+    .pred-card-header h2, .pred-card-header h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--tinta, #0f172a);
+    }
+    .tag-modelo {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: #eff6ff;
+      color: #2563eb;
+      font-weight: 700;
+      border-radius: 6px;
+      letter-spacing: 0.02em;
+    }
+    .formula-banner {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      border: 1px solid #1e293b;
+      margin-bottom: 16px;
+    }
+    .tabs-graficos-nav {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .btn-tab-grafico {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-tab-grafico:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+    .btn-tab-grafico.active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+    .img-grafico-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px;
+      text-align: center;
+    }
+    .img-grafico-box img {
+      width: 100%;
+      height: auto;
+      max-height: 440px;
+      object-fit: contain;
+      border-radius: 6px;
+      display: none;
+    }
+    .form-grupo {
+      margin-bottom: 14px;
+    }
+    .form-grupo label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+    .form-grupo input[type="text"],
+    .form-grupo input[type="time"],
+    .form-grupo select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: #ffffff;
+      box-sizing: border-box;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: #2563eb;
+    }
+    .slider-val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #2563eb;
+      min-width: 44px;
+      text-align: right;
+    }
+    .resultado-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-top: 18px;
+    }
+    .res-score-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .res-score-val {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.03em;
+    }
+    .res-score-max {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #64748b;
+    }
+    .res-barra-track {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .res-barra-progreso {
+      height: 100%;
+      width: 0%;
+      background: #2563eb;
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .res-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      border-radius: 99px;
+      border: 1px solid transparent;
+      letter-spacing: 0.04em;
+    }
+    .impacto-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+    .badge-positivo {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .badge-negativo {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .badge-neutral {
+      background: #f1f5f9;
+      color: #475569;
+    }
+  </style>
+</head>
+<body class="admin-page" data-rol="profesor">
+<div class="admin-layout">
+  <aside class="admin-menu"></aside>
+  <div class="admin-principal">
+    <header class="admin-cabecera">
+      <div>
+        <span class="seg-eyebrow" style="font-size: 11px; font-weight: 700; letter-spacing: 0.05em; color: #2563eb; text-transform: uppercase;">
+          PANEL DEL PROFESOR / MACHINE LEARNING
+        </span>
+        <h1 style="margin: 4px 0 6px; font-size: 1.6rem; font-weight: 800; color: #0f172a;">
+          Predicción de Asistencia — Regresión Lineal
+        </h1>
+        <p class="seg-intro" style="margin: 0; color: #64748b; font-size: 0.9rem;">
+          Modelo de Aprendizaje Supervisado (Parte 2) para estimar el puntaje de asistencia en escala 0–100 a partir de biometría facial y emociones.
+        </p>
+      </div>
+      <div>
+        <span class="tag-modelo" style="font-size: 0.85rem; padding: 8px 14px;">Scikit-Learn · R² = 77.9%</span>
+      </div>
+    </header>
+
+    <main class="admin-cuerpo">
+      <!-- Fila de 4 KPIs del Modelo -->
+      <section class="stats" aria-label="Métricas del modelo predictivo">
+        <div class="stat teal">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 20v-6M6 20V10M18 20V4"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-r2-multiple" class="num">—%</strong>
+            <span class="rot">Bondad de Ajuste (R² Múltiple)</span>
+          </div>
+        </div>
+
+        <div class="stat ambar">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-mae-multiple" class="num">±— pts</strong>
+            <span class="rot">Error Absoluto Medio (MAE)</span>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+              <polyline points="17 6 23 6 23 12"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-r2-simple" class="num">—%</strong>
+            <span class="rot">R² Regresión Simple</span>
+          </div>
+        </div>
+
+        <div class="stat violeta">
+          <div class="ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <strong id="kpi-factor-top" class="num" style="font-size: 1.15rem; line-height: 1.4;">Hora de llegada</strong>
+            <span class="rot">Factor Más Influyente</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cuadrícula Principal: Simulador + Visualización y Coeficientes -->
+      <section class="pred-grid">
+        <!-- Columna Izquierda: Simulador Interactivo -->
+        <article class="pred-card">
+          <div class="pred-card-header">
+            <div>
+              <h2>Simulador de Inferencia en Tiempo Real</h2>
+              <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">
+                Ingresa los parámetros biométricos y contextuales para calcular el puntaje
+              </p>
+            </div>
+            <span class="tag-modelo">Interactivo</span>
+          </div>
+
+          <form id="form-simulador-ml" onsubmit="return false;">
+            <!-- Día y Hora -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-grupo">
+                <label for="sim-dia">Día de la Semana</label>
+                <select id="sim-dia">
+                  <option value="0">Lunes</option>
+                  <option value="1" selected>Martes</option>
+                  <option value="2">Miércoles</option>
+                  <option value="3">Jueves</option>
+                  <option value="4">Viernes</option>
+                </select>
+              </div>
+
+              <div class="form-grupo">
+                <label for="sim-hora">Hora de Llegada</label>
+                <input id="sim-hora" type="time" value="08:05" required />
+              </div>
+            </div>
+
+            <!-- Parámetros Biométricos -->
+            <div class="form-grupo">
+              <label for="sim-confianza">
+                <span>Confianza Reconocimiento Facial</span>
+                <span id="lbl-sim-confianza" class="slider-val">90%</span>
+              </label>
+              <div class="slider-row">
+                <input id="sim-confianza" type="range" min="40" max="100" value="90" />
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="sim-liveness">
+                <span>Score Anti-Suplantación (Liveness)</span>
+                <span id="lbl-sim-liveness" class="slider-val">88%</span>
+              </label>
+              <div class="slider-row">
+                <input id="sim-liveness" type="range" min="40" max="100" value="88" />
+              </div>
+            </div>
+
+            <!-- Expresiones Faciales (EmoScan) -->
+            <div style="margin-top: 16px; margin-bottom: 8px;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a;">Distribución Emocional (EmoScan)</span>
+              <p style="margin: 2px 0 10px; font-size: 0.75rem; color: #64748b;">Se normalizan automáticamente para sumar 100%</p>
+            </div>
+
+            <div class="form-grupo">
+              <label for="sim-happy">
+                <span>Felicidad / Atención Positiva</span>
+                <span id="lbl-sim-happy" class="slider-val">40%</span>
+              </label>
+              <div class="slider-row">
+                <input id="sim-happy" type="range" min="0" max="100" value="40" />
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="sim-neutral">
+                <span>Neutralidad / Concentración</span>
+                <span id="lbl-sim-neutral" class="slider-val">35%</span>
+              </label>
+              <div class="slider-row">
+                <input id="sim-neutral" type="range" min="0" max="100" value="35" />
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="sim-sad">
+                <span>Tristeza / Desgano</span>
+                <span id="lbl-sim-sad" class="slider-val">15%</span>
+              </label>
+              <div class="slider-row">
+                <input id="sim-sad" type="range" min="0" max="100" value="15" />
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label for="sim-angry">
+                <span>Enojo / Malestar</span>
+                <span id="lbl-sim-angry" class="slider-val">10%</span>
+              </label>
+              <div class="slider-row">
+                <input id="sim-angry" type="range" min="0" max="100" value="10" />
+              </div>
+            </div>
+
+            <button id="btn-predecir-ml" class="btn-nuevo" type="button" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px; font-weight: 700;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              Calcular Predicción en Vivo
+            </button>
+          </form>
+
+          <!-- Tarjeta de Resultado de Inferencia -->
+          <div id="resultado-prediccion-card" class="resultado-box">
+            <div class="res-score-row">
+              <div>
+                <span style="font-size: 0.8rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Puntaje Estimado</span>
+                <div class="res-score-val">
+                  <span id="res-puntaje-num">86.1</span>
+                  <span class="res-score-max">/ 100</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <span id="res-badge-estado" class="res-badge" style="background: #dcfce7; color: #16a34a; border-color: #16a34a;">
+                  PRESENTE
+                </span>
+              </div>
+            </div>
+
+            <div class="res-barra-track">
+              <div id="res-puntaje-barra" class="res-barra-progreso" style="width: 86.1%; background-color: #16a34a;"></div>
+            </div>
+
+            <p id="res-interpretacion-msg" style="margin: 0 0 8px; font-size: 0.85rem; color: #334155; font-weight: 500;">
+              Excelente probabilidad de asistencia regular a tiempo.
+            </p>
+
+            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 8px;">
+              <span>Hora normalizada: <strong id="res-hora-norm">08:05 (485 min)</strong></span>
+              <span>Biometría: <strong id="res-conf-norm">90% facial / 88% liveness</strong></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Columna Derecha: Gráficos de Ajuste y Desglose de Coeficientes -->
+        <div>
+          <!-- Gráficos de Evaluación del Modelo -->
+          <article class="pred-card">
+            <div class="pred-card-header">
+              <div>
+                <h2>Evaluación Gráfica del Modelo</h2>
+                <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">
+                  Visualización de bondad de ajuste, residuos y dispersión
+                </p>
+              </div>
+            </div>
+
+            <div class="tabs-graficos-nav">
+              <button class="btn-tab-grafico active" data-grafico="prediccion_vs_real.png" type="button">
+                Predicción vs Real
+              </button>
+              <button class="btn-tab-grafico" data-grafico="regresion_simple.png" type="button">
+                Regresión Simple
+              </button>
+              <button class="btn-tab-grafico" data-grafico="graficos_exploracion.png" type="button">
+                Exploración Multivariable
+              </button>
+            </div>
+
+            <div class="img-grafico-box">
+              <img id="img-grafico-regresion" alt="Gráfico de regresión lineal" />
+            </div>
+          </article>
+
+          <!-- Ecuación y Coeficientes -->
+          <article class="pred-card">
+            <div class="pred-card-header">
+              <div>
+                <h3>Ecuación y Coeficientes del Modelo</h3>
+                <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">
+                  Ponderación de cada variable estandarizada en la predicción
+                </p>
+              </div>
+            </div>
+
+            <div id="ecuacion-modelo-box" class="formula-banner">
+              Puntaje = 73.53 - 11.59 × Hora + 4.03 × Confianza + 2.16 × Liveness + Expresiones
+            </div>
+
+            <div class="tabla-caja" style="margin: 0; box-shadow: none; border: none;">
+              <table class="tabla" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Variable (Feature)</th>
+                    <th>Coeficiente</th>
+                    <th>Impacto</th>
+                    <th>Descripción</th>
+                  </tr>
+                </thead>
+                <tbody id="contenedor-features-tabla">
+                  <tr>
+                    <td colspan="4" class="vacio">Cargando coeficientes...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script src="../js/config.js"></script>
+<script src="../js/auth.js"></script>
+<script src="../js/admin-comun.js"></script>
+<script src="../js/panel-comun.js"></script>
+<script src="../js/profesor-prediccion.js"></script>
+</body>
+</html>
+

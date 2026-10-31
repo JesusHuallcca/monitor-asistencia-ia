@@ -60,6 +60,142 @@ body.admin-page textarea {
   z-index: 10;
 }
 
+/* ===================== SIDEBAR ESTUDIANTE ===================== */
+body[data-rol="estudiante"] .admin-layout {
+  grid-template-columns: 250px 1fr;
+}
+
+body[data-rol="estudiante"] .admin-menu,
+.admin-menu.dashboard-sidebar {
+  background-color: #0b1a30;
+  padding: 20px 16px;
+  width: 250px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body[data-rol="estudiante"] .sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 8px 24px;
+}
+
+body[data-rol="estudiante"] .brand-icon-wrap {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+body[data-rol="estudiante"] .brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-rol="estudiante"] .brand-title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+body[data-rol="estudiante"] .brand-subtitle {
+  font-size: 11px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+body[data-rol="estudiante"] .sidebar-section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #64748b;
+  padding: 6px 12px;
+  margin-bottom: 6px;
+}
+
+body[data-rol="estudiante"] .sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-grow: 1;
+}
+
+body[data-rol="estudiante"] .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+body[data-rol="estudiante"] .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+body[data-rol="estudiante"] .nav-link.active {
+  background-color: #1d68ff;
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(29, 104, 255, 0.35);
+}
+
+body[data-rol="estudiante"] .sidebar-footer {
+  padding-top: 16px;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body[data-rol="estudiante"] .sidebar-footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+body[data-rol="estudiante"] .sidebar-footer-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 13px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+body[data-rol="estudiante"] .sidebar-footer-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+body[data-rol="estudiante"] .sidebar-campus-card {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
 .admin-marca {
   display: flex;
   align-items: center;

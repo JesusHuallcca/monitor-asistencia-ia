@@ -376,6 +376,20 @@ def answer(db, user, body):
     ):
         intent = "STUDENT_HISTORY"
 
+    elif "hoy" in q:
+        intent = "ATTENDANCE_TODAY"
+
+    elif any(
+        word in q
+        for word in (
+            "falta",
+            "faltas",
+            "ausen",
+            "inasist",
+        )
+    ):
+        intent = "ABSENT_STUDENTS"
+
     elif any(
         word in q
         for word in (
@@ -390,15 +404,21 @@ def answer(db, user, body):
     elif any(
         word in q
         for word in (
-            "hoy",
-            "falt",
-            "ausen",
             "asist",
+            "asistencia",
         )
     ):
-        intent = "ATTENDANCE_TODAY"
+        intent = "COURSE_STATS" if role == "ESTUDIANTE" else "STUDENT_HISTORY"
 
-    elif "curso" in q:
+    elif any(
+        word in q
+        for word in (
+            "curso",
+            "cursos",
+            "materia",
+            "materias",
+        )
+    ):
         intent = "COURSES"
 
     data = []
@@ -666,6 +686,10 @@ def answer(db, user, body):
             query = query.where(
                 Asistencia.estado == "TARDANZA"
             )
+        elif intent == "ABSENT_STUDENTS":
+            query = query.where(
+                Asistencia.estado == "AUSENTE"
+            )
 
         if intent == "COURSE_STATS":
 
@@ -772,23 +796,33 @@ def answer(db, user, body):
                 )
 
             else:
-                reply = (
-                    "Historial de tardanzas:\n"
-                    if intent == "LATE_STUDENTS"
-                    else "Historial de asistencia:\n"
-                )
+                if intent == "LATE_STUDENTS":
+                    reply = (
+                        f"Historial de tardanzas ({len(data)} registradas):\n"
+                        if data
+                        else "No tienes tardanzas registradas en tu historial. ¡Excelente puntualidad!"
+                    )
+                elif intent == "ABSENT_STUDENTS":
+                    reply = (
+                        f"Historial de inasistencias ({len(data)} faltas registradas):\n"
+                        if data
+                        else "No tienes faltas registradas en tu historial. ¡Asistencia perfecta!"
+                    )
+                else:
+                    reply = "Historial de asistencia:\n"
 
-            reply += (
-                "\n".join(
+            if data:
+                reply += "\n" + "\n".join(
                     f"• {r['fecha']} · "
                     f"{r['estudiante']} · "
                     f"{r['curso']}: "
                     f"{r['estado']}"
                     for r in data
                 )
-                if data
-                else "No hay registros para esta consulta."
-            )
+            elif intent == "ATTENDANCE_TODAY":
+                reply += "No hay registros de asistencia para el día de hoy."
+            elif intent not in ("LATE_STUDENTS", "ABSENT_STUDENTS"):
+                reply = "No hay registros para esta consulta." 
 
             if len(rows) > 100:
                 reply += (

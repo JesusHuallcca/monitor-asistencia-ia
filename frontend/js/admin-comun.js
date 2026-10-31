@@ -104,7 +104,32 @@ const Admin = {
       window.location.href = "login.html";
     });
     this.refrescarPendientes();
+    this.montarChatbot();
     return yo;
+  },
+
+  montarChatbot() {
+    if (document.getElementById('monitor-chat-root')) return;
+    if (this.yo?.rol !== 'admin') return;
+
+    if (!window.monitorReady) {
+      const s1 = document.createElement('script');
+      s1.src = '../js/chatbot-init.js';
+      s1.onload = () => {
+        if (!document.getElementById('monitor-chat-root')) {
+          const s2 = document.createElement('script');
+          s2.src = '../components/chatbot.js';
+          document.body.appendChild(s2);
+        }
+      };
+      document.body.appendChild(s1);
+    } else {
+      if (!document.getElementById('monitor-chat-root')) {
+        const s2 = document.createElement('script');
+        s2.src = '../components/chatbot.js';
+        document.body.appendChild(s2);
+      }
+    }
   },
 
   construirMenu() {
