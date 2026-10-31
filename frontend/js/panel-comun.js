@@ -116,6 +116,7 @@ const Panel = Object.assign(Object.create(Admin), {
   montarMenu(rol) {
     const aside = document.querySelector(".admin-menu");
     if (!aside) return;
+    this.montarBarraMovil(rol);
     aside.replaceChildren();
 
     if (rol === "estudiante") {
@@ -133,7 +134,10 @@ const Panel = Object.assign(Object.create(Admin), {
           <span class="brand-title" style="font-size:15px;font-weight:800;color:#fff;">ASISTENCIA IA</span>
           <span class="brand-subtitle" style="font-size:11px;color:#94a3b8;">Campus Virtual</span>
         </div>
+        <button type="button" class="btn-cerrar-drawer" aria-label="Cerrar menú" style="margin-left:auto;">✕</button>
       `;
+      const btnCerrarEst = marca.querySelector(".btn-cerrar-drawer");
+      if (btnCerrarEst) btnCerrarEst.addEventListener("click", () => this.cerrarMenuMovil());
       aside.appendChild(marca);
 
       const secTitulo = this.el("div", "sidebar-section-title", "Estudiante");
@@ -197,6 +201,13 @@ const Panel = Object.assign(Object.create(Admin), {
     logo.src = "../assets/img/senati.png";
     logo.alt = "Senati";
     marca.appendChild(logo);
+
+    const btnCerrar = this.el("button", "btn-cerrar-drawer", "✕");
+    btnCerrar.type = "button";
+    btnCerrar.setAttribute("aria-label", "Cerrar menú");
+    btnCerrar.addEventListener("click", () => this.cerrarMenuMovil());
+    marca.appendChild(btnCerrar);
+
     aside.appendChild(marca);
 
     const nav = document.createElement("nav");
@@ -240,6 +251,74 @@ const Panel = Object.assign(Object.create(Admin), {
     });
     pie.appendChild(salir);
     aside.appendChild(pie);
+  },
+
+
+  montarBarraMovil(rol) {
+    if (document.querySelector(".admin-barra-movil")) return;
+
+    const layout = document.querySelector(".admin-layout") || document.querySelector(".dashboard-layout");
+    if (!layout) return;
+
+    const barra = document.createElement("header");
+    barra.className = "admin-barra-movil";
+
+    const titulos = {
+      estudiante: "Estudiante",
+      profesor: "Profesor",
+      admin: "Administrador",
+      superadmin: "Superadmin"
+    };
+    const tituloRol = titulos[rol] || "Usuario";
+
+    barra.innerHTML = `
+      <button type="button" class="btn-hamburguesa" aria-label="Abrir menú" id="btn-toggle-menu">
+        <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.2" fill="none">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+      <div class="barra-movil-marca">
+        <img src="../assets/img/senati.png" alt="Senati" />
+      </div>
+      <div class="barra-movil-user">
+        <span class="user-badge-rol">${tituloRol}</span>
+      </div>
+    `;
+
+    let overlay = document.querySelector(".admin-overlay-movil");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.className = "admin-overlay-movil";
+      document.body.appendChild(overlay);
+    }
+
+    layout.parentNode.insertBefore(barra, layout);
+
+    barra.querySelector("#btn-toggle-menu").addEventListener("click", () => this.toggleMenuMovil());
+    overlay.addEventListener("click", () => this.cerrarMenuMovil());
+  },
+
+  toggleMenuMovil() {
+    const aside = document.querySelector(".admin-menu") || document.querySelector(".dashboard-sidebar");
+    const overlay = document.querySelector(".admin-overlay-movil");
+    if (!aside) return;
+    const abierto = aside.classList.toggle("abierto");
+    aside.classList.toggle("open", abierto);
+    if (overlay) overlay.classList.toggle("activo", abierto);
+    document.body.style.overflow = abierto ? "hidden" : "";
+  },
+
+  cerrarMenuMovil() {
+    const aside = document.querySelector(".admin-menu") || document.querySelector(".dashboard-sidebar");
+    const overlay = document.querySelector(".admin-overlay-movil");
+    if (aside) {
+      aside.classList.remove("abierto");
+      aside.classList.remove("open");
+    }
+    if (overlay) overlay.classList.remove("activo");
+    document.body.style.overflow = "";
   },
 
   parametro(nombre) {

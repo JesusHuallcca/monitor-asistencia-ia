@@ -328,8 +328,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   if (btnHamburger && sidebarEl) {
+    let overlay = document.querySelector(".admin-overlay-movil");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.className = "admin-overlay-movil";
+      document.body.appendChild(overlay);
+    }
+
+    const cerrarSidebar = () => {
+      sidebarEl.classList.remove("open");
+      overlay.classList.remove("activo");
+      document.body.style.overflow = "";
+    };
+
     btnHamburger.addEventListener("click", () => {
-      sidebarEl.classList.toggle("open");
+      const isOpen = sidebarEl.classList.toggle("open");
+      overlay.classList.toggle("activo", isOpen);
+      document.body.style.overflow = isOpen ? "hidden" : "";
+    });
+
+    overlay.addEventListener("click", cerrarSidebar);
+
+    sidebarEl.querySelectorAll("a").forEach(a => {
+      a.addEventListener("click", cerrarSidebar);
     });
   }
 
